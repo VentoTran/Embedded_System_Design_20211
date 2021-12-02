@@ -1,0 +1,7 @@
+*.workspace
+
+/TEST_C6/build
+/TEST_C6/.vscode
+
+*.ioc
+*.mxproject
