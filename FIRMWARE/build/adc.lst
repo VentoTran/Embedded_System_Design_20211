@@ -1,0 +1,493 @@
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccp3QImG.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"adc.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.MX_ADC1_Init,"ax",%progbits
+  16              		.align	1
+  17              		.global	MX_ADC1_Init
+  18              		.arch armv7-m
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	MX_ADC1_Init:
+  25              	.LFB65:
+  26              		.file 1 "Core/Src/adc.c"
+   1:Core/Src/adc.c **** /* USER CODE BEGIN Header */
+   2:Core/Src/adc.c **** /**
+   3:Core/Src/adc.c ****   ******************************************************************************
+   4:Core/Src/adc.c ****   * @file    adc.c
+   5:Core/Src/adc.c ****   * @brief   This file provides code for the configuration
+   6:Core/Src/adc.c ****   *          of the ADC instances.
+   7:Core/Src/adc.c ****   ******************************************************************************
+   8:Core/Src/adc.c ****   * @attention
+   9:Core/Src/adc.c ****   *
+  10:Core/Src/adc.c ****   * Copyright (c) 2021 STMicroelectronics.
+  11:Core/Src/adc.c ****   * All rights reserved.
+  12:Core/Src/adc.c ****   *
+  13:Core/Src/adc.c ****   * This software is licensed under terms that can be found in the LICENSE file
+  14:Core/Src/adc.c ****   * in the root directory of this software component.
+  15:Core/Src/adc.c ****   * If no LICENSE file comes with this software, it is provided AS-IS.
+  16:Core/Src/adc.c ****   *
+  17:Core/Src/adc.c ****   ******************************************************************************
+  18:Core/Src/adc.c ****   */
+  19:Core/Src/adc.c **** /* USER CODE END Header */
+  20:Core/Src/adc.c **** /* Includes ------------------------------------------------------------------*/
+  21:Core/Src/adc.c **** #include "adc.h"
+  22:Core/Src/adc.c **** 
+  23:Core/Src/adc.c **** /* USER CODE BEGIN 0 */
+  24:Core/Src/adc.c **** 
+  25:Core/Src/adc.c **** /* USER CODE END 0 */
+  26:Core/Src/adc.c **** 
+  27:Core/Src/adc.c **** ADC_HandleTypeDef hadc1;
+  28:Core/Src/adc.c **** 
+  29:Core/Src/adc.c **** /* ADC1 init function */
+  30:Core/Src/adc.c **** void MX_ADC1_Init(void)
+  31:Core/Src/adc.c **** {
+  27              		.loc 1 31 1 view -0
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccp3QImG.s 			page 2
+
+
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 16
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 00B5     		push	{lr}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 4
+  34              		.cfi_offset 14, -4
+  35 0002 85B0     		sub	sp, sp, #20
+  36              	.LCFI1:
+  37              		.cfi_def_cfa_offset 24
+  32:Core/Src/adc.c **** 
+  33:Core/Src/adc.c ****   /* USER CODE BEGIN ADC1_Init 0 */
+  34:Core/Src/adc.c **** 
+  35:Core/Src/adc.c ****   /* USER CODE END ADC1_Init 0 */
+  36:Core/Src/adc.c **** 
+  37:Core/Src/adc.c ****   ADC_ChannelConfTypeDef sConfig = {0};
+  38              		.loc 1 37 3 view .LVU1
+  39              		.loc 1 37 26 is_stmt 0 view .LVU2
+  40 0004 0023     		movs	r3, #0
+  41 0006 0193     		str	r3, [sp, #4]
+  42 0008 0293     		str	r3, [sp, #8]
+  43 000a 0393     		str	r3, [sp, #12]
+  38:Core/Src/adc.c **** 
+  39:Core/Src/adc.c ****   /* USER CODE BEGIN ADC1_Init 1 */
+  40:Core/Src/adc.c **** 
+  41:Core/Src/adc.c ****   /* USER CODE END ADC1_Init 1 */
+  42:Core/Src/adc.c ****   /** Common config
+  43:Core/Src/adc.c ****   */
+  44:Core/Src/adc.c ****   hadc1.Instance = ADC1;
+  44              		.loc 1 44 3 is_stmt 1 view .LVU3
+  45              		.loc 1 44 18 is_stmt 0 view .LVU4
+  46 000c 1148     		ldr	r0, .L7
+  47 000e 124A     		ldr	r2, .L7+4
+  48 0010 0260     		str	r2, [r0]
+  45:Core/Src/adc.c ****   hadc1.Init.ScanConvMode = ADC_SCAN_DISABLE;
+  49              		.loc 1 45 3 is_stmt 1 view .LVU5
+  50              		.loc 1 45 27 is_stmt 0 view .LVU6
+  51 0012 8360     		str	r3, [r0, #8]
+  46:Core/Src/adc.c ****   hadc1.Init.ContinuousConvMode = DISABLE;
+  52              		.loc 1 46 3 is_stmt 1 view .LVU7
+  53              		.loc 1 46 33 is_stmt 0 view .LVU8
+  54 0014 0373     		strb	r3, [r0, #12]
+  47:Core/Src/adc.c ****   hadc1.Init.DiscontinuousConvMode = DISABLE;
+  55              		.loc 1 47 3 is_stmt 1 view .LVU9
+  56              		.loc 1 47 36 is_stmt 0 view .LVU10
+  57 0016 0375     		strb	r3, [r0, #20]
+  48:Core/Src/adc.c ****   hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+  58              		.loc 1 48 3 is_stmt 1 view .LVU11
+  59              		.loc 1 48 31 is_stmt 0 view .LVU12
+  60 0018 4FF46022 		mov	r2, #917504
+  61 001c C261     		str	r2, [r0, #28]
+  49:Core/Src/adc.c ****   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
+  62              		.loc 1 49 3 is_stmt 1 view .LVU13
+  63              		.loc 1 49 24 is_stmt 0 view .LVU14
+  64 001e 4360     		str	r3, [r0, #4]
+  50:Core/Src/adc.c ****   hadc1.Init.NbrOfConversion = 1;
+  65              		.loc 1 50 3 is_stmt 1 view .LVU15
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccp3QImG.s 			page 3
+
+
+  66              		.loc 1 50 30 is_stmt 0 view .LVU16
+  67 0020 0123     		movs	r3, #1
+  68 0022 0361     		str	r3, [r0, #16]
+  51:Core/Src/adc.c ****   if (HAL_ADC_Init(&hadc1) != HAL_OK)
+  69              		.loc 1 51 3 is_stmt 1 view .LVU17
+  70              		.loc 1 51 7 is_stmt 0 view .LVU18
+  71 0024 FFF7FEFF 		bl	HAL_ADC_Init
+  72              	.LVL0:
+  73              		.loc 1 51 6 view .LVU19
+  74 0028 68B9     		cbnz	r0, .L5
+  75              	.L2:
+  52:Core/Src/adc.c ****   {
+  53:Core/Src/adc.c ****     Error_Handler();
+  54:Core/Src/adc.c ****   }
+  55:Core/Src/adc.c ****   /** Configure Regular Channel
+  56:Core/Src/adc.c ****   */
+  57:Core/Src/adc.c ****   sConfig.Channel = ADC_CHANNEL_0;
+  76              		.loc 1 57 3 is_stmt 1 view .LVU20
+  77              		.loc 1 57 19 is_stmt 0 view .LVU21
+  78 002a 0023     		movs	r3, #0
+  79 002c 0193     		str	r3, [sp, #4]
+  58:Core/Src/adc.c ****   sConfig.Rank = ADC_REGULAR_RANK_1;
+  80              		.loc 1 58 3 is_stmt 1 view .LVU22
+  81              		.loc 1 58 16 is_stmt 0 view .LVU23
+  82 002e 0123     		movs	r3, #1
+  83 0030 0293     		str	r3, [sp, #8]
+  59:Core/Src/adc.c ****   sConfig.SamplingTime = ADC_SAMPLETIME_239CYCLES_5;
+  84              		.loc 1 59 3 is_stmt 1 view .LVU24
+  85              		.loc 1 59 24 is_stmt 0 view .LVU25
+  86 0032 0723     		movs	r3, #7
+  87 0034 0393     		str	r3, [sp, #12]
+  60:Core/Src/adc.c ****   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  88              		.loc 1 60 3 is_stmt 1 view .LVU26
+  89              		.loc 1 60 7 is_stmt 0 view .LVU27
+  90 0036 01A9     		add	r1, sp, #4
+  91 0038 0648     		ldr	r0, .L7
+  92 003a FFF7FEFF 		bl	HAL_ADC_ConfigChannel
+  93              	.LVL1:
+  94              		.loc 1 60 6 view .LVU28
+  95 003e 28B9     		cbnz	r0, .L6
+  96              	.L1:
+  61:Core/Src/adc.c ****   {
+  62:Core/Src/adc.c ****     Error_Handler();
+  63:Core/Src/adc.c ****   }
+  64:Core/Src/adc.c ****   /* USER CODE BEGIN ADC1_Init 2 */
+  65:Core/Src/adc.c **** 
+  66:Core/Src/adc.c ****   /* USER CODE END ADC1_Init 2 */
+  67:Core/Src/adc.c **** 
+  68:Core/Src/adc.c **** }
+  97              		.loc 1 68 1 view .LVU29
+  98 0040 05B0     		add	sp, sp, #20
+  99              	.LCFI2:
+ 100              		.cfi_remember_state
+ 101              		.cfi_def_cfa_offset 4
+ 102              		@ sp needed
+ 103 0042 5DF804FB 		ldr	pc, [sp], #4
+ 104              	.L5:
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccp3QImG.s 			page 4
+
+
+ 105              	.LCFI3:
+ 106              		.cfi_restore_state
+  53:Core/Src/adc.c ****   }
+ 107              		.loc 1 53 5 is_stmt 1 view .LVU30
+ 108 0046 FFF7FEFF 		bl	Error_Handler
+ 109              	.LVL2:
+ 110 004a EEE7     		b	.L2
+ 111              	.L6:
+  62:Core/Src/adc.c ****   }
+ 112              		.loc 1 62 5 view .LVU31
+ 113 004c FFF7FEFF 		bl	Error_Handler
+ 114              	.LVL3:
+ 115              		.loc 1 68 1 is_stmt 0 view .LVU32
+ 116 0050 F6E7     		b	.L1
+ 117              	.L8:
+ 118 0052 00BF     		.align	2
+ 119              	.L7:
+ 120 0054 00000000 		.word	.LANCHOR0
+ 121 0058 00240140 		.word	1073816576
+ 122              		.cfi_endproc
+ 123              	.LFE65:
+ 125              		.section	.text.HAL_ADC_MspInit,"ax",%progbits
+ 126              		.align	1
+ 127              		.global	HAL_ADC_MspInit
+ 128              		.syntax unified
+ 129              		.thumb
+ 130              		.thumb_func
+ 131              		.fpu softvfp
+ 133              	HAL_ADC_MspInit:
+ 134              	.LVL4:
+ 135              	.LFB66:
+  69:Core/Src/adc.c **** 
+  70:Core/Src/adc.c **** void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
+  71:Core/Src/adc.c **** {
+ 136              		.loc 1 71 1 is_stmt 1 view -0
+ 137              		.cfi_startproc
+ 138              		@ args = 0, pretend = 0, frame = 24
+ 139              		@ frame_needed = 0, uses_anonymous_args = 0
+ 140              		.loc 1 71 1 is_stmt 0 view .LVU34
+ 141 0000 00B5     		push	{lr}
+ 142              	.LCFI4:
+ 143              		.cfi_def_cfa_offset 4
+ 144              		.cfi_offset 14, -4
+ 145 0002 87B0     		sub	sp, sp, #28
+ 146              	.LCFI5:
+ 147              		.cfi_def_cfa_offset 32
+  72:Core/Src/adc.c **** 
+  73:Core/Src/adc.c ****   GPIO_InitTypeDef GPIO_InitStruct = {0};
+ 148              		.loc 1 73 3 is_stmt 1 view .LVU35
+ 149              		.loc 1 73 20 is_stmt 0 view .LVU36
+ 150 0004 0023     		movs	r3, #0
+ 151 0006 0293     		str	r3, [sp, #8]
+ 152 0008 0393     		str	r3, [sp, #12]
+ 153 000a 0493     		str	r3, [sp, #16]
+ 154 000c 0593     		str	r3, [sp, #20]
+  74:Core/Src/adc.c ****   if(adcHandle->Instance==ADC1)
+ 155              		.loc 1 74 3 is_stmt 1 view .LVU37
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccp3QImG.s 			page 5
+
+
+ 156              		.loc 1 74 15 is_stmt 0 view .LVU38
+ 157 000e 0268     		ldr	r2, [r0]
+ 158              		.loc 1 74 5 view .LVU39
+ 159 0010 114B     		ldr	r3, .L13
+ 160 0012 9A42     		cmp	r2, r3
+ 161 0014 02D0     		beq	.L12
+ 162              	.LVL5:
+ 163              	.L9:
+  75:Core/Src/adc.c ****   {
+  76:Core/Src/adc.c ****   /* USER CODE BEGIN ADC1_MspInit 0 */
+  77:Core/Src/adc.c **** 
+  78:Core/Src/adc.c ****   /* USER CODE END ADC1_MspInit 0 */
+  79:Core/Src/adc.c ****     /* ADC1 clock enable */
+  80:Core/Src/adc.c ****     __HAL_RCC_ADC1_CLK_ENABLE();
+  81:Core/Src/adc.c **** 
+  82:Core/Src/adc.c ****     __HAL_RCC_GPIOA_CLK_ENABLE();
+  83:Core/Src/adc.c ****     /**ADC1 GPIO Configuration
+  84:Core/Src/adc.c ****     PA0-WKUP     ------> ADC1_IN0
+  85:Core/Src/adc.c ****     PA1     ------> ADC1_IN1
+  86:Core/Src/adc.c ****     PA3     ------> ADC1_IN3
+  87:Core/Src/adc.c ****     */
+  88:Core/Src/adc.c ****     GPIO_InitStruct.Pin = ADC_SOIL_Pin|ADC_V_IN_Pin|ADC_V_OUT_Pin;
+  89:Core/Src/adc.c ****     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+  90:Core/Src/adc.c ****     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  91:Core/Src/adc.c **** 
+  92:Core/Src/adc.c ****   /* USER CODE BEGIN ADC1_MspInit 1 */
+  93:Core/Src/adc.c **** 
+  94:Core/Src/adc.c ****   /* USER CODE END ADC1_MspInit 1 */
+  95:Core/Src/adc.c ****   }
+  96:Core/Src/adc.c **** }
+ 164              		.loc 1 96 1 view .LVU40
+ 165 0016 07B0     		add	sp, sp, #28
+ 166              	.LCFI6:
+ 167              		.cfi_remember_state
+ 168              		.cfi_def_cfa_offset 4
+ 169              		@ sp needed
+ 170 0018 5DF804FB 		ldr	pc, [sp], #4
+ 171              	.LVL6:
+ 172              	.L12:
+ 173              	.LCFI7:
+ 174              		.cfi_restore_state
+  80:Core/Src/adc.c **** 
+ 175              		.loc 1 80 5 is_stmt 1 view .LVU41
+ 176              	.LBB2:
+  80:Core/Src/adc.c **** 
+ 177              		.loc 1 80 5 view .LVU42
+  80:Core/Src/adc.c **** 
+ 178              		.loc 1 80 5 view .LVU43
+ 179 001c 03F56C43 		add	r3, r3, #60416
+ 180 0020 9A69     		ldr	r2, [r3, #24]
+ 181 0022 42F40072 		orr	r2, r2, #512
+ 182 0026 9A61     		str	r2, [r3, #24]
+  80:Core/Src/adc.c **** 
+ 183              		.loc 1 80 5 view .LVU44
+ 184 0028 9A69     		ldr	r2, [r3, #24]
+ 185 002a 02F40072 		and	r2, r2, #512
+ 186 002e 0092     		str	r2, [sp]
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccp3QImG.s 			page 6
+
+
+  80:Core/Src/adc.c **** 
+ 187              		.loc 1 80 5 view .LVU45
+ 188 0030 009A     		ldr	r2, [sp]
+ 189              	.LBE2:
+  80:Core/Src/adc.c **** 
+ 190              		.loc 1 80 5 view .LVU46
+  82:Core/Src/adc.c ****     /**ADC1 GPIO Configuration
+ 191              		.loc 1 82 5 view .LVU47
+ 192              	.LBB3:
+  82:Core/Src/adc.c ****     /**ADC1 GPIO Configuration
+ 193              		.loc 1 82 5 view .LVU48
+  82:Core/Src/adc.c ****     /**ADC1 GPIO Configuration
+ 194              		.loc 1 82 5 view .LVU49
+ 195 0032 9A69     		ldr	r2, [r3, #24]
+ 196 0034 42F00402 		orr	r2, r2, #4
+ 197 0038 9A61     		str	r2, [r3, #24]
+  82:Core/Src/adc.c ****     /**ADC1 GPIO Configuration
+ 198              		.loc 1 82 5 view .LVU50
+ 199 003a 9B69     		ldr	r3, [r3, #24]
+ 200 003c 03F00403 		and	r3, r3, #4
+ 201 0040 0193     		str	r3, [sp, #4]
+  82:Core/Src/adc.c ****     /**ADC1 GPIO Configuration
+ 202              		.loc 1 82 5 view .LVU51
+ 203 0042 019B     		ldr	r3, [sp, #4]
+ 204              	.LBE3:
+  82:Core/Src/adc.c ****     /**ADC1 GPIO Configuration
+ 205              		.loc 1 82 5 view .LVU52
+  88:Core/Src/adc.c ****     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+ 206              		.loc 1 88 5 view .LVU53
+  88:Core/Src/adc.c ****     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+ 207              		.loc 1 88 25 is_stmt 0 view .LVU54
+ 208 0044 0B23     		movs	r3, #11
+ 209 0046 0293     		str	r3, [sp, #8]
+  89:Core/Src/adc.c ****     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+ 210              		.loc 1 89 5 is_stmt 1 view .LVU55
+  89:Core/Src/adc.c ****     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+ 211              		.loc 1 89 26 is_stmt 0 view .LVU56
+ 212 0048 0323     		movs	r3, #3
+ 213 004a 0393     		str	r3, [sp, #12]
+  90:Core/Src/adc.c **** 
+ 214              		.loc 1 90 5 is_stmt 1 view .LVU57
+ 215 004c 02A9     		add	r1, sp, #8
+ 216 004e 0348     		ldr	r0, .L13+4
+ 217              	.LVL7:
+  90:Core/Src/adc.c **** 
+ 218              		.loc 1 90 5 is_stmt 0 view .LVU58
+ 219 0050 FFF7FEFF 		bl	HAL_GPIO_Init
+ 220              	.LVL8:
+ 221              		.loc 1 96 1 view .LVU59
+ 222 0054 DFE7     		b	.L9
+ 223              	.L14:
+ 224 0056 00BF     		.align	2
+ 225              	.L13:
+ 226 0058 00240140 		.word	1073816576
+ 227 005c 00080140 		.word	1073809408
+ 228              		.cfi_endproc
+ 229              	.LFE66:
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccp3QImG.s 			page 7
+
+
+ 231              		.section	.text.HAL_ADC_MspDeInit,"ax",%progbits
+ 232              		.align	1
+ 233              		.global	HAL_ADC_MspDeInit
+ 234              		.syntax unified
+ 235              		.thumb
+ 236              		.thumb_func
+ 237              		.fpu softvfp
+ 239              	HAL_ADC_MspDeInit:
+ 240              	.LVL9:
+ 241              	.LFB67:
+  97:Core/Src/adc.c **** 
+  98:Core/Src/adc.c **** void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
+  99:Core/Src/adc.c **** {
+ 242              		.loc 1 99 1 is_stmt 1 view -0
+ 243              		.cfi_startproc
+ 244              		@ args = 0, pretend = 0, frame = 0
+ 245              		@ frame_needed = 0, uses_anonymous_args = 0
+ 246              		.loc 1 99 1 is_stmt 0 view .LVU61
+ 247 0000 08B5     		push	{r3, lr}
+ 248              	.LCFI8:
+ 249              		.cfi_def_cfa_offset 8
+ 250              		.cfi_offset 3, -8
+ 251              		.cfi_offset 14, -4
+ 100:Core/Src/adc.c **** 
+ 101:Core/Src/adc.c ****   if(adcHandle->Instance==ADC1)
+ 252              		.loc 1 101 3 is_stmt 1 view .LVU62
+ 253              		.loc 1 101 15 is_stmt 0 view .LVU63
+ 254 0002 0268     		ldr	r2, [r0]
+ 255              		.loc 1 101 5 view .LVU64
+ 256 0004 064B     		ldr	r3, .L19
+ 257 0006 9A42     		cmp	r2, r3
+ 258 0008 00D0     		beq	.L18
+ 259              	.LVL10:
+ 260              	.L15:
+ 102:Core/Src/adc.c ****   {
+ 103:Core/Src/adc.c ****   /* USER CODE BEGIN ADC1_MspDeInit 0 */
+ 104:Core/Src/adc.c **** 
+ 105:Core/Src/adc.c ****   /* USER CODE END ADC1_MspDeInit 0 */
+ 106:Core/Src/adc.c ****     /* Peripheral clock disable */
+ 107:Core/Src/adc.c ****     __HAL_RCC_ADC1_CLK_DISABLE();
+ 108:Core/Src/adc.c **** 
+ 109:Core/Src/adc.c ****     /**ADC1 GPIO Configuration
+ 110:Core/Src/adc.c ****     PA0-WKUP     ------> ADC1_IN0
+ 111:Core/Src/adc.c ****     PA1     ------> ADC1_IN1
+ 112:Core/Src/adc.c ****     PA3     ------> ADC1_IN3
+ 113:Core/Src/adc.c ****     */
+ 114:Core/Src/adc.c ****     HAL_GPIO_DeInit(GPIOA, ADC_SOIL_Pin|ADC_V_IN_Pin|ADC_V_OUT_Pin);
+ 115:Core/Src/adc.c **** 
+ 116:Core/Src/adc.c ****   /* USER CODE BEGIN ADC1_MspDeInit 1 */
+ 117:Core/Src/adc.c **** 
+ 118:Core/Src/adc.c ****   /* USER CODE END ADC1_MspDeInit 1 */
+ 119:Core/Src/adc.c ****   }
+ 120:Core/Src/adc.c **** }
+ 261              		.loc 1 120 1 view .LVU65
+ 262 000a 08BD     		pop	{r3, pc}
+ 263              	.LVL11:
+ 264              	.L18:
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccp3QImG.s 			page 8
+
+
+ 107:Core/Src/adc.c **** 
+ 265              		.loc 1 107 5 is_stmt 1 view .LVU66
+ 266 000c 054A     		ldr	r2, .L19+4
+ 267 000e 9369     		ldr	r3, [r2, #24]
+ 268 0010 23F40073 		bic	r3, r3, #512
+ 269 0014 9361     		str	r3, [r2, #24]
+ 114:Core/Src/adc.c **** 
+ 270              		.loc 1 114 5 view .LVU67
+ 271 0016 0B21     		movs	r1, #11
+ 272 0018 0348     		ldr	r0, .L19+8
+ 273              	.LVL12:
+ 114:Core/Src/adc.c **** 
+ 274              		.loc 1 114 5 is_stmt 0 view .LVU68
+ 275 001a FFF7FEFF 		bl	HAL_GPIO_DeInit
+ 276              	.LVL13:
+ 277              		.loc 1 120 1 view .LVU69
+ 278 001e F4E7     		b	.L15
+ 279              	.L20:
+ 280              		.align	2
+ 281              	.L19:
+ 282 0020 00240140 		.word	1073816576
+ 283 0024 00100240 		.word	1073876992
+ 284 0028 00080140 		.word	1073809408
+ 285              		.cfi_endproc
+ 286              	.LFE67:
+ 288              		.global	hadc1
+ 289              		.section	.bss.hadc1,"aw",%nobits
+ 290              		.align	2
+ 291              		.set	.LANCHOR0,. + 0
+ 294              	hadc1:
+ 295 0000 00000000 		.space	48
+ 295      00000000 
+ 295      00000000 
+ 295      00000000 
+ 295      00000000 
+ 296              		.text
+ 297              	.Letext0:
+ 298              		.file 2 "d:\\tools\\gcc-arm-none-eabi-10.3-2021.07\\arm-none-eabi\\include\\machine\\_default_type
+ 299              		.file 3 "d:\\tools\\gcc-arm-none-eabi-10.3-2021.07\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 300              		.file 4 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h"
+ 301              		.file 5 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h"
+ 302              		.file 6 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 303              		.file 7 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h"
+ 304              		.file 8 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h"
+ 305              		.file 9 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc.h"
+ 306              		.file 10 "Core/Inc/main.h"
+ 307              		.file 11 "Core/Inc/adc.h"
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccp3QImG.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 adc.c
+C:\Users\Vento\AppData\Local\Temp\ccp3QImG.s:16     .text.MX_ADC1_Init:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccp3QImG.s:24     .text.MX_ADC1_Init:00000000 MX_ADC1_Init
+C:\Users\Vento\AppData\Local\Temp\ccp3QImG.s:120    .text.MX_ADC1_Init:00000054 $d
+C:\Users\Vento\AppData\Local\Temp\ccp3QImG.s:126    .text.HAL_ADC_MspInit:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccp3QImG.s:133    .text.HAL_ADC_MspInit:00000000 HAL_ADC_MspInit
+C:\Users\Vento\AppData\Local\Temp\ccp3QImG.s:226    .text.HAL_ADC_MspInit:00000058 $d
+C:\Users\Vento\AppData\Local\Temp\ccp3QImG.s:232    .text.HAL_ADC_MspDeInit:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccp3QImG.s:239    .text.HAL_ADC_MspDeInit:00000000 HAL_ADC_MspDeInit
+C:\Users\Vento\AppData\Local\Temp\ccp3QImG.s:282    .text.HAL_ADC_MspDeInit:00000020 $d
+C:\Users\Vento\AppData\Local\Temp\ccp3QImG.s:294    .bss.hadc1:00000000 hadc1
+C:\Users\Vento\AppData\Local\Temp\ccp3QImG.s:290    .bss.hadc1:00000000 $d
+
+UNDEFINED SYMBOLS
+HAL_ADC_Init
+HAL_ADC_ConfigChannel
+Error_Handler
+HAL_GPIO_Init
+HAL_GPIO_DeInit

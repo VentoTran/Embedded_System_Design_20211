@@ -1,0 +1,1012 @@
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"cmsis_os1.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.osThreadCreate,"ax",%progbits
+  16              		.align	1
+  17              		.global	osThreadCreate
+  18              		.arch armv7-m
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	osThreadCreate:
+  25              	.LVL0:
+  26              	.LFB4:
+  27              		.file 1 "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c"
+   1:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** /*---------------------------------------------------------------------------
+   2:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****  * Portions Copyright (c) 2013-2017 ARM Limited. All rights reserved.
+   3:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****  * Portions Copyright © 2017 STMicroelectronics International N.V. All rights reserved.
+   4:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****  *
+   5:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****  * SPDX-License-Identifier: Apache-2.0
+   6:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****  *
+   7:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+   8:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****  * not use this file except in compliance with the License.
+   9:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****  * You may obtain a copy of the License at
+  10:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****  *
+  11:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****  * www.apache.org/licenses/LICENSE-2.0
+  12:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****  *
+  13:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****  * Unless required by applicable law or agreed to in writing, software
+  14:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  15:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  16:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****  * See the License for the specific language governing permissions and
+  17:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****  * limitations under the License.
+  18:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****  *
+  19:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****  * Project:      CMSIS-RTOS API V1
+  20:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****  * Title:        cmsis_os1.c V1 module file
+  21:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****  *
+  22:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****  *----------------------------------------------------------------------------*/
+  23:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+  24:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** #include <string.h>
+  25:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** #include "cmsis_os.h"
+  26:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+  27:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** #if (osCMSIS >= 0x20000U) && !defined(os1_Disable)
+  28:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+  29:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+  30:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** // Thread
+  31:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** #if !defined(os1_Disable_Thread)
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s 			page 2
+
+
+  32:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** osThreadId osThreadCreate (const osThreadDef_t *thread_def, void *argument) {
+  28              		.loc 1 32 77 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  33:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+  34:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   if (thread_def == NULL) {
+  32              		.loc 1 34 3 view .LVU1
+  33              		.loc 1 34 6 is_stmt 0 view .LVU2
+  34 0000 0246     		mov	r2, r0
+  35 0002 28B1     		cbz	r0, .L3
+  32:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+  36              		.loc 1 32 77 view .LVU3
+  37 0004 08B5     		push	{r3, lr}
+  38              	.LCFI0:
+  39              		.cfi_def_cfa_offset 8
+  40              		.cfi_offset 3, -8
+  41              		.cfi_offset 14, -4
+  35:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     return NULL;
+  36:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   }
+  37:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   return osThreadNew((osThreadFunc_t)thread_def->pthread, argument, &thread_def->attr);
+  42              		.loc 1 37 3 is_stmt 1 view .LVU4
+  43              		.loc 1 37 48 is_stmt 0 view .LVU5
+  44 0006 52F8040B 		ldr	r0, [r2], #4
+  45              	.LVL1:
+  46              		.loc 1 37 10 view .LVU6
+  47 000a FFF7FEFF 		bl	osThreadNew
+  48              	.LVL2:
+  38:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** }
+  49              		.loc 1 38 1 view .LVU7
+  50 000e 08BD     		pop	{r3, pc}
+  51              	.LVL3:
+  52              	.L3:
+  53              	.LCFI1:
+  54              		.cfi_def_cfa_offset 0
+  55              		.cfi_restore 3
+  56              		.cfi_restore 14
+  57              		.loc 1 38 1 view .LVU8
+  58 0010 7047     		bx	lr
+  59              		.cfi_endproc
+  60              	.LFE4:
+  62              		.section	.text.osSignalSet,"ax",%progbits
+  63              		.align	1
+  64              		.global	osSignalSet
+  65              		.syntax unified
+  66              		.thumb
+  67              		.thumb_func
+  68              		.fpu softvfp
+  70              	osSignalSet:
+  71              	.LVL4:
+  72              	.LFB5:
+  39:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** #endif
+  40:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+  41:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+  42:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** // Signals
+  43:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+  44:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** #if !defined(os1_Disable_Signal)
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s 			page 3
+
+
+  45:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+  46:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** #define SignalMask ((1U<<osFeature_Signals)-1U)
+  47:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+  48:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** int32_t osSignalSet (osThreadId thread_id, int32_t signals) {
+  73              		.loc 1 48 61 is_stmt 1 view -0
+  74              		.cfi_startproc
+  75              		@ args = 0, pretend = 0, frame = 0
+  76              		@ frame_needed = 0, uses_anonymous_args = 0
+  77              		.loc 1 48 61 is_stmt 0 view .LVU10
+  78 0000 10B5     		push	{r4, lr}
+  79              	.LCFI2:
+  80              		.cfi_def_cfa_offset 8
+  81              		.cfi_offset 4, -8
+  82              		.cfi_offset 14, -4
+  83 0002 0C46     		mov	r4, r1
+  49:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   uint32_t flags;
+  84              		.loc 1 49 3 is_stmt 1 view .LVU11
+  50:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+  51:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   flags = osThreadFlagsSet(thread_id, (uint32_t)signals);
+  85              		.loc 1 51 3 view .LVU12
+  86              		.loc 1 51 11 is_stmt 0 view .LVU13
+  87 0004 FFF7FEFF 		bl	osThreadFlagsSet
+  88              	.LVL5:
+  52:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   if ((flags & 0x80000000U) != 0U) {
+  89              		.loc 1 52 3 is_stmt 1 view .LVU14
+  90              		.loc 1 52 6 is_stmt 0 view .LVU15
+  91 0008 0028     		cmp	r0, #0
+  92              		.loc 1 52 6 view .LVU16
+  93 000a 02DB     		blt	.L10
+  53:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     return ((int32_t)0x80000000U);
+  54:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   }
+  55:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   return ((int32_t)(flags & ~((uint32_t)signals)));
+  94              		.loc 1 55 3 is_stmt 1 view .LVU17
+  95              		.loc 1 55 27 is_stmt 0 view .LVU18
+  96 000c 20EA0400 		bic	r0, r0, r4
+  97              	.LVL6:
+  98              	.L8:
+  56:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** }
+  99              		.loc 1 56 1 view .LVU19
+ 100 0010 10BD     		pop	{r4, pc}
+ 101              	.LVL7:
+ 102              	.L10:
+  53:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     return ((int32_t)0x80000000U);
+ 103              		.loc 1 53 12 view .LVU20
+ 104 0012 4FF00040 		mov	r0, #-2147483648
+ 105              	.LVL8:
+  53:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     return ((int32_t)0x80000000U);
+ 106              		.loc 1 53 12 view .LVU21
+ 107 0016 FBE7     		b	.L8
+ 108              		.cfi_endproc
+ 109              	.LFE5:
+ 111              		.section	.text.osSignalClear,"ax",%progbits
+ 112              		.align	1
+ 113              		.global	osSignalClear
+ 114              		.syntax unified
+ 115              		.thumb
+ 116              		.thumb_func
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s 			page 4
+
+
+ 117              		.fpu softvfp
+ 119              	osSignalClear:
+ 120              	.LVL9:
+ 121              	.LFB6:
+  57:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+  58:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** int32_t osSignalClear (osThreadId thread_id, int32_t signals) {
+ 122              		.loc 1 58 63 is_stmt 1 view -0
+ 123              		.cfi_startproc
+ 124              		@ args = 0, pretend = 0, frame = 0
+ 125              		@ frame_needed = 0, uses_anonymous_args = 0
+ 126              		.loc 1 58 63 is_stmt 0 view .LVU23
+ 127 0000 38B5     		push	{r3, r4, r5, lr}
+ 128              	.LCFI3:
+ 129              		.cfi_def_cfa_offset 16
+ 130              		.cfi_offset 3, -16
+ 131              		.cfi_offset 4, -12
+ 132              		.cfi_offset 5, -8
+ 133              		.cfi_offset 14, -4
+ 134 0002 0446     		mov	r4, r0
+ 135 0004 0D46     		mov	r5, r1
+  59:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   uint32_t flags;
+ 136              		.loc 1 59 3 is_stmt 1 view .LVU24
+  60:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+  61:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   if (thread_id != osThreadGetId()) {
+ 137              		.loc 1 61 3 view .LVU25
+ 138              		.loc 1 61 20 is_stmt 0 view .LVU26
+ 139 0006 FFF7FEFF 		bl	osThreadGetId
+ 140              	.LVL10:
+ 141              		.loc 1 61 6 view .LVU27
+ 142 000a 8442     		cmp	r4, r0
+ 143 000c 05D1     		bne	.L14
+  62:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     return ((int32_t)0x80000000U);
+  63:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   }
+  64:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   flags = osThreadFlagsClear((uint32_t)signals);
+ 144              		.loc 1 64 3 is_stmt 1 view .LVU28
+ 145              		.loc 1 64 11 is_stmt 0 view .LVU29
+ 146 000e 2846     		mov	r0, r5
+ 147 0010 FFF7FEFF 		bl	osThreadFlagsClear
+ 148              	.LVL11:
+  65:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   if ((flags & 0x80000000U) != 0U) {
+ 149              		.loc 1 65 3 is_stmt 1 view .LVU30
+ 150              		.loc 1 65 6 is_stmt 0 view .LVU31
+ 151 0014 0028     		cmp	r0, #0
+ 152 0016 03DB     		blt	.L17
+ 153              	.L12:
+  66:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     return ((int32_t)0x80000000U);
+  67:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   }
+  68:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   return ((int32_t)flags);
+  69:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** }
+ 154              		.loc 1 69 1 view .LVU32
+ 155 0018 38BD     		pop	{r3, r4, r5, pc}
+ 156              	.LVL12:
+ 157              	.L14:
+  62:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   }
+ 158              		.loc 1 62 12 view .LVU33
+ 159 001a 4FF00040 		mov	r0, #-2147483648
+ 160 001e FBE7     		b	.L12
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s 			page 5
+
+
+ 161              	.L17:
+  66:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     return ((int32_t)0x80000000U);
+ 162              		.loc 1 66 12 view .LVU34
+ 163 0020 4FF00040 		mov	r0, #-2147483648
+ 164 0024 F8E7     		b	.L12
+ 165              		.cfi_endproc
+ 166              	.LFE6:
+ 168              		.section	.text.osSignalWait,"ax",%progbits
+ 169              		.align	1
+ 170              		.global	osSignalWait
+ 171              		.syntax unified
+ 172              		.thumb
+ 173              		.thumb_func
+ 174              		.fpu softvfp
+ 176              	osSignalWait:
+ 177              	.LVL13:
+ 178              	.LFB7:
+  70:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+  71:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** os_InRegs osEvent osSignalWait (int32_t signals, uint32_t millisec) {
+ 179              		.loc 1 71 69 is_stmt 1 view -0
+ 180              		.cfi_startproc
+ 181              		@ args = 0, pretend = 0, frame = 0
+ 182              		@ frame_needed = 0, uses_anonymous_args = 0
+ 183              		.loc 1 71 69 is_stmt 0 view .LVU36
+ 184 0000 10B5     		push	{r4, lr}
+ 185              	.LCFI4:
+ 186              		.cfi_def_cfa_offset 8
+ 187              		.cfi_offset 4, -8
+ 188              		.cfi_offset 14, -4
+ 189 0002 0446     		mov	r4, r0
+  72:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   osEvent  event;
+ 190              		.loc 1 72 3 is_stmt 1 view .LVU37
+  73:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   uint32_t flags;
+ 191              		.loc 1 73 3 view .LVU38
+  74:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+  75:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   if (signals != 0) {
+ 192              		.loc 1 75 3 view .LVU39
+ 193              		.loc 1 75 6 is_stmt 0 view .LVU40
+ 194 0004 51B1     		cbz	r1, .L19
+ 195 0006 0846     		mov	r0, r1
+ 196              	.LVL14:
+  76:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     flags = osThreadFlagsWait((uint32_t)signals, osFlagsWaitAll, millisec);
+ 197              		.loc 1 76 5 is_stmt 1 view .LVU41
+ 198              		.loc 1 76 13 is_stmt 0 view .LVU42
+ 199 0008 0121     		movs	r1, #1
+ 200              	.LVL15:
+ 201              		.loc 1 76 13 view .LVU43
+ 202 000a FFF7FEFF 		bl	osThreadFlagsWait
+ 203              	.LVL16:
+ 204              	.L20:
+  77:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   } else {
+  78:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     flags = osThreadFlagsWait(SignalMask,        osFlagsWaitAny, millisec);
+  79:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   }
+  80:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   if ((flags > 0U) && (flags < 0x80000000U)) {
+ 205              		.loc 1 80 3 is_stmt 1 view .LVU44
+ 206              		.loc 1 80 6 is_stmt 0 view .LVU45
+ 207 000e 0028     		cmp	r0, #0
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s 			page 6
+
+
+ 208 0010 0ADD     		ble	.L21
+  81:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     event.status = osEventSignal;
+ 209              		.loc 1 81 5 is_stmt 1 view .LVU46
+ 210              		.loc 1 81 18 is_stmt 0 view .LVU47
+ 211 0012 0823     		movs	r3, #8
+ 212 0014 2360     		str	r3, [r4]
+  82:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     event.value.signals = (int32_t)flags;
+ 213              		.loc 1 82 5 is_stmt 1 view .LVU48
+ 214              		.loc 1 82 25 is_stmt 0 view .LVU49
+ 215 0016 6060     		str	r0, [r4, #4]
+ 216              	.L18:
+  83:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   } else {
+  84:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     switch ((int32_t)flags) {
+  85:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       case osErrorResource:
+  86:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****         event.status = osOK;
+  87:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****         break;
+  88:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       case osErrorTimeout:
+  89:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****         event.status = osEventTimeout;
+  90:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****         break;
+  91:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       case osErrorParameter:
+  92:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****         event.status = osErrorValue;
+  93:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****         break;
+  94:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       default:
+  95:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****         event.status = (osStatus)flags;
+  96:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****         break;
+  97:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     }
+  98:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   }
+  99:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   return event;
+ 100:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** }
+ 217              		.loc 1 100 1 view .LVU50
+ 218 0018 2046     		mov	r0, r4
+ 219              	.LVL17:
+ 220              		.loc 1 100 1 view .LVU51
+ 221 001a 10BD     		pop	{r4, pc}
+ 222              	.LVL18:
+ 223              	.L19:
+  78:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   }
+ 224              		.loc 1 78 5 is_stmt 1 view .LVU52
+  78:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   }
+ 225              		.loc 1 78 13 is_stmt 0 view .LVU53
+ 226 001c 0021     		movs	r1, #0
+ 227              	.LVL19:
+  78:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   }
+ 228              		.loc 1 78 13 view .LVU54
+ 229 001e 6FF07F40 		mvn	r0, #-16777216
+ 230              	.LVL20:
+  78:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   }
+ 231              		.loc 1 78 13 view .LVU55
+ 232 0022 FFF7FEFF 		bl	osThreadFlagsWait
+ 233              	.LVL21:
+  78:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   }
+ 234              		.loc 1 78 13 view .LVU56
+ 235 0026 F2E7     		b	.L20
+ 236              	.L21:
+  84:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       case osErrorResource:
+ 237              		.loc 1 84 5 is_stmt 1 view .LVU57
+ 238 0028 10F1030F 		cmn	r0, #3
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s 			page 7
+
+
+ 239 002c 07D0     		beq	.L23
+ 240 002e 10F1020F 		cmn	r0, #2
+ 241 0032 07D0     		beq	.L24
+ 242 0034 10F1040F 		cmn	r0, #4
+ 243 0038 07D0     		beq	.L29
+  95:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****         break;
+ 244              		.loc 1 95 9 view .LVU58
+  95:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****         break;
+ 245              		.loc 1 95 22 is_stmt 0 view .LVU59
+ 246 003a 2060     		str	r0, [r4]
+  96:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     }
+ 247              		.loc 1 96 9 is_stmt 1 view .LVU60
+  99:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** }
+ 248              		.loc 1 99 3 view .LVU61
+  99:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** }
+ 249              		.loc 1 99 10 is_stmt 0 view .LVU62
+ 250 003c ECE7     		b	.L18
+ 251              	.L23:
+  86:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****         break;
+ 252              		.loc 1 86 9 is_stmt 1 view .LVU63
+  86:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****         break;
+ 253              		.loc 1 86 22 is_stmt 0 view .LVU64
+ 254 003e 0023     		movs	r3, #0
+ 255 0040 2360     		str	r3, [r4]
+  87:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       case osErrorTimeout:
+ 256              		.loc 1 87 9 is_stmt 1 view .LVU65
+ 257 0042 E9E7     		b	.L18
+ 258              	.L24:
+  89:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****         break;
+ 259              		.loc 1 89 9 view .LVU66
+  89:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****         break;
+ 260              		.loc 1 89 22 is_stmt 0 view .LVU67
+ 261 0044 4023     		movs	r3, #64
+ 262 0046 2360     		str	r3, [r4]
+  90:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       case osErrorParameter:
+ 263              		.loc 1 90 9 is_stmt 1 view .LVU68
+ 264 0048 E6E7     		b	.L18
+ 265              	.L29:
+  92:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****         break;
+ 266              		.loc 1 92 9 view .LVU69
+  92:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****         break;
+ 267              		.loc 1 92 22 is_stmt 0 view .LVU70
+ 268 004a 6FF07E03 		mvn	r3, #126
+ 269 004e 2360     		str	r3, [r4]
+  93:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       default:
+ 270              		.loc 1 93 9 is_stmt 1 view .LVU71
+ 271 0050 E2E7     		b	.L18
+ 272              		.cfi_endproc
+ 273              	.LFE7:
+ 275              		.section	.text.osTimerCreate,"ax",%progbits
+ 276              		.align	1
+ 277              		.global	osTimerCreate
+ 278              		.syntax unified
+ 279              		.thumb
+ 280              		.thumb_func
+ 281              		.fpu softvfp
+ 283              	osTimerCreate:
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s 			page 8
+
+
+ 284              	.LVL22:
+ 285              	.LFB8:
+ 101:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 102:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** #endif  // Signal
+ 103:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 104:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 105:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** // Timer
+ 106:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** #if !defined(os1_Disable_Timer)
+ 107:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** osTimerId osTimerCreate (const osTimerDef_t *timer_def, os_timer_type type, void *argument) {
+ 286              		.loc 1 107 93 view -0
+ 287              		.cfi_startproc
+ 288              		@ args = 0, pretend = 0, frame = 0
+ 289              		@ frame_needed = 0, uses_anonymous_args = 0
+ 290              		.loc 1 107 93 is_stmt 0 view .LVU73
+ 291 0000 08B5     		push	{r3, lr}
+ 292              	.LCFI5:
+ 293              		.cfi_def_cfa_offset 8
+ 294              		.cfi_offset 3, -8
+ 295              		.cfi_offset 14, -4
+ 108:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 109:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   if (timer_def == NULL) {
+ 296              		.loc 1 109 3 is_stmt 1 view .LVU74
+ 297              		.loc 1 109 6 is_stmt 0 view .LVU75
+ 298 0002 0346     		mov	r3, r0
+ 299 0004 18B1     		cbz	r0, .L30
+ 110:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     return NULL;
+ 111:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   }
+ 112:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   return osTimerNew((osTimerFunc_t)timer_def->ptimer, type, argument, &timer_def->attr);
+ 300              		.loc 1 112 3 is_stmt 1 view .LVU76
+ 301              		.loc 1 112 45 is_stmt 0 view .LVU77
+ 302 0006 53F8040B 		ldr	r0, [r3], #4
+ 303              	.LVL23:
+ 304              		.loc 1 112 10 view .LVU78
+ 305 000a FFF7FEFF 		bl	osTimerNew
+ 306              	.LVL24:
+ 307              	.L30:
+ 113:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** }
+ 308              		.loc 1 113 1 view .LVU79
+ 309 000e 08BD     		pop	{r3, pc}
+ 310              		.cfi_endproc
+ 311              	.LFE8:
+ 313              		.section	.text.osMutexCreate,"ax",%progbits
+ 314              		.align	1
+ 315              		.global	osMutexCreate
+ 316              		.syntax unified
+ 317              		.thumb
+ 318              		.thumb_func
+ 319              		.fpu softvfp
+ 321              	osMutexCreate:
+ 322              	.LVL25:
+ 323              	.LFB9:
+ 114:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** #endif
+ 115:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 116:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 117:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** // Mutex
+ 118:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** #if !defined(os1_Disable_Mutex)
+ 119:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** osMutexId osMutexCreate (const osMutexDef_t *mutex_def) {
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s 			page 9
+
+
+ 324              		.loc 1 119 57 is_stmt 1 view -0
+ 325              		.cfi_startproc
+ 326              		@ args = 0, pretend = 0, frame = 0
+ 327              		@ frame_needed = 0, uses_anonymous_args = 0
+ 328              		.loc 1 119 57 is_stmt 0 view .LVU81
+ 329 0000 08B5     		push	{r3, lr}
+ 330              	.LCFI6:
+ 331              		.cfi_def_cfa_offset 8
+ 332              		.cfi_offset 3, -8
+ 333              		.cfi_offset 14, -4
+ 120:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 121:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   if (mutex_def == NULL) {
+ 334              		.loc 1 121 3 is_stmt 1 view .LVU82
+ 335              		.loc 1 121 6 is_stmt 0 view .LVU83
+ 336 0002 08B1     		cbz	r0, .L34
+ 122:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     return NULL;
+ 123:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   }
+ 124:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   return osMutexNew(mutex_def);
+ 337              		.loc 1 124 3 is_stmt 1 view .LVU84
+ 338              		.loc 1 124 10 is_stmt 0 view .LVU85
+ 339 0004 FFF7FEFF 		bl	osMutexNew
+ 340              	.LVL26:
+ 341              	.L34:
+ 125:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** }
+ 342              		.loc 1 125 1 view .LVU86
+ 343 0008 08BD     		pop	{r3, pc}
+ 344              		.cfi_endproc
+ 345              	.LFE9:
+ 347              		.section	.text.osSemaphoreCreate,"ax",%progbits
+ 348              		.align	1
+ 349              		.global	osSemaphoreCreate
+ 350              		.syntax unified
+ 351              		.thumb
+ 352              		.thumb_func
+ 353              		.fpu softvfp
+ 355              	osSemaphoreCreate:
+ 356              	.LVL27:
+ 357              	.LFB10:
+ 126:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** #endif
+ 127:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 128:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 129:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** // Semaphore
+ 130:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 131:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** #if (defined (osFeature_Semaphore) && (osFeature_Semaphore != 0U)) && !defined(os1_Disable_Semaphor
+ 132:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 133:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** osSemaphoreId osSemaphoreCreate (const osSemaphoreDef_t *semaphore_def, int32_t count) {
+ 358              		.loc 1 133 88 is_stmt 1 view -0
+ 359              		.cfi_startproc
+ 360              		@ args = 0, pretend = 0, frame = 0
+ 361              		@ frame_needed = 0, uses_anonymous_args = 0
+ 134:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 135:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   if (semaphore_def == NULL) {
+ 362              		.loc 1 135 3 view .LVU88
+ 363              		.loc 1 135 6 is_stmt 0 view .LVU89
+ 364 0000 0246     		mov	r2, r0
+ 365 0002 20B1     		cbz	r0, .L40
+ 133:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s 			page 10
+
+
+ 366              		.loc 1 133 88 view .LVU90
+ 367 0004 08B5     		push	{r3, lr}
+ 368              	.LCFI7:
+ 369              		.cfi_def_cfa_offset 8
+ 370              		.cfi_offset 3, -8
+ 371              		.cfi_offset 14, -4
+ 136:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     return NULL;
+ 137:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   }
+ 138:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   return osSemaphoreNew((uint32_t)count, (uint32_t)count, semaphore_def);
+ 372              		.loc 1 138 3 is_stmt 1 view .LVU91
+ 373              		.loc 1 138 10 is_stmt 0 view .LVU92
+ 374 0006 0846     		mov	r0, r1
+ 375              	.LVL28:
+ 376              		.loc 1 138 10 view .LVU93
+ 377 0008 FFF7FEFF 		bl	osSemaphoreNew
+ 378              	.LVL29:
+ 139:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** }
+ 379              		.loc 1 139 1 view .LVU94
+ 380 000c 08BD     		pop	{r3, pc}
+ 381              	.LVL30:
+ 382              	.L40:
+ 383              	.LCFI8:
+ 384              		.cfi_def_cfa_offset 0
+ 385              		.cfi_restore 3
+ 386              		.cfi_restore 14
+ 387              		.loc 1 139 1 view .LVU95
+ 388 000e 7047     		bx	lr
+ 389              		.cfi_endproc
+ 390              	.LFE10:
+ 392              		.section	.text.osSemaphoreWait,"ax",%progbits
+ 393              		.align	1
+ 394              		.global	osSemaphoreWait
+ 395              		.syntax unified
+ 396              		.thumb
+ 397              		.thumb_func
+ 398              		.fpu softvfp
+ 400              	osSemaphoreWait:
+ 401              	.LVL31:
+ 402              	.LFB11:
+ 140:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 141:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** int32_t osSemaphoreWait (osSemaphoreId semaphore_id, uint32_t millisec) {
+ 403              		.loc 1 141 73 is_stmt 1 view -0
+ 404              		.cfi_startproc
+ 405              		@ args = 0, pretend = 0, frame = 0
+ 406              		@ frame_needed = 0, uses_anonymous_args = 0
+ 407              		.loc 1 141 73 is_stmt 0 view .LVU97
+ 408 0000 10B5     		push	{r4, lr}
+ 409              	.LCFI9:
+ 410              		.cfi_def_cfa_offset 8
+ 411              		.cfi_offset 4, -8
+ 412              		.cfi_offset 14, -4
+ 413 0002 0446     		mov	r4, r0
+ 142:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   osStatus_t status;
+ 414              		.loc 1 142 3 is_stmt 1 view .LVU98
+ 143:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   uint32_t   count;
+ 415              		.loc 1 143 3 view .LVU99
+ 144:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s 			page 11
+
+
+ 145:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   status = osSemaphoreAcquire(semaphore_id, millisec);
+ 416              		.loc 1 145 3 view .LVU100
+ 417              		.loc 1 145 12 is_stmt 0 view .LVU101
+ 418 0004 FFF7FEFF 		bl	osSemaphoreAcquire
+ 419              	.LVL32:
+ 146:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   switch (status) {
+ 420              		.loc 1 146 3 is_stmt 1 view .LVU102
+ 421 0008 10F1020F 		cmn	r0, #2
+ 422 000c 05DD     		ble	.L51
+ 423 000e 60B9     		cbnz	r0, .L49
+ 147:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     case osOK:
+ 148:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       count = osSemaphoreGetCount(semaphore_id);
+ 424              		.loc 1 148 7 view .LVU103
+ 425              		.loc 1 148 15 is_stmt 0 view .LVU104
+ 426 0010 2046     		mov	r0, r4
+ 427              	.LVL33:
+ 428              		.loc 1 148 15 view .LVU105
+ 429 0012 FFF7FEFF 		bl	osSemaphoreGetCount
+ 430              	.LVL34:
+ 149:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       return ((int32_t)count + 1);
+ 431              		.loc 1 149 7 is_stmt 1 view .LVU106
+ 432              		.loc 1 149 30 is_stmt 0 view .LVU107
+ 433 0016 0130     		adds	r0, r0, #1
+ 434              	.LVL35:
+ 435              		.loc 1 149 30 view .LVU108
+ 436 0018 04E0     		b	.L45
+ 437              	.LVL36:
+ 438              	.L51:
+ 146:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   switch (status) {
+ 439              		.loc 1 146 3 view .LVU109
+ 440 001a 10F1030F 		cmn	r0, #3
+ 441 001e 02DA     		bge	.L52
+ 150:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     case osErrorResource:
+ 151:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     case osErrorTimeout:
+ 152:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       return 0;
+ 153:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     default:
+ 154:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       break;
+ 155:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   }
+ 156:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   return -1;
+ 442              		.loc 1 156 10 view .LVU110
+ 443 0020 4FF0FF30 		mov	r0, #-1
+ 444              	.LVL37:
+ 445              	.L45:
+ 157:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** }
+ 446              		.loc 1 157 1 view .LVU111
+ 447 0024 10BD     		pop	{r4, pc}
+ 448              	.LVL38:
+ 449              	.L52:
+ 146:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     case osOK:
+ 450              		.loc 1 146 3 view .LVU112
+ 451 0026 0020     		movs	r0, #0
+ 452              	.LVL39:
+ 146:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     case osOK:
+ 453              		.loc 1 146 3 view .LVU113
+ 454 0028 FCE7     		b	.L45
+ 455              	.LVL40:
+ 456              	.L49:
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s 			page 12
+
+
+ 156:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** }
+ 457              		.loc 1 156 10 view .LVU114
+ 458 002a 4FF0FF30 		mov	r0, #-1
+ 459              	.LVL41:
+ 156:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** }
+ 460              		.loc 1 156 10 view .LVU115
+ 461 002e F9E7     		b	.L45
+ 462              		.cfi_endproc
+ 463              	.LFE11:
+ 465              		.section	.text.osMessageCreate,"ax",%progbits
+ 466              		.align	1
+ 467              		.global	osMessageCreate
+ 468              		.syntax unified
+ 469              		.thumb
+ 470              		.thumb_func
+ 471              		.fpu softvfp
+ 473              	osMessageCreate:
+ 474              	.LVL42:
+ 475              	.LFB12:
+ 158:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 159:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** #endif  // Semaphore
+ 160:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 161:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 162:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** // Memory Pool
+ 163:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 164:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** #if (defined(osFeature_Pool) && (osFeature_Pool != 0))&& !defined(os1_Disable_Pool)
+ 165:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 166:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** osPoolId osPoolCreate (const osPoolDef_t *pool_def) {
+ 167:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 168:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   if (pool_def == NULL) {
+ 169:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     return NULL;
+ 170:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   }
+ 171:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   return osMemoryPoolNew(pool_def->pool_sz, pool_def->item_sz, &pool_def->attr);
+ 172:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** }
+ 173:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 174:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** void *osPoolAlloc (osPoolId pool_id) {
+ 175:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   return osMemoryPoolAlloc(pool_id, 0U);
+ 176:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** }
+ 177:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 178:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** void *osPoolCAlloc (osPoolId pool_id) {
+ 179:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   void    *block;
+ 180:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   uint32_t block_size;
+ 181:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 182:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   block_size = osMemoryPoolGetBlockSize((osMemoryPoolId_t)pool_id);
+ 183:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   if (block_size == 0U) {
+ 184:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     return NULL;
+ 185:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   }
+ 186:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   block = osMemoryPoolAlloc(pool_id, 0U);
+ 187:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   if (block != NULL) {
+ 188:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     memset(block, 0, block_size);
+ 189:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   }
+ 190:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   return block;
+ 191:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** }
+ 192:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 193:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** osStatus osPoolFree (osPoolId pool_id, void *block) {
+ 194:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   return osMemoryPoolFree(pool_id, block);
+ 195:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** }
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s 			page 13
+
+
+ 196:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 197:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** #endif  // Memory Pool
+ 198:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 199:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 200:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** // Message Queue
+ 201:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 202:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** #if (defined(osFeature_MessageQ) && (osFeature_MessageQ != 0)) && !defined(os1_Disable_MessageQ)
+ 203:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 204:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** osMessageQId osMessageCreate (const osMessageQDef_t *queue_def, osThreadId thread_id) {
+ 476              		.loc 1 204 87 is_stmt 1 view -0
+ 477              		.cfi_startproc
+ 478              		@ args = 0, pretend = 0, frame = 0
+ 479              		@ frame_needed = 0, uses_anonymous_args = 0
+ 205:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   (void)thread_id;
+ 480              		.loc 1 205 3 view .LVU117
+ 206:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 207:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   if (queue_def == NULL) {
+ 481              		.loc 1 207 3 view .LVU118
+ 482              		.loc 1 207 6 is_stmt 0 view .LVU119
+ 483 0000 0246     		mov	r2, r0
+ 484 0002 30B1     		cbz	r0, .L55
+ 204:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   (void)thread_id;
+ 485              		.loc 1 204 87 view .LVU120
+ 486 0004 08B5     		push	{r3, lr}
+ 487              	.LCFI10:
+ 488              		.cfi_def_cfa_offset 8
+ 489              		.cfi_offset 3, -8
+ 490              		.cfi_offset 14, -4
+ 208:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     return NULL;
+ 209:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   }
+ 210:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   return osMessageQueueNew(queue_def->queue_sz, sizeof(uint32_t), &queue_def->attr);
+ 491              		.loc 1 210 3 is_stmt 1 view .LVU121
+ 492              		.loc 1 210 10 is_stmt 0 view .LVU122
+ 493 0006 52F8040B 		ldr	r0, [r2], #4
+ 494              	.LVL43:
+ 495              		.loc 1 210 10 view .LVU123
+ 496 000a 0421     		movs	r1, #4
+ 497              	.LVL44:
+ 498              		.loc 1 210 10 view .LVU124
+ 499 000c FFF7FEFF 		bl	osMessageQueueNew
+ 500              	.LVL45:
+ 211:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** }
+ 501              		.loc 1 211 1 view .LVU125
+ 502 0010 08BD     		pop	{r3, pc}
+ 503              	.LVL46:
+ 504              	.L55:
+ 505              	.LCFI11:
+ 506              		.cfi_def_cfa_offset 0
+ 507              		.cfi_restore 3
+ 508              		.cfi_restore 14
+ 509              		.loc 1 211 1 view .LVU126
+ 510 0012 7047     		bx	lr
+ 511              		.cfi_endproc
+ 512              	.LFE12:
+ 514              		.section	.text.osMessagePut,"ax",%progbits
+ 515              		.align	1
+ 516              		.global	osMessagePut
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s 			page 14
+
+
+ 517              		.syntax unified
+ 518              		.thumb
+ 519              		.thumb_func
+ 520              		.fpu softvfp
+ 522              	osMessagePut:
+ 523              	.LVL47:
+ 524              	.LFB13:
+ 212:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 213:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** osStatus osMessagePut (osMessageQId queue_id, uint32_t info, uint32_t millisec) {
+ 525              		.loc 1 213 81 is_stmt 1 view -0
+ 526              		.cfi_startproc
+ 527              		@ args = 0, pretend = 0, frame = 8
+ 528              		@ frame_needed = 0, uses_anonymous_args = 0
+ 529              		.loc 1 213 81 is_stmt 0 view .LVU128
+ 530 0000 00B5     		push	{lr}
+ 531              	.LCFI12:
+ 532              		.cfi_def_cfa_offset 4
+ 533              		.cfi_offset 14, -4
+ 534 0002 83B0     		sub	sp, sp, #12
+ 535              	.LCFI13:
+ 536              		.cfi_def_cfa_offset 16
+ 537 0004 0191     		str	r1, [sp, #4]
+ 538 0006 1346     		mov	r3, r2
+ 214:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   return osMessageQueuePut(queue_id, &info, 0U, millisec);
+ 539              		.loc 1 214 3 is_stmt 1 view .LVU129
+ 540              		.loc 1 214 10 is_stmt 0 view .LVU130
+ 541 0008 0022     		movs	r2, #0
+ 542              	.LVL48:
+ 543              		.loc 1 214 10 view .LVU131
+ 544 000a 01A9     		add	r1, sp, #4
+ 545              	.LVL49:
+ 546              		.loc 1 214 10 view .LVU132
+ 547 000c FFF7FEFF 		bl	osMessageQueuePut
+ 548              	.LVL50:
+ 215:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** }
+ 549              		.loc 1 215 1 view .LVU133
+ 550 0010 03B0     		add	sp, sp, #12
+ 551              	.LCFI14:
+ 552              		.cfi_def_cfa_offset 4
+ 553              		@ sp needed
+ 554 0012 5DF804FB 		ldr	pc, [sp], #4
+ 555              		.cfi_endproc
+ 556              	.LFE13:
+ 558              		.section	.text.osMessageGet,"ax",%progbits
+ 559              		.align	1
+ 560              		.global	osMessageGet
+ 561              		.syntax unified
+ 562              		.thumb
+ 563              		.thumb_func
+ 564              		.fpu softvfp
+ 566              	osMessageGet:
+ 567              	.LVL51:
+ 568              	.LFB14:
+ 216:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 217:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** os_InRegs osEvent osMessageGet (osMessageQId queue_id, uint32_t millisec) {
+ 569              		.loc 1 217 75 is_stmt 1 view -0
+ 570              		.cfi_startproc
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s 			page 15
+
+
+ 571              		@ args = 0, pretend = 0, frame = 8
+ 572              		@ frame_needed = 0, uses_anonymous_args = 0
+ 573              		.loc 1 217 75 is_stmt 0 view .LVU135
+ 574 0000 10B5     		push	{r4, lr}
+ 575              	.LCFI15:
+ 576              		.cfi_def_cfa_offset 8
+ 577              		.cfi_offset 4, -8
+ 578              		.cfi_offset 14, -4
+ 579 0002 82B0     		sub	sp, sp, #8
+ 580              	.LCFI16:
+ 581              		.cfi_def_cfa_offset 16
+ 582 0004 0446     		mov	r4, r0
+ 583 0006 0846     		mov	r0, r1
+ 584              	.LVL52:
+ 585              		.loc 1 217 75 view .LVU136
+ 586 0008 1346     		mov	r3, r2
+ 218:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   osStatus_t status;
+ 587              		.loc 1 218 3 is_stmt 1 view .LVU137
+ 219:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   osEvent    event;
+ 588              		.loc 1 219 3 view .LVU138
+ 220:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   uint32_t   message;
+ 589              		.loc 1 220 3 view .LVU139
+ 221:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** 
+ 222:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   status = osMessageQueueGet(queue_id, &message, NULL, millisec);
+ 590              		.loc 1 222 3 view .LVU140
+ 591              		.loc 1 222 12 is_stmt 0 view .LVU141
+ 592 000a 0022     		movs	r2, #0
+ 593              	.LVL53:
+ 594              		.loc 1 222 12 view .LVU142
+ 595 000c 01A9     		add	r1, sp, #4
+ 596              	.LVL54:
+ 597              		.loc 1 222 12 view .LVU143
+ 598 000e FFF7FEFF 		bl	osMessageQueueGet
+ 599              	.LVL55:
+ 223:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   switch (status) {
+ 600              		.loc 1 223 3 is_stmt 1 view .LVU144
+ 601 0012 10F1020F 		cmn	r0, #2
+ 602 0016 0FD0     		beq	.L63
+ 603 0018 20B1     		cbz	r0, .L64
+ 604 001a 10F1030F 		cmn	r0, #3
+ 605 001e 08D0     		beq	.L70
+ 224:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     case osOK:
+ 225:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       event.status = osEventMessage;
+ 226:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       event.value.v = message;
+ 227:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       break;
+ 228:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     case osErrorResource:
+ 229:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       event.status = osOK;
+ 230:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       break;
+ 231:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     case osErrorTimeout:
+ 232:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       event.status = osEventTimeout;
+ 233:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       break;
+ 234:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     default:
+ 235:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       event.status = status;
+ 606              		.loc 1 235 7 view .LVU145
+ 607              		.loc 1 235 20 is_stmt 0 view .LVU146
+ 608 0020 2060     		str	r0, [r4]
+ 236:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       break;
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s 			page 16
+
+
+ 609              		.loc 1 236 7 is_stmt 1 view .LVU147
+ 237:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   }
+ 238:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****   return event;
+ 610              		.loc 1 238 3 view .LVU148
+ 611              		.loc 1 238 10 is_stmt 0 view .LVU149
+ 612 0022 03E0     		b	.L62
+ 613              	.L64:
+ 225:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       event.value.v = message;
+ 614              		.loc 1 225 7 is_stmt 1 view .LVU150
+ 225:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       event.value.v = message;
+ 615              		.loc 1 225 20 is_stmt 0 view .LVU151
+ 616 0024 1023     		movs	r3, #16
+ 617 0026 2360     		str	r3, [r4]
+ 226:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       break;
+ 618              		.loc 1 226 7 is_stmt 1 view .LVU152
+ 226:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       break;
+ 619              		.loc 1 226 21 is_stmt 0 view .LVU153
+ 620 0028 019B     		ldr	r3, [sp, #4]
+ 621 002a 6360     		str	r3, [r4, #4]
+ 227:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     case osErrorResource:
+ 622              		.loc 1 227 7 is_stmt 1 view .LVU154
+ 623              	.L62:
+ 239:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c **** }
+ 624              		.loc 1 239 1 is_stmt 0 view .LVU155
+ 625 002c 2046     		mov	r0, r4
+ 626              	.LVL56:
+ 627              		.loc 1 239 1 view .LVU156
+ 628 002e 02B0     		add	sp, sp, #8
+ 629              	.LCFI17:
+ 630              		.cfi_remember_state
+ 631              		.cfi_def_cfa_offset 8
+ 632              		@ sp needed
+ 633 0030 10BD     		pop	{r4, pc}
+ 634              	.LVL57:
+ 635              	.L70:
+ 636              	.LCFI18:
+ 637              		.cfi_restore_state
+ 229:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       break;
+ 638              		.loc 1 229 7 is_stmt 1 view .LVU157
+ 229:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       break;
+ 639              		.loc 1 229 20 is_stmt 0 view .LVU158
+ 640 0032 0023     		movs	r3, #0
+ 641 0034 2360     		str	r3, [r4]
+ 230:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     case osErrorTimeout:
+ 642              		.loc 1 230 7 is_stmt 1 view .LVU159
+ 643 0036 F9E7     		b	.L62
+ 644              	.L63:
+ 232:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       break;
+ 645              		.loc 1 232 7 view .LVU160
+ 232:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****       break;
+ 646              		.loc 1 232 20 is_stmt 0 view .LVU161
+ 647 0038 4023     		movs	r3, #64
+ 648 003a 2360     		str	r3, [r4]
+ 233:Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os1.c ****     default:
+ 649              		.loc 1 233 7 is_stmt 1 view .LVU162
+ 650 003c F6E7     		b	.L62
+ 651              		.cfi_endproc
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s 			page 17
+
+
+ 652              	.LFE14:
+ 654              		.text
+ 655              	.Letext0:
+ 656              		.file 2 "d:\\tools\\gcc-arm-none-eabi-10.3-2021.07\\arm-none-eabi\\include\\machine\\_default_type
+ 657              		.file 3 "d:\\tools\\gcc-arm-none-eabi-10.3-2021.07\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 658              		.file 4 "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h"
+ 659              		.file 5 "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h"
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s 			page 18
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 cmsis_os1.c
+C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s:16     .text.osThreadCreate:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s:24     .text.osThreadCreate:00000000 osThreadCreate
+C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s:63     .text.osSignalSet:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s:70     .text.osSignalSet:00000000 osSignalSet
+C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s:112    .text.osSignalClear:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s:119    .text.osSignalClear:00000000 osSignalClear
+C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s:169    .text.osSignalWait:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s:176    .text.osSignalWait:00000000 osSignalWait
+C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s:276    .text.osTimerCreate:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s:283    .text.osTimerCreate:00000000 osTimerCreate
+C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s:314    .text.osMutexCreate:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s:321    .text.osMutexCreate:00000000 osMutexCreate
+C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s:348    .text.osSemaphoreCreate:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s:355    .text.osSemaphoreCreate:00000000 osSemaphoreCreate
+C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s:393    .text.osSemaphoreWait:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s:400    .text.osSemaphoreWait:00000000 osSemaphoreWait
+C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s:466    .text.osMessageCreate:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s:473    .text.osMessageCreate:00000000 osMessageCreate
+C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s:515    .text.osMessagePut:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s:522    .text.osMessagePut:00000000 osMessagePut
+C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s:559    .text.osMessageGet:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccOAjkok.s:566    .text.osMessageGet:00000000 osMessageGet
+
+UNDEFINED SYMBOLS
+osThreadNew
+osThreadFlagsSet
+osThreadGetId
+osThreadFlagsClear
+osThreadFlagsWait
+osTimerNew
+osMutexNew
+osSemaphoreNew
+osSemaphoreAcquire
+osSemaphoreGetCount
+osMessageQueueNew
+osMessageQueuePut
+osMessageQueueGet

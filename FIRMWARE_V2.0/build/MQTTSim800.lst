@@ -1,0 +1,2777 @@
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"MQTTSim800.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.reverse,"ax",%progbits
+  16              		.align	1
+  17              		.global	reverse
+  18              		.arch armv7-m
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	reverse:
+  25              	.LVL0:
+  26              	.LFB72:
+  27              		.file 1 "Core/Src/MQTTSim800.c"
+   1:Core/Src/MQTTSim800.c **** /*
+   2:Core/Src/MQTTSim800.c ****  * MQTTSim800.c
+   3:Core/Src/MQTTSim800.c ****  *
+   4:Core/Src/MQTTSim800.c ****  *  Created on: Jan 4, 2020
+   5:Core/Src/MQTTSim800.c ****  *      Author: Bulanov Konstantin
+   6:Core/Src/MQTTSim800.c ****  *
+   7:Core/Src/MQTTSim800.c ****  *  Contact information
+   8:Core/Src/MQTTSim800.c ****  *  -------------------
+   9:Core/Src/MQTTSim800.c ****  *
+  10:Core/Src/MQTTSim800.c ****  * e-mail   :   leech001@gmail.com
+  11:Core/Src/MQTTSim800.c ****  * telegram :   https://t.me/leech001
+  12:Core/Src/MQTTSim800.c ****  *
+  13:Core/Src/MQTTSim800.c ****  */
+  14:Core/Src/MQTTSim800.c **** 
+  15:Core/Src/MQTTSim800.c **** /*
+  16:Core/Src/MQTTSim800.c ****  * ------------------------------------------------------------------------------------------------
+  17:Core/Src/MQTTSim800.c ****         DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+  18:Core/Src/MQTTSim800.c ****                     Version 2, December 2004
+  19:Core/Src/MQTTSim800.c **** 
+  20:Core/Src/MQTTSim800.c **** Copyright (C) 2020 Bulanov Konstantin <leech001@gmail.com>
+  21:Core/Src/MQTTSim800.c **** 
+  22:Core/Src/MQTTSim800.c **** Everyone is permitted to copy and distribute verbatim or modified
+  23:Core/Src/MQTTSim800.c **** copies of this license document, and changing it is allowed as long
+  24:Core/Src/MQTTSim800.c **** as the name is changed.
+  25:Core/Src/MQTTSim800.c **** 
+  26:Core/Src/MQTTSim800.c ****             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+  27:Core/Src/MQTTSim800.c **** TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+  28:Core/Src/MQTTSim800.c **** 
+  29:Core/Src/MQTTSim800.c **** 0. You just DO WHAT THE FUCK YOU WANT TO.
+  30:Core/Src/MQTTSim800.c **** 
+  31:Core/Src/MQTTSim800.c **** MQTT packet https://github.com/eclipse/paho.mqtt.embedded-c/tree/master/MQTTPacket
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 2
+
+
+  32:Core/Src/MQTTSim800.c ****  * ------------------------------------------------------------------------------------------------
+  33:Core/Src/MQTTSim800.c **** */
+  34:Core/Src/MQTTSim800.c **** 
+  35:Core/Src/MQTTSim800.c **** #include "MQTTSim800.h"
+  36:Core/Src/MQTTSim800.c **** #include "main.h"
+  37:Core/Src/MQTTSim800.c **** #include "usart.h"
+  38:Core/Src/MQTTSim800.c **** #include <string.h>
+  39:Core/Src/MQTTSim800.c **** #include "MQTTPacket.h"
+  40:Core/Src/MQTTSim800.c **** 
+  41:Core/Src/MQTTSim800.c **** #if FREERTOS == 1
+  42:Core/Src/MQTTSim800.c **** #include <cmsis_os.h>
+  43:Core/Src/MQTTSim800.c **** #endif
+  44:Core/Src/MQTTSim800.c **** 
+  45:Core/Src/MQTTSim800.c **** typedef struct
+  46:Core/Src/MQTTSim800.c **** {
+  47:Core/Src/MQTTSim800.c ****     uint8_t SIM;
+  48:Core/Src/MQTTSim800.c ****     uint8_t GPRS;
+  49:Core/Src/MQTTSim800.c ****     uint8_t MQTT;
+  50:Core/Src/MQTTSim800.c **** } SIM800_St;
+  51:Core/Src/MQTTSim800.c **** 
+  52:Core/Src/MQTTSim800.c **** extern SIM800_t SIM800;
+  53:Core/Src/MQTTSim800.c **** SIM800_St SIM800_Status = {0, 0, 0};
+  54:Core/Src/MQTTSim800.c **** 
+  55:Core/Src/MQTTSim800.c **** uint8_t rx_data = 0;
+  56:Core/Src/MQTTSim800.c **** uint8_t rx_buffer[200] = {0};
+  57:Core/Src/MQTTSim800.c **** uint16_t rx_index = 0;
+  58:Core/Src/MQTTSim800.c **** 
+  59:Core/Src/MQTTSim800.c **** uint8_t mqtt_receive = 0;
+  60:Core/Src/MQTTSim800.c **** char mqtt_buffer[200] = {0};
+  61:Core/Src/MQTTSim800.c **** uint16_t mqtt_index = 0;
+  62:Core/Src/MQTTSim800.c **** 
+  63:Core/Src/MQTTSim800.c **** //-------------------------------------------------------------------------
+  64:Core/Src/MQTTSim800.c **** 
+  65:Core/Src/MQTTSim800.c **** // Reverses a string 'str' of length 'len'
+  66:Core/Src/MQTTSim800.c **** void reverse(char* str, int len)
+  67:Core/Src/MQTTSim800.c **** {
+  28              		.loc 1 67 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  68:Core/Src/MQTTSim800.c ****     int i = 0, j = len - 1, temp;
+  33              		.loc 1 68 5 view .LVU1
+  34              		.loc 1 68 16 is_stmt 0 view .LVU2
+  35 0000 0139     		subs	r1, r1, #1
+  36              	.LVL1:
+  69:Core/Src/MQTTSim800.c ****     while (i < j)
+  37              		.loc 1 69 5 is_stmt 1 view .LVU3
+  68:Core/Src/MQTTSim800.c ****     int i = 0, j = len - 1, temp;
+  38              		.loc 1 68 9 is_stmt 0 view .LVU4
+  39 0002 0023     		movs	r3, #0
+  40              		.loc 1 69 11 view .LVU5
+  41 0004 07E0     		b	.L2
+  42              	.LVL2:
+  43              	.L3:
+  70:Core/Src/MQTTSim800.c ****     {
+  71:Core/Src/MQTTSim800.c ****         temp = str[i];
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 3
+
+
+  44              		.loc 1 71 9 is_stmt 1 view .LVU6
+  45              		.loc 1 71 19 is_stmt 0 view .LVU7
+  46 0006 C25C     		ldrb	r2, [r0, r3]	@ zero_extendqisi2
+  47              	.LVL3:
+  72:Core/Src/MQTTSim800.c ****         str[i] = str[j];
+  48              		.loc 1 72 9 is_stmt 1 view .LVU8
+  49              		.loc 1 72 21 is_stmt 0 view .LVU9
+  50 0008 10F801C0 		ldrb	ip, [r0, r1]	@ zero_extendqisi2
+  51              		.loc 1 72 16 view .LVU10
+  52 000c 00F803C0 		strb	ip, [r0, r3]
+  73:Core/Src/MQTTSim800.c ****         str[j] = temp;
+  53              		.loc 1 73 9 is_stmt 1 view .LVU11
+  54              		.loc 1 73 16 is_stmt 0 view .LVU12
+  55 0010 4254     		strb	r2, [r0, r1]
+  74:Core/Src/MQTTSim800.c ****         i++;
+  56              		.loc 1 74 9 is_stmt 1 view .LVU13
+  57              		.loc 1 74 10 is_stmt 0 view .LVU14
+  58 0012 0133     		adds	r3, r3, #1
+  59              	.LVL4:
+  75:Core/Src/MQTTSim800.c ****         j--;
+  60              		.loc 1 75 9 is_stmt 1 view .LVU15
+  61              		.loc 1 75 10 is_stmt 0 view .LVU16
+  62 0014 0139     		subs	r1, r1, #1
+  63              	.LVL5:
+  64              	.L2:
+  69:Core/Src/MQTTSim800.c ****     {
+  65              		.loc 1 69 11 is_stmt 1 view .LVU17
+  66 0016 8B42     		cmp	r3, r1
+  67 0018 F5DB     		blt	.L3
+  76:Core/Src/MQTTSim800.c ****     }
+  77:Core/Src/MQTTSim800.c **** }
+  68              		.loc 1 77 1 is_stmt 0 view .LVU18
+  69 001a 7047     		bx	lr
+  70              		.cfi_endproc
+  71              	.LFE72:
+  73              		.section	.text.intToStr,"ax",%progbits
+  74              		.align	1
+  75              		.global	intToStr
+  76              		.syntax unified
+  77              		.thumb
+  78              		.thumb_func
+  79              		.fpu softvfp
+  81              	intToStr:
+  82              	.LVL6:
+  83              	.LFB73:
+  78:Core/Src/MQTTSim800.c **** 
+  79:Core/Src/MQTTSim800.c **** // Converts a given integer x to string str[]. 
+  80:Core/Src/MQTTSim800.c **** // d is the number of digits required in the output. 
+  81:Core/Src/MQTTSim800.c **** // If d is more than the number of digits in x, 
+  82:Core/Src/MQTTSim800.c **** // then 0s are added at the beginning.
+  83:Core/Src/MQTTSim800.c **** int intToStr(int x, char str[], int d)
+  84:Core/Src/MQTTSim800.c **** {
+  84              		.loc 1 84 1 is_stmt 1 view -0
+  85              		.cfi_startproc
+  86              		@ args = 0, pretend = 0, frame = 0
+  87              		@ frame_needed = 0, uses_anonymous_args = 0
+  88              		.loc 1 84 1 is_stmt 0 view .LVU20
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 4
+
+
+  89 0000 70B5     		push	{r4, r5, r6, lr}
+  90              	.LCFI0:
+  91              		.cfi_def_cfa_offset 16
+  92              		.cfi_offset 4, -16
+  93              		.cfi_offset 5, -12
+  94              		.cfi_offset 6, -8
+  95              		.cfi_offset 14, -4
+  96 0002 0E46     		mov	r6, r1
+  85:Core/Src/MQTTSim800.c ****     int i = 0;
+  97              		.loc 1 85 5 is_stmt 1 view .LVU21
+  98              	.LVL7:
+  86:Core/Src/MQTTSim800.c ****     if (x == 0)
+  99              		.loc 1 86 5 view .LVU22
+ 100              		.loc 1 86 8 is_stmt 0 view .LVU23
+ 101 0004 18B9     		cbnz	r0, .L10
+  87:Core/Src/MQTTSim800.c ****     {
+  88:Core/Src/MQTTSim800.c ****         str[i++] = '0';
+ 102              		.loc 1 88 9 is_stmt 1 view .LVU24
+ 103              	.LVL8:
+ 104              		.loc 1 88 18 is_stmt 0 view .LVU25
+ 105 0006 3023     		movs	r3, #48
+ 106 0008 0B70     		strb	r3, [r1]
+ 107              		.loc 1 88 14 view .LVU26
+ 108 000a 0124     		movs	r4, #1
+ 109 000c 15E0     		b	.L6
+ 110              	.LVL9:
+ 111              	.L10:
+ 112              		.loc 1 88 14 view .LVU27
+ 113 000e 0546     		mov	r5, r0
+  85:Core/Src/MQTTSim800.c ****     if (x == 0)
+ 114              		.loc 1 85 9 view .LVU28
+ 115 0010 0024     		movs	r4, #0
+ 116              	.LVL10:
+ 117              	.L5:
+  89:Core/Src/MQTTSim800.c ****     }
+  90:Core/Src/MQTTSim800.c ****     else
+  91:Core/Src/MQTTSim800.c ****     {
+  92:Core/Src/MQTTSim800.c ****         while (x)
+ 118              		.loc 1 92 15 is_stmt 1 view .LVU29
+ 119 0012 95B1     		cbz	r5, .L6
+  93:Core/Src/MQTTSim800.c ****         {
+  94:Core/Src/MQTTSim800.c ****             str[i++] = (x % 10) + '0';
+ 120              		.loc 1 94 13 view .LVU30
+ 121              		.loc 1 94 27 is_stmt 0 view .LVU31
+ 122 0014 0E49     		ldr	r1, .L12
+ 123 0016 81FB0531 		smull	r3, r1, r1, r5
+ 124 001a EB17     		asrs	r3, r5, #31
+ 125 001c C3EBA103 		rsb	r3, r3, r1, asr #2
+ 126 0020 1946     		mov	r1, r3
+ 127 0022 03EB8303 		add	r3, r3, r3, lsl #2
+ 128 0026 A5EB4303 		sub	r3, r5, r3, lsl #1
+ 129              	.LVL11:
+ 130              		.loc 1 94 33 view .LVU32
+ 131 002a 3033     		adds	r3, r3, #48
+ 132              		.loc 1 94 22 view .LVU33
+ 133 002c 3355     		strb	r3, [r6, r4]
+  95:Core/Src/MQTTSim800.c ****             x = x / 10;
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 5
+
+
+ 134              		.loc 1 95 13 is_stmt 1 view .LVU34
+ 135              		.loc 1 95 15 is_stmt 0 view .LVU35
+ 136 002e 0D46     		mov	r5, r1
+ 137              	.LVL12:
+  94:Core/Src/MQTTSim800.c ****             x = x / 10;
+ 138              		.loc 1 94 18 view .LVU36
+ 139 0030 0134     		adds	r4, r4, #1
+ 140              	.LVL13:
+  94:Core/Src/MQTTSim800.c ****             x = x / 10;
+ 141              		.loc 1 94 18 view .LVU37
+ 142 0032 EEE7     		b	.L5
+ 143              	.LVL14:
+ 144              	.L9:
+  96:Core/Src/MQTTSim800.c ****         }
+  97:Core/Src/MQTTSim800.c ****     }
+  98:Core/Src/MQTTSim800.c ****     
+  99:Core/Src/MQTTSim800.c ****     // If number of digits required is more, then
+ 100:Core/Src/MQTTSim800.c ****     // add 0s at the beginning
+ 101:Core/Src/MQTTSim800.c ****     while (i < d)
+ 102:Core/Src/MQTTSim800.c ****         str[i++] = '0';
+ 145              		.loc 1 102 9 is_stmt 1 view .LVU38
+ 146              		.loc 1 102 18 is_stmt 0 view .LVU39
+ 147 0034 3023     		movs	r3, #48
+ 148 0036 3355     		strb	r3, [r6, r4]
+ 149              		.loc 1 102 14 view .LVU40
+ 150 0038 0134     		adds	r4, r4, #1
+ 151              	.LVL15:
+ 152              	.L6:
+ 101:Core/Src/MQTTSim800.c ****         str[i++] = '0';
+ 153              		.loc 1 101 11 is_stmt 1 view .LVU41
+ 154 003a 9442     		cmp	r4, r2
+ 155 003c FADB     		blt	.L9
+ 103:Core/Src/MQTTSim800.c **** 
+ 104:Core/Src/MQTTSim800.c ****     reverse(str, i);
+ 156              		.loc 1 104 5 view .LVU42
+ 157 003e 2146     		mov	r1, r4
+ 158 0040 3046     		mov	r0, r6
+ 159 0042 FFF7FEFF 		bl	reverse
+ 160              	.LVL16:
+ 105:Core/Src/MQTTSim800.c ****     str[i] = '\0';
+ 161              		.loc 1 105 5 view .LVU43
+ 162              		.loc 1 105 12 is_stmt 0 view .LVU44
+ 163 0046 0023     		movs	r3, #0
+ 164 0048 3355     		strb	r3, [r6, r4]
+ 106:Core/Src/MQTTSim800.c ****     return i;
+ 165              		.loc 1 106 5 is_stmt 1 view .LVU45
+ 107:Core/Src/MQTTSim800.c **** }
+ 166              		.loc 1 107 1 is_stmt 0 view .LVU46
+ 167 004a 2046     		mov	r0, r4
+ 168 004c 70BD     		pop	{r4, r5, r6, pc}
+ 169              	.LVL17:
+ 170              	.L13:
+ 171              		.loc 1 107 1 view .LVU47
+ 172 004e 00BF     		.align	2
+ 173              	.L12:
+ 174 0050 67666666 		.word	1717986919
+ 175              		.cfi_endproc
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 6
+
+
+ 176              	.LFE73:
+ 178              		.global	__aeabi_f2iz
+ 179              		.global	__aeabi_i2f
+ 180              		.global	__aeabi_fsub
+ 181              		.global	__aeabi_i2d
+ 182              		.global	__aeabi_f2d
+ 183              		.global	__aeabi_dmul
+ 184              		.global	__aeabi_d2f
+ 185              		.section	.text.ftoa,"ax",%progbits
+ 186              		.align	1
+ 187              		.global	ftoa
+ 188              		.syntax unified
+ 189              		.thumb
+ 190              		.thumb_func
+ 191              		.fpu softvfp
+ 193              	ftoa:
+ 194              	.LVL18:
+ 195              	.LFB74:
+ 108:Core/Src/MQTTSim800.c **** 
+ 109:Core/Src/MQTTSim800.c **** // Converts a floating-point/double number to a string.
+ 110:Core/Src/MQTTSim800.c **** void ftoa(float n, char* res, int afterpoint)
+ 111:Core/Src/MQTTSim800.c **** {
+ 196              		.loc 1 111 1 is_stmt 1 view -0
+ 197              		.cfi_startproc
+ 198              		@ args = 0, pretend = 0, frame = 0
+ 199              		@ frame_needed = 0, uses_anonymous_args = 0
+ 200              		.loc 1 111 1 is_stmt 0 view .LVU49
+ 201 0000 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+ 202              	.LCFI1:
+ 203              		.cfi_def_cfa_offset 32
+ 204              		.cfi_offset 3, -32
+ 205              		.cfi_offset 4, -28
+ 206              		.cfi_offset 5, -24
+ 207              		.cfi_offset 6, -20
+ 208              		.cfi_offset 7, -16
+ 209              		.cfi_offset 8, -12
+ 210              		.cfi_offset 9, -8
+ 211              		.cfi_offset 14, -4
+ 212 0004 0646     		mov	r6, r0
+ 213 0006 0C46     		mov	r4, r1
+ 214 0008 1746     		mov	r7, r2
+ 112:Core/Src/MQTTSim800.c ****     // Extract integer part
+ 113:Core/Src/MQTTSim800.c ****     int ipart = (int)n;
+ 215              		.loc 1 113 5 is_stmt 1 view .LVU50
+ 216              		.loc 1 113 9 is_stmt 0 view .LVU51
+ 217 000a FFF7FEFF 		bl	__aeabi_f2iz
+ 218              	.LVL19:
+ 219              		.loc 1 113 9 view .LVU52
+ 220 000e 0546     		mov	r5, r0
+ 221              	.LVL20:
+ 114:Core/Src/MQTTSim800.c ****     // Extract floating part
+ 115:Core/Src/MQTTSim800.c ****     float fpart = n - (float)ipart;
+ 222              		.loc 1 115 5 is_stmt 1 view .LVU53
+ 223              		.loc 1 115 23 is_stmt 0 view .LVU54
+ 224 0010 FFF7FEFF 		bl	__aeabi_i2f
+ 225              	.LVL21:
+ 226              		.loc 1 115 23 view .LVU55
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 7
+
+
+ 227 0014 0146     		mov	r1, r0
+ 228              		.loc 1 115 11 view .LVU56
+ 229 0016 3046     		mov	r0, r6
+ 230 0018 FFF7FEFF 		bl	__aeabi_fsub
+ 231              	.LVL22:
+ 232 001c 0646     		mov	r6, r0
+ 233              	.LVL23:
+ 116:Core/Src/MQTTSim800.c ****     // convert integer part to string
+ 117:Core/Src/MQTTSim800.c ****     int i = intToStr(ipart, res, 0);
+ 234              		.loc 1 117 5 is_stmt 1 view .LVU57
+ 235              		.loc 1 117 13 is_stmt 0 view .LVU58
+ 236 001e 0022     		movs	r2, #0
+ 237 0020 2146     		mov	r1, r4
+ 238 0022 2846     		mov	r0, r5
+ 239              	.LVL24:
+ 240              		.loc 1 117 13 view .LVU59
+ 241 0024 FFF7FEFF 		bl	intToStr
+ 242              	.LVL25:
+ 118:Core/Src/MQTTSim800.c ****     // check for display option after point
+ 119:Core/Src/MQTTSim800.c ****     if (afterpoint != 0)
+ 243              		.loc 1 119 5 is_stmt 1 view .LVU60
+ 244              		.loc 1 119 8 is_stmt 0 view .LVU61
+ 245 0028 0FB9     		cbnz	r7, .L17
+ 246              	.LVL26:
+ 247              	.L14:
+ 120:Core/Src/MQTTSim800.c ****     {
+ 121:Core/Src/MQTTSim800.c ****         res[i] = '.'; // add dot
+ 122:Core/Src/MQTTSim800.c ****         fpart = fpart * pow(10, afterpoint);
+ 123:Core/Src/MQTTSim800.c ****         intToStr((int)fpart, res + i + 1, afterpoint);
+ 124:Core/Src/MQTTSim800.c ****     }
+ 125:Core/Src/MQTTSim800.c **** }
+ 248              		.loc 1 125 1 view .LVU62
+ 249 002a BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+ 250              	.LVL27:
+ 251              	.L17:
+ 252              		.loc 1 125 1 view .LVU63
+ 253 002e 0546     		mov	r5, r0
+ 254              	.LVL28:
+ 121:Core/Src/MQTTSim800.c ****         fpart = fpart * pow(10, afterpoint);
+ 255              		.loc 1 121 9 is_stmt 1 view .LVU64
+ 121:Core/Src/MQTTSim800.c ****         fpart = fpart * pow(10, afterpoint);
+ 256              		.loc 1 121 16 is_stmt 0 view .LVU65
+ 257 0030 2E23     		movs	r3, #46
+ 258 0032 2354     		strb	r3, [r4, r0]
+ 122:Core/Src/MQTTSim800.c ****         intToStr((int)fpart, res + i + 1, afterpoint);
+ 259              		.loc 1 122 9 is_stmt 1 view .LVU66
+ 122:Core/Src/MQTTSim800.c ****         intToStr((int)fpart, res + i + 1, afterpoint);
+ 260              		.loc 1 122 25 is_stmt 0 view .LVU67
+ 261 0034 3846     		mov	r0, r7
+ 262              	.LVL29:
+ 122:Core/Src/MQTTSim800.c ****         intToStr((int)fpart, res + i + 1, afterpoint);
+ 263              		.loc 1 122 25 view .LVU68
+ 264 0036 FFF7FEFF 		bl	__aeabi_i2d
+ 265              	.LVL30:
+ 266 003a 0246     		mov	r2, r0
+ 267 003c 0B46     		mov	r3, r1
+ 268 003e 0020     		movs	r0, #0
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 8
+
+
+ 269 0040 0B49     		ldr	r1, .L18
+ 270 0042 FFF7FEFF 		bl	pow
+ 271              	.LVL31:
+ 272 0046 8046     		mov	r8, r0
+ 273 0048 8946     		mov	r9, r1
+ 122:Core/Src/MQTTSim800.c ****         intToStr((int)fpart, res + i + 1, afterpoint);
+ 274              		.loc 1 122 23 view .LVU69
+ 275 004a 3046     		mov	r0, r6
+ 276 004c FFF7FEFF 		bl	__aeabi_f2d
+ 277              	.LVL32:
+ 278 0050 4246     		mov	r2, r8
+ 279 0052 4B46     		mov	r3, r9
+ 280 0054 FFF7FEFF 		bl	__aeabi_dmul
+ 281              	.LVL33:
+ 122:Core/Src/MQTTSim800.c ****         intToStr((int)fpart, res + i + 1, afterpoint);
+ 282              		.loc 1 122 15 view .LVU70
+ 283 0058 FFF7FEFF 		bl	__aeabi_d2f
+ 284              	.LVL34:
+ 123:Core/Src/MQTTSim800.c ****     }
+ 285              		.loc 1 123 9 is_stmt 1 view .LVU71
+ 123:Core/Src/MQTTSim800.c ****     }
+ 286              		.loc 1 123 38 is_stmt 0 view .LVU72
+ 287 005c 691C     		adds	r1, r5, #1
+ 123:Core/Src/MQTTSim800.c ****     }
+ 288              		.loc 1 123 9 view .LVU73
+ 289 005e 0C44     		add	r4, r4, r1
+ 290              	.LVL35:
+ 123:Core/Src/MQTTSim800.c ****     }
+ 291              		.loc 1 123 9 view .LVU74
+ 292 0060 FFF7FEFF 		bl	__aeabi_f2iz
+ 293              	.LVL36:
+ 123:Core/Src/MQTTSim800.c ****     }
+ 294              		.loc 1 123 9 view .LVU75
+ 295 0064 3A46     		mov	r2, r7
+ 296 0066 2146     		mov	r1, r4
+ 297 0068 FFF7FEFF 		bl	intToStr
+ 298              	.LVL37:
+ 299              		.loc 1 125 1 view .LVU76
+ 300 006c DDE7     		b	.L14
+ 301              	.L19:
+ 302 006e 00BF     		.align	2
+ 303              	.L18:
+ 304 0070 00002440 		.word	1076101120
+ 305              		.cfi_endproc
+ 306              	.LFE74:
+ 308              		.section	.text.clearRxBuffer,"ax",%progbits
+ 309              		.align	1
+ 310              		.global	clearRxBuffer
+ 311              		.syntax unified
+ 312              		.thumb
+ 313              		.thumb_func
+ 314              		.fpu softvfp
+ 316              	clearRxBuffer:
+ 317              	.LFB76:
+ 126:Core/Src/MQTTSim800.c **** 
+ 127:Core/Src/MQTTSim800.c **** 
+ 128:Core/Src/MQTTSim800.c **** //--------------------------------------------------------------------------
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 9
+
+
+ 129:Core/Src/MQTTSim800.c **** 
+ 130:Core/Src/MQTTSim800.c **** /**
+ 131:Core/Src/MQTTSim800.c ****  * Call back function for release read SIM800 UART buffer.
+ 132:Core/Src/MQTTSim800.c ****  * @param NONE
+ 133:Core/Src/MQTTSim800.c ****  * @return NONE
+ 134:Core/Src/MQTTSim800.c ****  */
+ 135:Core/Src/MQTTSim800.c **** void Sim800_RxCallBack(void)
+ 136:Core/Src/MQTTSim800.c **** {
+ 137:Core/Src/MQTTSim800.c ****     rx_buffer[rx_index++] = rx_data;
+ 138:Core/Src/MQTTSim800.c **** 
+ 139:Core/Src/MQTTSim800.c ****     if (SIM800.mqttServer.connect == 0)
+ 140:Core/Src/MQTTSim800.c ****     {
+ 141:Core/Src/MQTTSim800.c ****         if (strstr((char *)rx_buffer, "\r\n") != NULL && rx_index == 2)
+ 142:Core/Src/MQTTSim800.c ****         {
+ 143:Core/Src/MQTTSim800.c ****             rx_index = 0;
+ 144:Core/Src/MQTTSim800.c ****         }
+ 145:Core/Src/MQTTSim800.c ****         else if (strstr((char *)rx_buffer, "\r\n") != NULL)
+ 146:Core/Src/MQTTSim800.c ****         {
+ 147:Core/Src/MQTTSim800.c ****             memcpy(mqtt_buffer, rx_buffer, sizeof(rx_buffer));
+ 148:Core/Src/MQTTSim800.c ****             clearRxBuffer();
+ 149:Core/Src/MQTTSim800.c ****             if (strstr(mqtt_buffer, "DY CONNECT\r\n"))
+ 150:Core/Src/MQTTSim800.c ****             {
+ 151:Core/Src/MQTTSim800.c ****                 SIM800.mqttServer.connect = 0;
+ 152:Core/Src/MQTTSim800.c ****             }
+ 153:Core/Src/MQTTSim800.c ****             else if (strstr(mqtt_buffer, "CONNECT\r\n"))
+ 154:Core/Src/MQTTSim800.c ****             {
+ 155:Core/Src/MQTTSim800.c ****                 SIM800.mqttServer.connect = 1;
+ 156:Core/Src/MQTTSim800.c ****             }
+ 157:Core/Src/MQTTSim800.c ****         }
+ 158:Core/Src/MQTTSim800.c ****     }
+ 159:Core/Src/MQTTSim800.c ****     if (strstr((char *)rx_buffer, "CLOSED\r\n") || strstr((char *)rx_buffer, "ERROR\r\n") || strstr
+ 160:Core/Src/MQTTSim800.c ****     {
+ 161:Core/Src/MQTTSim800.c ****         SIM800.mqttServer.connect = 0;
+ 162:Core/Src/MQTTSim800.c ****     }
+ 163:Core/Src/MQTTSim800.c ****     // if (SIM800.mqttServer.connect == 1 && rx_data == 48)
+ 164:Core/Src/MQTTSim800.c ****     // {
+ 165:Core/Src/MQTTSim800.c ****     //     mqtt_receive = 1;
+ 166:Core/Src/MQTTSim800.c ****     // }
+ 167:Core/Src/MQTTSim800.c ****     // if (mqtt_receive == 1)
+ 168:Core/Src/MQTTSim800.c ****     // {
+ 169:Core/Src/MQTTSim800.c ****     //     mqtt_buffer[mqtt_index++] = rx_data;
+ 170:Core/Src/MQTTSim800.c ****     //     if (mqtt_index > 1 && mqtt_index - 1 > mqtt_buffer[1])
+ 171:Core/Src/MQTTSim800.c ****     //     {
+ 172:Core/Src/MQTTSim800.c ****     //         MQTT_Receive((unsigned char *)mqtt_buffer);
+ 173:Core/Src/MQTTSim800.c ****     //         clearRxBuffer();
+ 174:Core/Src/MQTTSim800.c ****     //         clearMqttBuffer();
+ 175:Core/Src/MQTTSim800.c ****     //     }
+ 176:Core/Src/MQTTSim800.c ****     //     if (mqtt_index >= sizeof(mqtt_buffer))
+ 177:Core/Src/MQTTSim800.c ****     //     {
+ 178:Core/Src/MQTTSim800.c ****     //         clearMqttBuffer();
+ 179:Core/Src/MQTTSim800.c ****     //     }
+ 180:Core/Src/MQTTSim800.c ****     // }
+ 181:Core/Src/MQTTSim800.c ****     if (rx_index >= sizeof(mqtt_buffer))
+ 182:Core/Src/MQTTSim800.c ****     {
+ 183:Core/Src/MQTTSim800.c ****         clearRxBuffer();
+ 184:Core/Src/MQTTSim800.c ****         clearMqttBuffer();
+ 185:Core/Src/MQTTSim800.c ****     }
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 10
+
+
+ 186:Core/Src/MQTTSim800.c ****     HAL_UART_Receive_IT(UART_SIM800, &rx_data, 1);
+ 187:Core/Src/MQTTSim800.c **** }
+ 188:Core/Src/MQTTSim800.c **** 
+ 189:Core/Src/MQTTSim800.c **** /**
+ 190:Core/Src/MQTTSim800.c ****  * Clear SIM800 UART RX buffer.
+ 191:Core/Src/MQTTSim800.c ****  * @param NONE
+ 192:Core/Src/MQTTSim800.c ****  * @return NONE
+ 193:Core/Src/MQTTSim800.c ****  */
+ 194:Core/Src/MQTTSim800.c **** void clearRxBuffer(void)
+ 195:Core/Src/MQTTSim800.c **** {
+ 318              		.loc 1 195 1 is_stmt 1 view -0
+ 319              		.cfi_startproc
+ 320              		@ args = 0, pretend = 0, frame = 0
+ 321              		@ frame_needed = 0, uses_anonymous_args = 0
+ 322 0000 08B5     		push	{r3, lr}
+ 323              	.LCFI2:
+ 324              		.cfi_def_cfa_offset 8
+ 325              		.cfi_offset 3, -8
+ 326              		.cfi_offset 14, -4
+ 196:Core/Src/MQTTSim800.c ****     rx_index = 0;
+ 327              		.loc 1 196 5 view .LVU78
+ 328              		.loc 1 196 14 is_stmt 0 view .LVU79
+ 329 0002 0021     		movs	r1, #0
+ 330 0004 034B     		ldr	r3, .L22
+ 331 0006 1980     		strh	r1, [r3]	@ movhi
+ 197:Core/Src/MQTTSim800.c ****     memset(rx_buffer, 0, sizeof(rx_buffer));
+ 332              		.loc 1 197 5 is_stmt 1 view .LVU80
+ 333 0008 C822     		movs	r2, #200
+ 334 000a 0348     		ldr	r0, .L22+4
+ 335 000c FFF7FEFF 		bl	memset
+ 336              	.LVL38:
+ 198:Core/Src/MQTTSim800.c **** }
+ 337              		.loc 1 198 1 is_stmt 0 view .LVU81
+ 338 0010 08BD     		pop	{r3, pc}
+ 339              	.L23:
+ 340 0012 00BF     		.align	2
+ 341              	.L22:
+ 342 0014 00000000 		.word	.LANCHOR0
+ 343 0018 00000000 		.word	.LANCHOR1
+ 344              		.cfi_endproc
+ 345              	.LFE76:
+ 347              		.section	.text.clearMqttBuffer,"ax",%progbits
+ 348              		.align	1
+ 349              		.global	clearMqttBuffer
+ 350              		.syntax unified
+ 351              		.thumb
+ 352              		.thumb_func
+ 353              		.fpu softvfp
+ 355              	clearMqttBuffer:
+ 356              	.LFB77:
+ 199:Core/Src/MQTTSim800.c **** 
+ 200:Core/Src/MQTTSim800.c **** /**
+ 201:Core/Src/MQTTSim800.c ****  * Clear MQTT buffer.
+ 202:Core/Src/MQTTSim800.c ****  * @param NONE
+ 203:Core/Src/MQTTSim800.c ****  * @return NONE
+ 204:Core/Src/MQTTSim800.c ****  */
+ 205:Core/Src/MQTTSim800.c **** void clearMqttBuffer(void)
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 11
+
+
+ 206:Core/Src/MQTTSim800.c **** {
+ 357              		.loc 1 206 1 is_stmt 1 view -0
+ 358              		.cfi_startproc
+ 359              		@ args = 0, pretend = 0, frame = 0
+ 360              		@ frame_needed = 0, uses_anonymous_args = 0
+ 361 0000 08B5     		push	{r3, lr}
+ 362              	.LCFI3:
+ 363              		.cfi_def_cfa_offset 8
+ 364              		.cfi_offset 3, -8
+ 365              		.cfi_offset 14, -4
+ 207:Core/Src/MQTTSim800.c ****     mqtt_receive = 0;
+ 366              		.loc 1 207 5 view .LVU83
+ 367              		.loc 1 207 18 is_stmt 0 view .LVU84
+ 368 0002 0021     		movs	r1, #0
+ 369 0004 044B     		ldr	r3, .L26
+ 370 0006 1970     		strb	r1, [r3]
+ 208:Core/Src/MQTTSim800.c ****     mqtt_index = 0;
+ 371              		.loc 1 208 5 is_stmt 1 view .LVU85
+ 372              		.loc 1 208 16 is_stmt 0 view .LVU86
+ 373 0008 044B     		ldr	r3, .L26+4
+ 374 000a 1980     		strh	r1, [r3]	@ movhi
+ 209:Core/Src/MQTTSim800.c ****     memset(mqtt_buffer, 0, sizeof(mqtt_buffer));
+ 375              		.loc 1 209 5 is_stmt 1 view .LVU87
+ 376 000c C822     		movs	r2, #200
+ 377 000e 0448     		ldr	r0, .L26+8
+ 378 0010 FFF7FEFF 		bl	memset
+ 379              	.LVL39:
+ 210:Core/Src/MQTTSim800.c **** }
+ 380              		.loc 1 210 1 is_stmt 0 view .LVU88
+ 381 0014 08BD     		pop	{r3, pc}
+ 382              	.L27:
+ 383 0016 00BF     		.align	2
+ 384              	.L26:
+ 385 0018 00000000 		.word	.LANCHOR2
+ 386 001c 00000000 		.word	.LANCHOR3
+ 387 0020 00000000 		.word	.LANCHOR4
+ 388              		.cfi_endproc
+ 389              	.LFE77:
+ 391              		.section	.rodata.Sim800_RxCallBack.str1.4,"aMS",%progbits,1
+ 392              		.align	2
+ 393              	.LC1:
+ 394 0000 0D0A00   		.ascii	"\015\012\000"
+ 395 0003 00       		.align	2
+ 396              	.LC2:
+ 397 0004 44592043 		.ascii	"DY CONNECT\015\012\000"
+ 397      4F4E4E45 
+ 397      43540D0A 
+ 397      00
+ 398 0011 000000   		.align	2
+ 399              	.LC3:
+ 400 0014 434F4E4E 		.ascii	"CONNECT\015\012\000"
+ 400      4543540D 
+ 400      0A00
+ 401 001e 0000     		.align	2
+ 402              	.LC4:
+ 403 0020 434C4F53 		.ascii	"CLOSED\015\012\000"
+ 403      45440D0A 
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 12
+
+
+ 403      00
+ 404 0029 000000   		.align	2
+ 405              	.LC5:
+ 406 002c 4552524F 		.ascii	"ERROR\015\012\000"
+ 406      520D0A00 
+ 407              		.align	2
+ 408              	.LC6:
+ 409 0034 44454143 		.ascii	"DEACT\015\012\000"
+ 409      540D0A00 
+ 410              		.section	.text.Sim800_RxCallBack,"ax",%progbits
+ 411              		.align	1
+ 412              		.global	Sim800_RxCallBack
+ 413              		.syntax unified
+ 414              		.thumb
+ 415              		.thumb_func
+ 416              		.fpu softvfp
+ 418              	Sim800_RxCallBack:
+ 419              	.LFB75:
+ 136:Core/Src/MQTTSim800.c ****     rx_buffer[rx_index++] = rx_data;
+ 420              		.loc 1 136 1 is_stmt 1 view -0
+ 421              		.cfi_startproc
+ 422              		@ args = 0, pretend = 0, frame = 0
+ 423              		@ frame_needed = 0, uses_anonymous_args = 0
+ 424 0000 10B5     		push	{r4, lr}
+ 425              	.LCFI4:
+ 426              		.cfi_def_cfa_offset 8
+ 427              		.cfi_offset 4, -8
+ 428              		.cfi_offset 14, -4
+ 137:Core/Src/MQTTSim800.c **** 
+ 429              		.loc 1 137 5 view .LVU90
+ 137:Core/Src/MQTTSim800.c **** 
+ 430              		.loc 1 137 23 is_stmt 0 view .LVU91
+ 431 0002 2B4A     		ldr	r2, .L39
+ 432 0004 1388     		ldrh	r3, [r2]
+ 433 0006 5C1C     		adds	r4, r3, #1
+ 434 0008 A4B2     		uxth	r4, r4
+ 435 000a 1480     		strh	r4, [r2]	@ movhi
+ 137:Core/Src/MQTTSim800.c **** 
+ 436              		.loc 1 137 27 view .LVU92
+ 437 000c 294A     		ldr	r2, .L39+4
+ 438 000e 1178     		ldrb	r1, [r2]	@ zero_extendqisi2
+ 439 0010 294A     		ldr	r2, .L39+8
+ 440 0012 D154     		strb	r1, [r2, r3]
+ 139:Core/Src/MQTTSim800.c ****     {
+ 441              		.loc 1 139 5 is_stmt 1 view .LVU93
+ 139:Core/Src/MQTTSim800.c ****     {
+ 442              		.loc 1 139 26 is_stmt 0 view .LVU94
+ 443 0014 294B     		ldr	r3, .L39+12
+ 444 0016 9B7C     		ldrb	r3, [r3, #18]	@ zero_extendqisi2
+ 139:Core/Src/MQTTSim800.c ****     {
+ 445              		.loc 1 139 8 view .LVU95
+ 446 0018 C3B9     		cbnz	r3, .L29
+ 141:Core/Src/MQTTSim800.c ****         {
+ 447              		.loc 1 141 9 is_stmt 1 view .LVU96
+ 141:Core/Src/MQTTSim800.c ****         {
+ 448              		.loc 1 141 13 is_stmt 0 view .LVU97
+ 449 001a 2949     		ldr	r1, .L39+16
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 13
+
+
+ 450 001c 1046     		mov	r0, r2
+ 451 001e FFF7FEFF 		bl	strstr
+ 452              	.LVL40:
+ 141:Core/Src/MQTTSim800.c ****         {
+ 453              		.loc 1 141 12 view .LVU98
+ 454 0022 0346     		mov	r3, r0
+ 455 0024 08B1     		cbz	r0, .L30
+ 141:Core/Src/MQTTSim800.c ****         {
+ 456              		.loc 1 141 55 discriminator 1 view .LVU99
+ 457 0026 022C     		cmp	r4, #2
+ 458 0028 22D0     		beq	.L36
+ 459              	.L30:
+ 145:Core/Src/MQTTSim800.c ****         {
+ 460              		.loc 1 145 14 is_stmt 1 view .LVU100
+ 145:Core/Src/MQTTSim800.c ****         {
+ 461              		.loc 1 145 17 is_stmt 0 view .LVU101
+ 462 002a 7BB1     		cbz	r3, .L29
+ 147:Core/Src/MQTTSim800.c ****             clearRxBuffer();
+ 463              		.loc 1 147 13 is_stmt 1 view .LVU102
+ 464 002c 254C     		ldr	r4, .L39+20
+ 465 002e C822     		movs	r2, #200
+ 466 0030 2149     		ldr	r1, .L39+8
+ 467 0032 2046     		mov	r0, r4
+ 468 0034 FFF7FEFF 		bl	memcpy
+ 469              	.LVL41:
+ 148:Core/Src/MQTTSim800.c ****             if (strstr(mqtt_buffer, "DY CONNECT\r\n"))
+ 470              		.loc 1 148 13 view .LVU103
+ 471 0038 FFF7FEFF 		bl	clearRxBuffer
+ 472              	.LVL42:
+ 149:Core/Src/MQTTSim800.c ****             {
+ 473              		.loc 1 149 13 view .LVU104
+ 149:Core/Src/MQTTSim800.c ****             {
+ 474              		.loc 1 149 17 is_stmt 0 view .LVU105
+ 475 003c 2249     		ldr	r1, .L39+24
+ 476 003e 2046     		mov	r0, r4
+ 477 0040 FFF7FEFF 		bl	strstr
+ 478              	.LVL43:
+ 149:Core/Src/MQTTSim800.c ****             {
+ 479              		.loc 1 149 16 view .LVU106
+ 480 0044 C0B1     		cbz	r0, .L31
+ 151:Core/Src/MQTTSim800.c ****             }
+ 481              		.loc 1 151 17 is_stmt 1 view .LVU107
+ 151:Core/Src/MQTTSim800.c ****             }
+ 482              		.loc 1 151 43 is_stmt 0 view .LVU108
+ 483 0046 1D4B     		ldr	r3, .L39+12
+ 484 0048 0022     		movs	r2, #0
+ 485 004a 9A74     		strb	r2, [r3, #18]
+ 486              	.L29:
+ 159:Core/Src/MQTTSim800.c ****     {
+ 487              		.loc 1 159 5 is_stmt 1 view .LVU109
+ 159:Core/Src/MQTTSim800.c ****     {
+ 488              		.loc 1 159 9 is_stmt 0 view .LVU110
+ 489 004c 1F49     		ldr	r1, .L39+28
+ 490 004e 1A48     		ldr	r0, .L39+8
+ 491 0050 FFF7FEFF 		bl	strstr
+ 492              	.LVL44:
+ 159:Core/Src/MQTTSim800.c ****     {
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 14
+
+
+ 493              		.loc 1 159 8 view .LVU111
+ 494 0054 D0B1     		cbz	r0, .L37
+ 495              	.L32:
+ 161:Core/Src/MQTTSim800.c ****     }
+ 496              		.loc 1 161 9 is_stmt 1 view .LVU112
+ 161:Core/Src/MQTTSim800.c ****     }
+ 497              		.loc 1 161 35 is_stmt 0 view .LVU113
+ 498 0056 194B     		ldr	r3, .L39+12
+ 499 0058 0022     		movs	r2, #0
+ 500 005a 9A74     		strb	r2, [r3, #18]
+ 501              	.L33:
+ 181:Core/Src/MQTTSim800.c ****     {
+ 502              		.loc 1 181 5 is_stmt 1 view .LVU114
+ 181:Core/Src/MQTTSim800.c ****     {
+ 503              		.loc 1 181 18 is_stmt 0 view .LVU115
+ 504 005c 144B     		ldr	r3, .L39
+ 505 005e 1B88     		ldrh	r3, [r3]
+ 181:Core/Src/MQTTSim800.c ****     {
+ 506              		.loc 1 181 8 view .LVU116
+ 507 0060 C72B     		cmp	r3, #199
+ 508 0062 20D8     		bhi	.L38
+ 509              	.L34:
+ 186:Core/Src/MQTTSim800.c **** }
+ 510              		.loc 1 186 5 is_stmt 1 view .LVU117
+ 511 0064 0122     		movs	r2, #1
+ 512 0066 1349     		ldr	r1, .L39+4
+ 513 0068 1948     		ldr	r0, .L39+32
+ 514 006a FFF7FEFF 		bl	HAL_UART_Receive_IT
+ 515              	.LVL45:
+ 187:Core/Src/MQTTSim800.c **** 
+ 516              		.loc 1 187 1 is_stmt 0 view .LVU118
+ 517 006e 10BD     		pop	{r4, pc}
+ 518              	.L36:
+ 143:Core/Src/MQTTSim800.c ****         }
+ 519              		.loc 1 143 13 is_stmt 1 view .LVU119
+ 143:Core/Src/MQTTSim800.c ****         }
+ 520              		.loc 1 143 22 is_stmt 0 view .LVU120
+ 521 0070 0F4B     		ldr	r3, .L39
+ 522 0072 0022     		movs	r2, #0
+ 523 0074 1A80     		strh	r2, [r3]	@ movhi
+ 524 0076 E9E7     		b	.L29
+ 525              	.L31:
+ 153:Core/Src/MQTTSim800.c ****             {
+ 526              		.loc 1 153 18 is_stmt 1 view .LVU121
+ 153:Core/Src/MQTTSim800.c ****             {
+ 527              		.loc 1 153 22 is_stmt 0 view .LVU122
+ 528 0078 1649     		ldr	r1, .L39+36
+ 529 007a 1248     		ldr	r0, .L39+20
+ 530 007c FFF7FEFF 		bl	strstr
+ 531              	.LVL46:
+ 153:Core/Src/MQTTSim800.c ****             {
+ 532              		.loc 1 153 21 view .LVU123
+ 533 0080 0028     		cmp	r0, #0
+ 534 0082 E3D0     		beq	.L29
+ 155:Core/Src/MQTTSim800.c ****             }
+ 535              		.loc 1 155 17 is_stmt 1 view .LVU124
+ 155:Core/Src/MQTTSim800.c ****             }
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 15
+
+
+ 536              		.loc 1 155 43 is_stmt 0 view .LVU125
+ 537 0084 0D4B     		ldr	r3, .L39+12
+ 538 0086 0122     		movs	r2, #1
+ 539 0088 9A74     		strb	r2, [r3, #18]
+ 540 008a DFE7     		b	.L29
+ 541              	.L37:
+ 159:Core/Src/MQTTSim800.c ****     {
+ 542              		.loc 1 159 52 discriminator 1 view .LVU126
+ 543 008c 1249     		ldr	r1, .L39+40
+ 544 008e 0A48     		ldr	r0, .L39+8
+ 545 0090 FFF7FEFF 		bl	strstr
+ 546              	.LVL47:
+ 159:Core/Src/MQTTSim800.c ****     {
+ 547              		.loc 1 159 49 discriminator 1 view .LVU127
+ 548 0094 0028     		cmp	r0, #0
+ 549 0096 DED1     		bne	.L32
+ 159:Core/Src/MQTTSim800.c ****     {
+ 550              		.loc 1 159 94 discriminator 2 view .LVU128
+ 551 0098 1049     		ldr	r1, .L39+44
+ 552 009a 0748     		ldr	r0, .L39+8
+ 553 009c FFF7FEFF 		bl	strstr
+ 554              	.LVL48:
+ 159:Core/Src/MQTTSim800.c ****     {
+ 555              		.loc 1 159 91 discriminator 2 view .LVU129
+ 556 00a0 0028     		cmp	r0, #0
+ 557 00a2 D8D1     		bne	.L32
+ 558 00a4 DAE7     		b	.L33
+ 559              	.L38:
+ 183:Core/Src/MQTTSim800.c ****         clearMqttBuffer();
+ 560              		.loc 1 183 9 is_stmt 1 view .LVU130
+ 561 00a6 FFF7FEFF 		bl	clearRxBuffer
+ 562              	.LVL49:
+ 184:Core/Src/MQTTSim800.c ****     }
+ 563              		.loc 1 184 9 view .LVU131
+ 564 00aa FFF7FEFF 		bl	clearMqttBuffer
+ 565              	.LVL50:
+ 566 00ae D9E7     		b	.L34
+ 567              	.L40:
+ 568              		.align	2
+ 569              	.L39:
+ 570 00b0 00000000 		.word	.LANCHOR0
+ 571 00b4 00000000 		.word	.LANCHOR5
+ 572 00b8 00000000 		.word	.LANCHOR1
+ 573 00bc 00000000 		.word	SIM800
+ 574 00c0 00000000 		.word	.LC1
+ 575 00c4 00000000 		.word	.LANCHOR4
+ 576 00c8 04000000 		.word	.LC2
+ 577 00cc 20000000 		.word	.LC4
+ 578 00d0 00000000 		.word	huart1
+ 579 00d4 14000000 		.word	.LC3
+ 580 00d8 2C000000 		.word	.LC5
+ 581 00dc 34000000 		.word	.LC6
+ 582              		.cfi_endproc
+ 583              	.LFE75:
+ 585              		.section	.text.SIM800_SendCommand,"ax",%progbits
+ 586              		.align	1
+ 587              		.global	SIM800_SendCommand
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 16
+
+
+ 588              		.syntax unified
+ 589              		.thumb
+ 590              		.thumb_func
+ 591              		.fpu softvfp
+ 593              	SIM800_SendCommand:
+ 594              	.LVL51:
+ 595              	.LFB78:
+ 211:Core/Src/MQTTSim800.c **** 
+ 212:Core/Src/MQTTSim800.c **** /**
+ 213:Core/Src/MQTTSim800.c ****  * Send AT command to SIM800 over UART.
+ 214:Core/Src/MQTTSim800.c ****  * @param command the command to be used the send AT command
+ 215:Core/Src/MQTTSim800.c ****  * @param reply to be used to set the correct answer to the command
+ 216:Core/Src/MQTTSim800.c ****  * @param delay to be used to the set pause to the reply
+ 217:Core/Src/MQTTSim800.c ****  * @return error, 0 is OK
+ 218:Core/Src/MQTTSim800.c ****  */
+ 219:Core/Src/MQTTSim800.c **** int SIM800_SendCommand(char *command, char *reply, uint16_t delay)
+ 220:Core/Src/MQTTSim800.c **** {
+ 596              		.loc 1 220 1 view -0
+ 597              		.cfi_startproc
+ 598              		@ args = 0, pretend = 0, frame = 0
+ 599              		@ frame_needed = 0, uses_anonymous_args = 0
+ 600              		.loc 1 220 1 is_stmt 0 view .LVU133
+ 601 0000 70B5     		push	{r4, r5, r6, lr}
+ 602              	.LCFI5:
+ 603              		.cfi_def_cfa_offset 16
+ 604              		.cfi_offset 4, -16
+ 605              		.cfi_offset 5, -12
+ 606              		.cfi_offset 6, -8
+ 607              		.cfi_offset 14, -4
+ 608 0002 0646     		mov	r6, r0
+ 609 0004 0C46     		mov	r4, r1
+ 610 0006 1546     		mov	r5, r2
+ 221:Core/Src/MQTTSim800.c ****     HAL_UART_Transmit_IT(UART_SIM800, (unsigned char *)command, (uint16_t)strlen(command));
+ 611              		.loc 1 221 5 is_stmt 1 view .LVU134
+ 612              		.loc 1 221 75 is_stmt 0 view .LVU135
+ 613 0008 FFF7FEFF 		bl	strlen
+ 614              	.LVL52:
+ 615              		.loc 1 221 5 view .LVU136
+ 616 000c 82B2     		uxth	r2, r0
+ 617 000e 3146     		mov	r1, r6
+ 618 0010 0948     		ldr	r0, .L45
+ 619 0012 FFF7FEFF 		bl	HAL_UART_Transmit_IT
+ 620              	.LVL53:
+ 222:Core/Src/MQTTSim800.c **** 
+ 223:Core/Src/MQTTSim800.c **** #if  FREERTOS == 1
+ 224:Core/Src/MQTTSim800.c ****     osDelay(delay);
+ 621              		.loc 1 224 5 is_stmt 1 view .LVU137
+ 622 0016 2846     		mov	r0, r5
+ 623 0018 FFF7FEFF 		bl	osDelay
+ 624              	.LVL54:
+ 225:Core/Src/MQTTSim800.c **** #else
+ 226:Core/Src/MQTTSim800.c ****     HAL_Delay(delay);
+ 227:Core/Src/MQTTSim800.c **** #endif
+ 228:Core/Src/MQTTSim800.c **** 
+ 229:Core/Src/MQTTSim800.c ****     if (strstr(mqtt_buffer, reply) != NULL)
+ 625              		.loc 1 229 5 view .LVU138
+ 626              		.loc 1 229 9 is_stmt 0 view .LVU139
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 17
+
+
+ 627 001c 2146     		mov	r1, r4
+ 628 001e 0748     		ldr	r0, .L45+4
+ 629 0020 FFF7FEFF 		bl	strstr
+ 630              	.LVL55:
+ 631              		.loc 1 229 8 view .LVU140
+ 632 0024 18B1     		cbz	r0, .L42
+ 230:Core/Src/MQTTSim800.c ****     {
+ 231:Core/Src/MQTTSim800.c ****         clearRxBuffer();
+ 633              		.loc 1 231 9 is_stmt 1 view .LVU141
+ 634 0026 FFF7FEFF 		bl	clearRxBuffer
+ 635              	.LVL56:
+ 232:Core/Src/MQTTSim800.c ****         return 0;
+ 636              		.loc 1 232 9 view .LVU142
+ 637              		.loc 1 232 16 is_stmt 0 view .LVU143
+ 638 002a 0020     		movs	r0, #0
+ 639              	.L41:
+ 233:Core/Src/MQTTSim800.c ****     }
+ 234:Core/Src/MQTTSim800.c ****     clearRxBuffer();
+ 235:Core/Src/MQTTSim800.c ****     return 1;
+ 236:Core/Src/MQTTSim800.c **** }
+ 640              		.loc 1 236 1 view .LVU144
+ 641 002c 70BD     		pop	{r4, r5, r6, pc}
+ 642              	.LVL57:
+ 643              	.L42:
+ 234:Core/Src/MQTTSim800.c ****     return 1;
+ 644              		.loc 1 234 5 is_stmt 1 view .LVU145
+ 645 002e FFF7FEFF 		bl	clearRxBuffer
+ 646              	.LVL58:
+ 235:Core/Src/MQTTSim800.c **** }
+ 647              		.loc 1 235 5 view .LVU146
+ 235:Core/Src/MQTTSim800.c **** }
+ 648              		.loc 1 235 12 is_stmt 0 view .LVU147
+ 649 0032 0120     		movs	r0, #1
+ 650 0034 FAE7     		b	.L41
+ 651              	.L46:
+ 652 0036 00BF     		.align	2
+ 653              	.L45:
+ 654 0038 00000000 		.word	huart1
+ 655 003c 00000000 		.word	.LANCHOR4
+ 656              		.cfi_endproc
+ 657              	.LFE78:
+ 659              		.section	.text.SIM800_SendMQTT,"ax",%progbits
+ 660              		.align	1
+ 661              		.global	SIM800_SendMQTT
+ 662              		.syntax unified
+ 663              		.thumb
+ 664              		.thumb_func
+ 665              		.fpu softvfp
+ 667              	SIM800_SendMQTT:
+ 668              	.LVL59:
+ 669              	.LFB79:
+ 237:Core/Src/MQTTSim800.c **** 
+ 238:Core/Src/MQTTSim800.c **** /**
+ 239:Core/Src/MQTTSim800.c ****  * @brief 
+ 240:Core/Src/MQTTSim800.c ****  * Send MQTT command <packet> to broker over UART
+ 241:Core/Src/MQTTSim800.c ****  * @param mqtt the packet
+ 242:Core/Src/MQTTSim800.c ****  * @param len the length of the packet
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 18
+
+
+ 243:Core/Src/MQTTSim800.c ****  * @param reply expected reply
+ 244:Core/Src/MQTTSim800.c ****  * @param delay wait for reply
+ 245:Core/Src/MQTTSim800.c ****  * @return int 
+ 246:Core/Src/MQTTSim800.c ****  */
+ 247:Core/Src/MQTTSim800.c **** int SIM800_SendMQTT(char* mqtt, uint8_t len, char* reply, uint16_t delay)
+ 248:Core/Src/MQTTSim800.c **** {
+ 670              		.loc 1 248 1 is_stmt 1 view -0
+ 671              		.cfi_startproc
+ 672              		@ args = 0, pretend = 0, frame = 0
+ 673              		@ frame_needed = 0, uses_anonymous_args = 0
+ 674              		.loc 1 248 1 is_stmt 0 view .LVU149
+ 675 0000 38B5     		push	{r3, r4, r5, lr}
+ 676              	.LCFI6:
+ 677              		.cfi_def_cfa_offset 16
+ 678              		.cfi_offset 3, -16
+ 679              		.cfi_offset 4, -12
+ 680              		.cfi_offset 5, -8
+ 681              		.cfi_offset 14, -4
+ 682 0002 1446     		mov	r4, r2
+ 683 0004 1D46     		mov	r5, r3
+ 249:Core/Src/MQTTSim800.c ****     HAL_UART_Transmit_IT(UART_SIM800, (unsigned char *)mqtt, (uint16_t)len);
+ 684              		.loc 1 249 5 is_stmt 1 view .LVU150
+ 685 0006 0A46     		mov	r2, r1
+ 686              	.LVL60:
+ 687              		.loc 1 249 5 is_stmt 0 view .LVU151
+ 688 0008 0146     		mov	r1, r0
+ 689              	.LVL61:
+ 690              		.loc 1 249 5 view .LVU152
+ 691 000a 0948     		ldr	r0, .L51
+ 692              	.LVL62:
+ 693              		.loc 1 249 5 view .LVU153
+ 694 000c FFF7FEFF 		bl	HAL_UART_Transmit_IT
+ 695              	.LVL63:
+ 250:Core/Src/MQTTSim800.c **** 
+ 251:Core/Src/MQTTSim800.c **** #if  FREERTOS == 1
+ 252:Core/Src/MQTTSim800.c ****     osDelay(delay);
+ 696              		.loc 1 252 5 is_stmt 1 view .LVU154
+ 697 0010 2846     		mov	r0, r5
+ 698 0012 FFF7FEFF 		bl	osDelay
+ 699              	.LVL64:
+ 253:Core/Src/MQTTSim800.c **** #else
+ 254:Core/Src/MQTTSim800.c ****     HAL_Delay(delay);
+ 255:Core/Src/MQTTSim800.c **** #endif
+ 256:Core/Src/MQTTSim800.c **** 
+ 257:Core/Src/MQTTSim800.c ****     if (strstr(mqtt_buffer, reply) != NULL)
+ 700              		.loc 1 257 5 view .LVU155
+ 701              		.loc 1 257 9 is_stmt 0 view .LVU156
+ 702 0016 2146     		mov	r1, r4
+ 703 0018 0648     		ldr	r0, .L51+4
+ 704 001a FFF7FEFF 		bl	strstr
+ 705              	.LVL65:
+ 706              		.loc 1 257 8 view .LVU157
+ 707 001e 18B1     		cbz	r0, .L48
+ 258:Core/Src/MQTTSim800.c ****     {
+ 259:Core/Src/MQTTSim800.c ****         clearRxBuffer();
+ 708              		.loc 1 259 9 is_stmt 1 view .LVU158
+ 709 0020 FFF7FEFF 		bl	clearRxBuffer
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 19
+
+
+ 710              	.LVL66:
+ 260:Core/Src/MQTTSim800.c ****         return 0;
+ 711              		.loc 1 260 9 view .LVU159
+ 712              		.loc 1 260 16 is_stmt 0 view .LVU160
+ 713 0024 0020     		movs	r0, #0
+ 714              	.L47:
+ 261:Core/Src/MQTTSim800.c ****     }
+ 262:Core/Src/MQTTSim800.c ****     clearRxBuffer();
+ 263:Core/Src/MQTTSim800.c ****     return 1;
+ 264:Core/Src/MQTTSim800.c **** }
+ 715              		.loc 1 264 1 view .LVU161
+ 716 0026 38BD     		pop	{r3, r4, r5, pc}
+ 717              	.LVL67:
+ 718              	.L48:
+ 262:Core/Src/MQTTSim800.c ****     return 1;
+ 719              		.loc 1 262 5 is_stmt 1 view .LVU162
+ 720 0028 FFF7FEFF 		bl	clearRxBuffer
+ 721              	.LVL68:
+ 263:Core/Src/MQTTSim800.c **** }
+ 722              		.loc 1 263 5 view .LVU163
+ 263:Core/Src/MQTTSim800.c **** }
+ 723              		.loc 1 263 12 is_stmt 0 view .LVU164
+ 724 002c 0120     		movs	r0, #1
+ 725 002e FAE7     		b	.L47
+ 726              	.L52:
+ 727              		.align	2
+ 728              	.L51:
+ 729 0030 00000000 		.word	huart1
+ 730 0034 00000000 		.word	.LANCHOR4
+ 731              		.cfi_endproc
+ 732              	.LFE79:
+ 734              		.section	.rodata.MQTT_Connect.str1.4,"aMS",%progbits,1
+ 735              		.align	2
+ 736              	.LC7:
+ 737 0000 41542B43 		.ascii	"AT+CIPSTART=\"TCP\",\"%s\",\"%d\"\015\012\000"
+ 737      49505354 
+ 737      4152543D 
+ 737      22544350 
+ 737      222C2225 
+ 738 001e 0000     		.align	2
+ 739              	.LC8:
+ 740 0020 4F4B0D0A 		.ascii	"OK\015\012\000"
+ 740      00
+ 741 0025 000000   		.align	2
+ 742              	.LC9:
+ 743 0028 3E00     		.ascii	">\000"
+ 744 002a 0000     		.align	2
+ 745              	.LC10:
+ 746 002c 41542B43 		.ascii	"AT+CIPSEND\015\012\000"
+ 746      49505345 
+ 746      4E440D0A 
+ 746      00
+ 747              		.section	.text.MQTT_Connect,"ax",%progbits
+ 748              		.align	1
+ 749              		.global	MQTT_Connect
+ 750              		.syntax unified
+ 751              		.thumb
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 20
+
+
+ 752              		.thumb_func
+ 753              		.fpu softvfp
+ 755              	MQTT_Connect:
+ 756              	.LFB81:
+ 265:Core/Src/MQTTSim800.c **** 
+ 266:Core/Src/MQTTSim800.c **** /**
+ 267:Core/Src/MQTTSim800.c ****  * initialization SIM800.
+ 268:Core/Src/MQTTSim800.c ****  * @param NONE
+ 269:Core/Src/MQTTSim800.c ****  * @return error status, 0 - OK
+ 270:Core/Src/MQTTSim800.c ****  */
+ 271:Core/Src/MQTTSim800.c **** int MQTT_Init(void)
+ 272:Core/Src/MQTTSim800.c **** {
+ 273:Core/Src/MQTTSim800.c ****     SIM800.mqttServer.connect = 0;
+ 274:Core/Src/MQTTSim800.c ****     volatile int error = 0;
+ 275:Core/Src/MQTTSim800.c ****     char str[32] = {0};
+ 276:Core/Src/MQTTSim800.c ****     HAL_UART_Receive_IT(UART_SIM800, &rx_data, 1);
+ 277:Core/Src/MQTTSim800.c **** 
+ 278:Core/Src/MQTTSim800.c ****     SIM800_SendCommand("AT\r\n", "OK\r\n", CMD_DELAY);
+ 279:Core/Src/MQTTSim800.c ****     SIM800_SendCommand("ATE0\r\n", "OK\r\n", CMD_DELAY);
+ 280:Core/Src/MQTTSim800.c ****     if (SIM800_SendCommand("AT\r\n", "OK\r\n", CMD_DELAY) == 0){SIM800_Status.SIM = 1;}
+ 281:Core/Src/MQTTSim800.c ****     else
+ 282:Core/Src/MQTTSim800.c ****     {
+ 283:Core/Src/MQTTSim800.c ****         SIM800_Status.SIM = 0;
+ 284:Core/Src/MQTTSim800.c ****         SIM800_Status.GPRS = 0;
+ 285:Core/Src/MQTTSim800.c ****         SIM800_Status.MQTT = 0;
+ 286:Core/Src/MQTTSim800.c ****     }
+ 287:Core/Src/MQTTSim800.c ****     error += SIM800_SendCommand("AT+CIPSHUT\r\n", "OK\r\n", CMD_DELAY);
+ 288:Core/Src/MQTTSim800.c ****     error += SIM800_SendCommand("AT+CGATT=1\r\n", "OK\r\n", CMD_DELAY);
+ 289:Core/Src/MQTTSim800.c ****     error += SIM800_SendCommand("AT+CIPMODE=0\r\n", "OK\r\n", CMD_DELAY);
+ 290:Core/Src/MQTTSim800.c **** 
+ 291:Core/Src/MQTTSim800.c ****     snprintf(str, sizeof(str), "AT+CSTT=\"%s\",\"%s\",\"%s\"\r\n", SIM800.sim.apn, SIM800.sim.apn_u
+ 292:Core/Src/MQTTSim800.c ****             SIM800.sim.apn_pass);
+ 293:Core/Src/MQTTSim800.c ****     error += SIM800_SendCommand(str, "OK\r\n", CMD_DELAY);
+ 294:Core/Src/MQTTSim800.c **** 
+ 295:Core/Src/MQTTSim800.c ****     error += SIM800_SendCommand("AT+CIICR\r\n", "OK\r\n", CMD_DELAY);
+ 296:Core/Src/MQTTSim800.c ****     SIM800_SendCommand("AT+CIFSR\r\n", "", CMD_DELAY);
+ 297:Core/Src/MQTTSim800.c ****     if (error != 0)
+ 298:Core/Src/MQTTSim800.c ****     {   
+ 299:Core/Src/MQTTSim800.c ****         SIM800_Status.GPRS = 0;
+ 300:Core/Src/MQTTSim800.c ****         SIM800_Status.MQTT = 0;
+ 301:Core/Src/MQTTSim800.c ****         return error;
+ 302:Core/Src/MQTTSim800.c ****     }
+ 303:Core/Src/MQTTSim800.c ****     else
+ 304:Core/Src/MQTTSim800.c ****     {   
+ 305:Core/Src/MQTTSim800.c ****         SIM800_Status.GPRS = 1;
+ 306:Core/Src/MQTTSim800.c ****         MQTT_Connect();
+ 307:Core/Src/MQTTSim800.c ****         return error;
+ 308:Core/Src/MQTTSim800.c ****     }
+ 309:Core/Src/MQTTSim800.c **** }
+ 310:Core/Src/MQTTSim800.c **** 
+ 311:Core/Src/MQTTSim800.c **** /**
+ 312:Core/Src/MQTTSim800.c ****  * Connect to MQTT server in Internet over TCP.
+ 313:Core/Src/MQTTSim800.c ****  * @param NONE
+ 314:Core/Src/MQTTSim800.c ****  * @return NONE
+ 315:Core/Src/MQTTSim800.c ****  */
+ 316:Core/Src/MQTTSim800.c **** void MQTT_Connect(void)
+ 317:Core/Src/MQTTSim800.c **** {
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 21
+
+
+ 757              		.loc 1 317 1 is_stmt 1 view -0
+ 758              		.cfi_startproc
+ 759              		@ args = 0, pretend = 0, frame = 344
+ 760              		@ frame_needed = 0, uses_anonymous_args = 0
+ 761 0000 70B5     		push	{r4, r5, r6, lr}
+ 762              	.LCFI7:
+ 763              		.cfi_def_cfa_offset 16
+ 764              		.cfi_offset 4, -16
+ 765              		.cfi_offset 5, -12
+ 766              		.cfi_offset 6, -8
+ 767              		.cfi_offset 14, -4
+ 768 0002 D8B0     		sub	sp, sp, #352
+ 769              	.LCFI8:
+ 770              		.cfi_def_cfa_offset 368
+ 318:Core/Src/MQTTSim800.c ****     SIM800.mqttReceive.newEvent = 0;
+ 771              		.loc 1 318 5 view .LVU166
+ 772              		.loc 1 318 33 is_stmt 0 view .LVU167
+ 773 0004 374D     		ldr	r5, .L63
+ 774 0006 0024     		movs	r4, #0
+ 775 0008 85F82440 		strb	r4, [r5, #36]
+ 319:Core/Src/MQTTSim800.c ****     SIM800.mqttServer.connect = 0;
+ 776              		.loc 1 319 5 is_stmt 1 view .LVU168
+ 777              		.loc 1 319 31 is_stmt 0 view .LVU169
+ 778 000c AC74     		strb	r4, [r5, #18]
+ 320:Core/Src/MQTTSim800.c ****     char str1[128] = {0};
+ 779              		.loc 1 320 5 is_stmt 1 view .LVU170
+ 780              		.loc 1 320 10 is_stmt 0 view .LVU171
+ 781 000e 3894     		str	r4, [sp, #224]
+ 782 0010 7C26     		movs	r6, #124
+ 783 0012 3246     		mov	r2, r6
+ 784 0014 2146     		mov	r1, r4
+ 785 0016 39A8     		add	r0, sp, #228
+ 786 0018 FFF7FEFF 		bl	memset
+ 787              	.LVL69:
+ 321:Core/Src/MQTTSim800.c ****     unsigned char buf[128] = {0};
+ 788              		.loc 1 321 5 is_stmt 1 view .LVU172
+ 789              		.loc 1 321 19 is_stmt 0 view .LVU173
+ 790 001c 1894     		str	r4, [sp, #96]
+ 791 001e 3246     		mov	r2, r6
+ 792 0020 2146     		mov	r1, r4
+ 793 0022 19A8     		add	r0, sp, #100
+ 794 0024 FFF7FEFF 		bl	memset
+ 795              	.LVL70:
+ 322:Core/Src/MQTTSim800.c ****     snprintf(str1, sizeof(str1), "AT+CIPSTART=\"TCP\",\"%s\",\"%d\"\r\n", SIM800.mqttServer.host, S
+ 796              		.loc 1 322 5 is_stmt 1 view .LVU174
+ 797              		.loc 1 322 116 is_stmt 0 view .LVU175
+ 798 0028 2B8A     		ldrh	r3, [r5, #16]
+ 799              		.loc 1 322 5 view .LVU176
+ 800 002a 0093     		str	r3, [sp]
+ 801 002c EB68     		ldr	r3, [r5, #12]
+ 802 002e 2E4A     		ldr	r2, .L63+4
+ 803 0030 8021     		movs	r1, #128
+ 804 0032 38A8     		add	r0, sp, #224
+ 805 0034 FFF7FEFF 		bl	snprintf
+ 806              	.LVL71:
+ 323:Core/Src/MQTTSim800.c ****     if (SIM800_SendCommand(str1, "OK\r\n", CMD_DELAY) == 0)
+ 807              		.loc 1 323 5 is_stmt 1 view .LVU177
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 22
+
+
+ 808              		.loc 1 323 9 is_stmt 0 view .LVU178
+ 809 0038 4FF4FA62 		mov	r2, #2000
+ 810 003c 2B49     		ldr	r1, .L63+8
+ 811 003e 38A8     		add	r0, sp, #224
+ 812 0040 FFF7FEFF 		bl	SIM800_SendCommand
+ 813              	.LVL72:
+ 814              		.loc 1 323 8 view .LVU179
+ 815 0044 08B9     		cbnz	r0, .L54
+ 324:Core/Src/MQTTSim800.c ****     {
+ 325:Core/Src/MQTTSim800.c ****         SIM800.mqttServer.connect = 1;
+ 816              		.loc 1 325 9 is_stmt 1 view .LVU180
+ 817              		.loc 1 325 35 is_stmt 0 view .LVU181
+ 818 0046 0122     		movs	r2, #1
+ 819 0048 AA74     		strb	r2, [r5, #18]
+ 820              	.L54:
+ 326:Core/Src/MQTTSim800.c ****     }
+ 327:Core/Src/MQTTSim800.c ****     if (SIM800.mqttServer.connect == 1) {SIM800_Status.MQTT = 1;}
+ 821              		.loc 1 327 5 is_stmt 1 view .LVU182
+ 822              		.loc 1 327 26 is_stmt 0 view .LVU183
+ 823 004a 264B     		ldr	r3, .L63
+ 824 004c 9B7C     		ldrb	r3, [r3, #18]	@ zero_extendqisi2
+ 825              		.loc 1 327 8 view .LVU184
+ 826 004e 012B     		cmp	r3, #1
+ 827 0050 0CD0     		beq	.L61
+ 328:Core/Src/MQTTSim800.c ****     else    {SIM800_Status.MQTT = 0;}
+ 828              		.loc 1 328 14 is_stmt 1 view .LVU185
+ 829              		.loc 1 328 33 is_stmt 0 view .LVU186
+ 830 0052 274B     		ldr	r3, .L63+12
+ 831 0054 0022     		movs	r2, #0
+ 832 0056 9A70     		strb	r2, [r3, #2]
+ 833              	.L56:
+ 329:Core/Src/MQTTSim800.c **** 
+ 330:Core/Src/MQTTSim800.c **** #if FREERTOS == 1
+ 331:Core/Src/MQTTSim800.c ****     osDelay(2000);
+ 834              		.loc 1 331 5 is_stmt 1 view .LVU187
+ 835 0058 4FF4FA60 		mov	r0, #2000
+ 836 005c FFF7FEFF 		bl	osDelay
+ 837              	.LVL73:
+ 332:Core/Src/MQTTSim800.c **** #else
+ 333:Core/Src/MQTTSim800.c ****     HAL_Delay(5000);
+ 334:Core/Src/MQTTSim800.c **** #endif
+ 335:Core/Src/MQTTSim800.c **** 
+ 336:Core/Src/MQTTSim800.c ****     if (SIM800.mqttServer.connect == 1)
+ 838              		.loc 1 336 5 view .LVU188
+ 839              		.loc 1 336 26 is_stmt 0 view .LVU189
+ 840 0060 204B     		ldr	r3, .L63
+ 841 0062 9B7C     		ldrb	r3, [r3, #18]	@ zero_extendqisi2
+ 842              		.loc 1 336 8 view .LVU190
+ 843 0064 012B     		cmp	r3, #1
+ 844 0066 05D0     		beq	.L62
+ 845              	.L53:
+ 337:Core/Src/MQTTSim800.c ****     {
+ 338:Core/Src/MQTTSim800.c ****         MQTTPacket_connectData datas = MQTTPacket_connectData_initializer;
+ 339:Core/Src/MQTTSim800.c ****         datas.username.cstring = SIM800.mqttClient.username;
+ 340:Core/Src/MQTTSim800.c ****         datas.password.cstring = SIM800.mqttClient.pass;
+ 341:Core/Src/MQTTSim800.c ****         datas.clientID.cstring = SIM800.mqttClient.clientID;
+ 342:Core/Src/MQTTSim800.c ****         datas.keepAliveInterval = SIM800.mqttClient.keepAliveInterval;
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 23
+
+
+ 343:Core/Src/MQTTSim800.c ****         datas.cleansession = 1;
+ 344:Core/Src/MQTTSim800.c ****         int mqtt_len = MQTTSerialize_connect(buf, sizeof(buf), &datas);
+ 345:Core/Src/MQTTSim800.c ****         SIM800_SendCommand("AT+CIPSEND\r\n", ">", CMD_DELAY);
+ 346:Core/Src/MQTTSim800.c ****         if(!SIM800_SendMQTT((char*)buf, mqtt_len, "OK\r\n", CMD_DELAY))
+ 347:Core/Src/MQTTSim800.c ****         {
+ 348:Core/Src/MQTTSim800.c ****             osDelay(100);
+ 349:Core/Src/MQTTSim800.c ****             huart1.Instance->DR = 0b00011010;       //0x1A - OK
+ 350:Core/Src/MQTTSim800.c ****         }
+ 351:Core/Src/MQTTSim800.c ****         else
+ 352:Core/Src/MQTTSim800.c ****         {   
+ 353:Core/Src/MQTTSim800.c ****             osDelay(100);
+ 354:Core/Src/MQTTSim800.c ****             huart1.Instance->DR = 0b00011011;       //0x1B - CANCEL
+ 355:Core/Src/MQTTSim800.c ****         }
+ 356:Core/Src/MQTTSim800.c ****         
+ 357:Core/Src/MQTTSim800.c **** 
+ 358:Core/Src/MQTTSim800.c **** #if FREERTOS == 1
+ 359:Core/Src/MQTTSim800.c ****         osDelay(2000);
+ 360:Core/Src/MQTTSim800.c **** #else
+ 361:Core/Src/MQTTSim800.c ****         HAL_Delay(3000);
+ 362:Core/Src/MQTTSim800.c **** #endif
+ 363:Core/Src/MQTTSim800.c ****     }
+ 364:Core/Src/MQTTSim800.c **** }
+ 846              		.loc 1 364 1 view .LVU191
+ 847 0068 58B0     		add	sp, sp, #352
+ 848              	.LCFI9:
+ 849              		.cfi_remember_state
+ 850              		.cfi_def_cfa_offset 16
+ 851              		@ sp needed
+ 852 006a 70BD     		pop	{r4, r5, r6, pc}
+ 853              	.L61:
+ 854              	.LCFI10:
+ 855              		.cfi_restore_state
+ 327:Core/Src/MQTTSim800.c ****     else    {SIM800_Status.MQTT = 0;}
+ 856              		.loc 1 327 42 is_stmt 1 discriminator 1 view .LVU192
+ 327:Core/Src/MQTTSim800.c ****     else    {SIM800_Status.MQTT = 0;}
+ 857              		.loc 1 327 61 is_stmt 0 discriminator 1 view .LVU193
+ 858 006c 204B     		ldr	r3, .L63+12
+ 859 006e 0122     		movs	r2, #1
+ 860 0070 9A70     		strb	r2, [r3, #2]
+ 861 0072 F1E7     		b	.L56
+ 862              	.L62:
+ 863              	.LBB2:
+ 338:Core/Src/MQTTSim800.c ****         datas.username.cstring = SIM800.mqttClient.username;
+ 864              		.loc 1 338 9 is_stmt 1 view .LVU194
+ 338:Core/Src/MQTTSim800.c ****         datas.username.cstring = SIM800.mqttClient.username;
+ 865              		.loc 1 338 32 is_stmt 0 view .LVU195
+ 866 0074 5822     		movs	r2, #88
+ 867 0076 1F49     		ldr	r1, .L63+16
+ 868 0078 02A8     		add	r0, sp, #8
+ 869 007a FFF7FEFF 		bl	memcpy
+ 870              	.LVL74:
+ 339:Core/Src/MQTTSim800.c ****         datas.password.cstring = SIM800.mqttClient.pass;
+ 871              		.loc 1 339 9 is_stmt 1 view .LVU196
+ 339:Core/Src/MQTTSim800.c ****         datas.password.cstring = SIM800.mqttClient.pass;
+ 872              		.loc 1 339 51 is_stmt 0 view .LVU197
+ 873 007e 194B     		ldr	r3, .L63
+ 874 0080 5A69     		ldr	r2, [r3, #20]
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 24
+
+
+ 339:Core/Src/MQTTSim800.c ****         datas.password.cstring = SIM800.mqttClient.pass;
+ 875              		.loc 1 339 32 view .LVU198
+ 876 0082 1292     		str	r2, [sp, #72]
+ 340:Core/Src/MQTTSim800.c ****         datas.clientID.cstring = SIM800.mqttClient.clientID;
+ 877              		.loc 1 340 9 is_stmt 1 view .LVU199
+ 340:Core/Src/MQTTSim800.c ****         datas.clientID.cstring = SIM800.mqttClient.clientID;
+ 878              		.loc 1 340 51 is_stmt 0 view .LVU200
+ 879 0084 9A69     		ldr	r2, [r3, #24]
+ 340:Core/Src/MQTTSim800.c ****         datas.clientID.cstring = SIM800.mqttClient.clientID;
+ 880              		.loc 1 340 32 view .LVU201
+ 881 0086 1592     		str	r2, [sp, #84]
+ 341:Core/Src/MQTTSim800.c ****         datas.keepAliveInterval = SIM800.mqttClient.keepAliveInterval;
+ 882              		.loc 1 341 9 is_stmt 1 view .LVU202
+ 341:Core/Src/MQTTSim800.c ****         datas.keepAliveInterval = SIM800.mqttClient.keepAliveInterval;
+ 883              		.loc 1 341 51 is_stmt 0 view .LVU203
+ 884 0088 DA69     		ldr	r2, [r3, #28]
+ 341:Core/Src/MQTTSim800.c ****         datas.keepAliveInterval = SIM800.mqttClient.keepAliveInterval;
+ 885              		.loc 1 341 32 view .LVU204
+ 886 008a 0592     		str	r2, [sp, #20]
+ 342:Core/Src/MQTTSim800.c ****         datas.cleansession = 1;
+ 887              		.loc 1 342 9 is_stmt 1 view .LVU205
+ 342:Core/Src/MQTTSim800.c ****         datas.cleansession = 1;
+ 888              		.loc 1 342 52 is_stmt 0 view .LVU206
+ 889 008c 1B8C     		ldrh	r3, [r3, #32]
+ 342:Core/Src/MQTTSim800.c ****         datas.cleansession = 1;
+ 890              		.loc 1 342 33 view .LVU207
+ 891 008e ADF82030 		strh	r3, [sp, #32]	@ movhi
+ 343:Core/Src/MQTTSim800.c ****         int mqtt_len = MQTTSerialize_connect(buf, sizeof(buf), &datas);
+ 892              		.loc 1 343 9 is_stmt 1 view .LVU208
+ 344:Core/Src/MQTTSim800.c ****         SIM800_SendCommand("AT+CIPSEND\r\n", ">", CMD_DELAY);
+ 893              		.loc 1 344 9 view .LVU209
+ 344:Core/Src/MQTTSim800.c ****         SIM800_SendCommand("AT+CIPSEND\r\n", ">", CMD_DELAY);
+ 894              		.loc 1 344 24 is_stmt 0 view .LVU210
+ 895 0092 02AA     		add	r2, sp, #8
+ 896 0094 8021     		movs	r1, #128
+ 897 0096 18A8     		add	r0, sp, #96
+ 898 0098 FFF7FEFF 		bl	MQTTSerialize_connect
+ 899              	.LVL75:
+ 900 009c 0446     		mov	r4, r0
+ 901              	.LVL76:
+ 345:Core/Src/MQTTSim800.c ****         if(!SIM800_SendMQTT((char*)buf, mqtt_len, "OK\r\n", CMD_DELAY))
+ 902              		.loc 1 345 9 is_stmt 1 view .LVU211
+ 903 009e 4FF4FA62 		mov	r2, #2000
+ 904 00a2 1549     		ldr	r1, .L63+20
+ 905 00a4 1548     		ldr	r0, .L63+24
+ 906              	.LVL77:
+ 345:Core/Src/MQTTSim800.c ****         if(!SIM800_SendMQTT((char*)buf, mqtt_len, "OK\r\n", CMD_DELAY))
+ 907              		.loc 1 345 9 is_stmt 0 view .LVU212
+ 908 00a6 FFF7FEFF 		bl	SIM800_SendCommand
+ 909              	.LVL78:
+ 346:Core/Src/MQTTSim800.c ****         {
+ 910              		.loc 1 346 9 is_stmt 1 view .LVU213
+ 346:Core/Src/MQTTSim800.c ****         {
+ 911              		.loc 1 346 13 is_stmt 0 view .LVU214
+ 912 00aa 4FF4FA63 		mov	r3, #2000
+ 913 00ae 0F4A     		ldr	r2, .L63+8
+ 914 00b0 E1B2     		uxtb	r1, r4
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 25
+
+
+ 915 00b2 18A8     		add	r0, sp, #96
+ 916 00b4 FFF7FEFF 		bl	SIM800_SendMQTT
+ 917              	.LVL79:
+ 346:Core/Src/MQTTSim800.c ****         {
+ 918              		.loc 1 346 11 view .LVU215
+ 919 00b8 58B9     		cbnz	r0, .L58
+ 348:Core/Src/MQTTSim800.c ****             huart1.Instance->DR = 0b00011010;       //0x1A - OK
+ 920              		.loc 1 348 13 is_stmt 1 view .LVU216
+ 921 00ba 6420     		movs	r0, #100
+ 922 00bc FFF7FEFF 		bl	osDelay
+ 923              	.LVL80:
+ 349:Core/Src/MQTTSim800.c ****         }
+ 924              		.loc 1 349 13 view .LVU217
+ 349:Core/Src/MQTTSim800.c ****         }
+ 925              		.loc 1 349 19 is_stmt 0 view .LVU218
+ 926 00c0 0F4B     		ldr	r3, .L63+28
+ 927 00c2 1B68     		ldr	r3, [r3]
+ 349:Core/Src/MQTTSim800.c ****         }
+ 928              		.loc 1 349 33 view .LVU219
+ 929 00c4 1A22     		movs	r2, #26
+ 930 00c6 5A60     		str	r2, [r3, #4]
+ 931              	.L59:
+ 359:Core/Src/MQTTSim800.c **** #else
+ 932              		.loc 1 359 9 is_stmt 1 view .LVU220
+ 933 00c8 4FF4FA60 		mov	r0, #2000
+ 934 00cc FFF7FEFF 		bl	osDelay
+ 935              	.LVL81:
+ 936              	.LBE2:
+ 937              		.loc 1 364 1 is_stmt 0 view .LVU221
+ 938 00d0 CAE7     		b	.L53
+ 939              	.L58:
+ 940              	.LBB3:
+ 353:Core/Src/MQTTSim800.c ****             huart1.Instance->DR = 0b00011011;       //0x1B - CANCEL
+ 941              		.loc 1 353 13 is_stmt 1 view .LVU222
+ 942 00d2 6420     		movs	r0, #100
+ 943 00d4 FFF7FEFF 		bl	osDelay
+ 944              	.LVL82:
+ 354:Core/Src/MQTTSim800.c ****         }
+ 945              		.loc 1 354 13 view .LVU223
+ 354:Core/Src/MQTTSim800.c ****         }
+ 946              		.loc 1 354 19 is_stmt 0 view .LVU224
+ 947 00d8 094B     		ldr	r3, .L63+28
+ 948 00da 1B68     		ldr	r3, [r3]
+ 354:Core/Src/MQTTSim800.c ****         }
+ 949              		.loc 1 354 33 view .LVU225
+ 950 00dc 1B22     		movs	r2, #27
+ 951 00de 5A60     		str	r2, [r3, #4]
+ 952 00e0 F2E7     		b	.L59
+ 953              	.L64:
+ 954 00e2 00BF     		.align	2
+ 955              	.L63:
+ 956 00e4 00000000 		.word	SIM800
+ 957 00e8 00000000 		.word	.LC7
+ 958 00ec 20000000 		.word	.LC8
+ 959 00f0 00000000 		.word	.LANCHOR6
+ 960 00f4 00000000 		.word	.LANCHOR7
+ 961 00f8 28000000 		.word	.LC9
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 26
+
+
+ 962 00fc 2C000000 		.word	.LC10
+ 963 0100 00000000 		.word	huart1
+ 964              	.LBE3:
+ 965              		.cfi_endproc
+ 966              	.LFE81:
+ 968              		.section	.rodata.MQTT_Init.str1.4,"aMS",%progbits,1
+ 969              		.align	2
+ 970              	.LC11:
+ 971 0000 41540D0A 		.ascii	"AT\015\012\000"
+ 971      00
+ 972 0005 000000   		.align	2
+ 973              	.LC12:
+ 974 0008 41544530 		.ascii	"ATE0\015\012\000"
+ 974      0D0A00
+ 975 000f 00       		.align	2
+ 976              	.LC13:
+ 977 0010 41542B43 		.ascii	"AT+CIPSHUT\015\012\000"
+ 977      49505348 
+ 977      55540D0A 
+ 977      00
+ 978 001d 000000   		.align	2
+ 979              	.LC14:
+ 980 0020 41542B43 		.ascii	"AT+CGATT=1\015\012\000"
+ 980      47415454 
+ 980      3D310D0A 
+ 980      00
+ 981 002d 000000   		.align	2
+ 982              	.LC15:
+ 983 0030 41542B43 		.ascii	"AT+CIPMODE=0\015\012\000"
+ 983      49504D4F 
+ 983      44453D30 
+ 983      0D0A00
+ 984 003f 00       		.align	2
+ 985              	.LC16:
+ 986 0040 41542B43 		.ascii	"AT+CSTT=\"%s\",\"%s\",\"%s\"\015\012\000"
+ 986      5354543D 
+ 986      22257322 
+ 986      2C222573 
+ 986      222C2225 
+ 987 0059 000000   		.align	2
+ 988              	.LC17:
+ 989 005c 41542B43 		.ascii	"AT+CIICR\015\012\000"
+ 989      49494352 
+ 989      0D0A00
+ 990 0067 00       		.align	2
+ 991              	.LC18:
+ 992 0068 00       		.ascii	"\000"
+ 993 0069 000000   		.align	2
+ 994              	.LC19:
+ 995 006c 41542B43 		.ascii	"AT+CIFSR\015\012\000"
+ 995      49465352 
+ 995      0D0A00
+ 996              		.section	.text.MQTT_Init,"ax",%progbits
+ 997              		.align	1
+ 998              		.global	MQTT_Init
+ 999              		.syntax unified
+ 1000              		.thumb
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 27
+
+
+ 1001              		.thumb_func
+ 1002              		.fpu softvfp
+ 1004              	MQTT_Init:
+ 1005              	.LFB80:
+ 272:Core/Src/MQTTSim800.c ****     SIM800.mqttServer.connect = 0;
+ 1006              		.loc 1 272 1 is_stmt 1 view -0
+ 1007              		.cfi_startproc
+ 1008              		@ args = 0, pretend = 0, frame = 40
+ 1009              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1010 0000 30B5     		push	{r4, r5, lr}
+ 1011              	.LCFI11:
+ 1012              		.cfi_def_cfa_offset 12
+ 1013              		.cfi_offset 4, -12
+ 1014              		.cfi_offset 5, -8
+ 1015              		.cfi_offset 14, -4
+ 1016 0002 8DB0     		sub	sp, sp, #52
+ 1017              	.LCFI12:
+ 1018              		.cfi_def_cfa_offset 64
+ 273:Core/Src/MQTTSim800.c ****     volatile int error = 0;
+ 1019              		.loc 1 273 5 view .LVU227
+ 273:Core/Src/MQTTSim800.c ****     volatile int error = 0;
+ 1020              		.loc 1 273 31 is_stmt 0 view .LVU228
+ 1021 0004 0023     		movs	r3, #0
+ 1022 0006 3F4A     		ldr	r2, .L71
+ 1023 0008 9374     		strb	r3, [r2, #18]
+ 274:Core/Src/MQTTSim800.c ****     char str[32] = {0};
+ 1024              		.loc 1 274 5 is_stmt 1 view .LVU229
+ 274:Core/Src/MQTTSim800.c ****     char str[32] = {0};
+ 1025              		.loc 1 274 18 is_stmt 0 view .LVU230
+ 1026 000a 0B93     		str	r3, [sp, #44]
+ 275:Core/Src/MQTTSim800.c ****     HAL_UART_Receive_IT(UART_SIM800, &rx_data, 1);
+ 1027              		.loc 1 275 5 is_stmt 1 view .LVU231
+ 275:Core/Src/MQTTSim800.c ****     HAL_UART_Receive_IT(UART_SIM800, &rx_data, 1);
+ 1028              		.loc 1 275 10 is_stmt 0 view .LVU232
+ 1029 000c 0393     		str	r3, [sp, #12]
+ 1030 000e 0493     		str	r3, [sp, #16]
+ 1031 0010 0593     		str	r3, [sp, #20]
+ 1032 0012 0693     		str	r3, [sp, #24]
+ 1033 0014 0793     		str	r3, [sp, #28]
+ 1034 0016 0893     		str	r3, [sp, #32]
+ 1035 0018 0993     		str	r3, [sp, #36]
+ 1036 001a 0A93     		str	r3, [sp, #40]
+ 276:Core/Src/MQTTSim800.c **** 
+ 1037              		.loc 1 276 5 is_stmt 1 view .LVU233
+ 1038 001c 0122     		movs	r2, #1
+ 1039 001e 3A49     		ldr	r1, .L71+4
+ 1040 0020 3A48     		ldr	r0, .L71+8
+ 1041 0022 FFF7FEFF 		bl	HAL_UART_Receive_IT
+ 1042              	.LVL83:
+ 278:Core/Src/MQTTSim800.c ****     SIM800_SendCommand("ATE0\r\n", "OK\r\n", CMD_DELAY);
+ 1043              		.loc 1 278 5 view .LVU234
+ 1044 0026 3A4C     		ldr	r4, .L71+12
+ 1045 0028 3A4D     		ldr	r5, .L71+16
+ 1046 002a 4FF4FA62 		mov	r2, #2000
+ 1047 002e 2146     		mov	r1, r4
+ 1048 0030 2846     		mov	r0, r5
+ 1049 0032 FFF7FEFF 		bl	SIM800_SendCommand
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 28
+
+
+ 1050              	.LVL84:
+ 279:Core/Src/MQTTSim800.c ****     if (SIM800_SendCommand("AT\r\n", "OK\r\n", CMD_DELAY) == 0){SIM800_Status.SIM = 1;}
+ 1051              		.loc 1 279 5 view .LVU235
+ 1052 0036 4FF4FA62 		mov	r2, #2000
+ 1053 003a 2146     		mov	r1, r4
+ 1054 003c 3648     		ldr	r0, .L71+20
+ 1055 003e FFF7FEFF 		bl	SIM800_SendCommand
+ 1056              	.LVL85:
+ 280:Core/Src/MQTTSim800.c ****     else
+ 1057              		.loc 1 280 5 view .LVU236
+ 280:Core/Src/MQTTSim800.c ****     else
+ 1058              		.loc 1 280 9 is_stmt 0 view .LVU237
+ 1059 0042 4FF4FA62 		mov	r2, #2000
+ 1060 0046 2146     		mov	r1, r4
+ 1061 0048 2846     		mov	r0, r5
+ 1062 004a FFF7FEFF 		bl	SIM800_SendCommand
+ 1063              	.LVL86:
+ 280:Core/Src/MQTTSim800.c ****     else
+ 1064              		.loc 1 280 8 view .LVU238
+ 1065 004e 0028     		cmp	r0, #0
+ 1066 0050 4AD1     		bne	.L66
+ 280:Core/Src/MQTTSim800.c ****     else
+ 1067              		.loc 1 280 65 is_stmt 1 discriminator 1 view .LVU239
+ 280:Core/Src/MQTTSim800.c ****     else
+ 1068              		.loc 1 280 83 is_stmt 0 discriminator 1 view .LVU240
+ 1069 0052 324B     		ldr	r3, .L71+24
+ 1070 0054 0122     		movs	r2, #1
+ 1071 0056 1A70     		strb	r2, [r3]
+ 1072              	.L67:
+ 287:Core/Src/MQTTSim800.c ****     error += SIM800_SendCommand("AT+CGATT=1\r\n", "OK\r\n", CMD_DELAY);
+ 1073              		.loc 1 287 5 is_stmt 1 view .LVU241
+ 287:Core/Src/MQTTSim800.c ****     error += SIM800_SendCommand("AT+CGATT=1\r\n", "OK\r\n", CMD_DELAY);
+ 1074              		.loc 1 287 14 is_stmt 0 view .LVU242
+ 1075 0058 2D4C     		ldr	r4, .L71+12
+ 1076 005a 4FF4FA62 		mov	r2, #2000
+ 1077 005e 2146     		mov	r1, r4
+ 1078 0060 2F48     		ldr	r0, .L71+28
+ 1079 0062 FFF7FEFF 		bl	SIM800_SendCommand
+ 1080              	.LVL87:
+ 287:Core/Src/MQTTSim800.c ****     error += SIM800_SendCommand("AT+CGATT=1\r\n", "OK\r\n", CMD_DELAY);
+ 1081              		.loc 1 287 11 view .LVU243
+ 1082 0066 0B9B     		ldr	r3, [sp, #44]
+ 1083 0068 0344     		add	r3, r3, r0
+ 1084 006a 0B93     		str	r3, [sp, #44]
+ 288:Core/Src/MQTTSim800.c ****     error += SIM800_SendCommand("AT+CIPMODE=0\r\n", "OK\r\n", CMD_DELAY);
+ 1085              		.loc 1 288 5 is_stmt 1 view .LVU244
+ 288:Core/Src/MQTTSim800.c ****     error += SIM800_SendCommand("AT+CIPMODE=0\r\n", "OK\r\n", CMD_DELAY);
+ 1086              		.loc 1 288 14 is_stmt 0 view .LVU245
+ 1087 006c 4FF4FA62 		mov	r2, #2000
+ 1088 0070 2146     		mov	r1, r4
+ 1089 0072 2C48     		ldr	r0, .L71+32
+ 1090 0074 FFF7FEFF 		bl	SIM800_SendCommand
+ 1091              	.LVL88:
+ 288:Core/Src/MQTTSim800.c ****     error += SIM800_SendCommand("AT+CIPMODE=0\r\n", "OK\r\n", CMD_DELAY);
+ 1092              		.loc 1 288 11 view .LVU246
+ 1093 0078 0B9B     		ldr	r3, [sp, #44]
+ 1094 007a 0344     		add	r3, r3, r0
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 29
+
+
+ 1095 007c 0B93     		str	r3, [sp, #44]
+ 289:Core/Src/MQTTSim800.c **** 
+ 1096              		.loc 1 289 5 is_stmt 1 view .LVU247
+ 289:Core/Src/MQTTSim800.c **** 
+ 1097              		.loc 1 289 14 is_stmt 0 view .LVU248
+ 1098 007e 4FF4FA62 		mov	r2, #2000
+ 1099 0082 2146     		mov	r1, r4
+ 1100 0084 2848     		ldr	r0, .L71+36
+ 1101 0086 FFF7FEFF 		bl	SIM800_SendCommand
+ 1102              	.LVL89:
+ 289:Core/Src/MQTTSim800.c **** 
+ 1103              		.loc 1 289 11 view .LVU249
+ 1104 008a 0B9B     		ldr	r3, [sp, #44]
+ 1105 008c 0344     		add	r3, r3, r0
+ 1106 008e 0B93     		str	r3, [sp, #44]
+ 291:Core/Src/MQTTSim800.c ****             SIM800.sim.apn_pass);
+ 1107              		.loc 1 291 5 is_stmt 1 view .LVU250
+ 1108 0090 1C4B     		ldr	r3, .L71
+ 1109 0092 9A68     		ldr	r2, [r3, #8]
+ 1110 0094 0192     		str	r2, [sp, #4]
+ 1111 0096 5A68     		ldr	r2, [r3, #4]
+ 1112 0098 0092     		str	r2, [sp]
+ 1113 009a 1B68     		ldr	r3, [r3]
+ 1114 009c 234A     		ldr	r2, .L71+40
+ 1115 009e 2021     		movs	r1, #32
+ 1116 00a0 03A8     		add	r0, sp, #12
+ 1117 00a2 FFF7FEFF 		bl	snprintf
+ 1118              	.LVL90:
+ 293:Core/Src/MQTTSim800.c **** 
+ 1119              		.loc 1 293 5 view .LVU251
+ 293:Core/Src/MQTTSim800.c **** 
+ 1120              		.loc 1 293 14 is_stmt 0 view .LVU252
+ 1121 00a6 4FF4FA62 		mov	r2, #2000
+ 1122 00aa 2146     		mov	r1, r4
+ 1123 00ac 03A8     		add	r0, sp, #12
+ 1124 00ae FFF7FEFF 		bl	SIM800_SendCommand
+ 1125              	.LVL91:
+ 293:Core/Src/MQTTSim800.c **** 
+ 1126              		.loc 1 293 11 view .LVU253
+ 1127 00b2 0B9B     		ldr	r3, [sp, #44]
+ 1128 00b4 0344     		add	r3, r3, r0
+ 1129 00b6 0B93     		str	r3, [sp, #44]
+ 295:Core/Src/MQTTSim800.c ****     SIM800_SendCommand("AT+CIFSR\r\n", "", CMD_DELAY);
+ 1130              		.loc 1 295 5 is_stmt 1 view .LVU254
+ 295:Core/Src/MQTTSim800.c ****     SIM800_SendCommand("AT+CIFSR\r\n", "", CMD_DELAY);
+ 1131              		.loc 1 295 14 is_stmt 0 view .LVU255
+ 1132 00b8 4FF4FA62 		mov	r2, #2000
+ 1133 00bc 2146     		mov	r1, r4
+ 1134 00be 1C48     		ldr	r0, .L71+44
+ 1135 00c0 FFF7FEFF 		bl	SIM800_SendCommand
+ 1136              	.LVL92:
+ 295:Core/Src/MQTTSim800.c ****     SIM800_SendCommand("AT+CIFSR\r\n", "", CMD_DELAY);
+ 1137              		.loc 1 295 11 view .LVU256
+ 1138 00c4 0B9B     		ldr	r3, [sp, #44]
+ 1139 00c6 0344     		add	r3, r3, r0
+ 1140 00c8 0B93     		str	r3, [sp, #44]
+ 296:Core/Src/MQTTSim800.c ****     if (error != 0)
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 30
+
+
+ 1141              		.loc 1 296 5 is_stmt 1 view .LVU257
+ 1142 00ca 4FF4FA62 		mov	r2, #2000
+ 1143 00ce 1949     		ldr	r1, .L71+48
+ 1144 00d0 1948     		ldr	r0, .L71+52
+ 1145 00d2 FFF7FEFF 		bl	SIM800_SendCommand
+ 1146              	.LVL93:
+ 297:Core/Src/MQTTSim800.c ****     {   
+ 1147              		.loc 1 297 5 view .LVU258
+ 297:Core/Src/MQTTSim800.c ****     {   
+ 1148              		.loc 1 297 15 is_stmt 0 view .LVU259
+ 1149 00d6 0B9B     		ldr	r3, [sp, #44]
+ 297:Core/Src/MQTTSim800.c ****     {   
+ 1150              		.loc 1 297 8 view .LVU260
+ 1151 00d8 63B1     		cbz	r3, .L68
+ 299:Core/Src/MQTTSim800.c ****         SIM800_Status.MQTT = 0;
+ 1152              		.loc 1 299 9 is_stmt 1 view .LVU261
+ 299:Core/Src/MQTTSim800.c ****         SIM800_Status.MQTT = 0;
+ 1153              		.loc 1 299 28 is_stmt 0 view .LVU262
+ 1154 00da 104B     		ldr	r3, .L71+24
+ 1155 00dc 0022     		movs	r2, #0
+ 1156 00de 5A70     		strb	r2, [r3, #1]
+ 300:Core/Src/MQTTSim800.c ****         return error;
+ 1157              		.loc 1 300 9 is_stmt 1 view .LVU263
+ 300:Core/Src/MQTTSim800.c ****         return error;
+ 1158              		.loc 1 300 28 is_stmt 0 view .LVU264
+ 1159 00e0 9A70     		strb	r2, [r3, #2]
+ 301:Core/Src/MQTTSim800.c ****     }
+ 1160              		.loc 1 301 9 is_stmt 1 view .LVU265
+ 301:Core/Src/MQTTSim800.c ****     }
+ 1161              		.loc 1 301 16 is_stmt 0 view .LVU266
+ 1162 00e2 0B98     		ldr	r0, [sp, #44]
+ 1163              	.L65:
+ 309:Core/Src/MQTTSim800.c **** 
+ 1164              		.loc 1 309 1 view .LVU267
+ 1165 00e4 0DB0     		add	sp, sp, #52
+ 1166              	.LCFI13:
+ 1167              		.cfi_remember_state
+ 1168              		.cfi_def_cfa_offset 12
+ 1169              		@ sp needed
+ 1170 00e6 30BD     		pop	{r4, r5, pc}
+ 1171              	.L66:
+ 1172              	.LCFI14:
+ 1173              		.cfi_restore_state
+ 283:Core/Src/MQTTSim800.c ****         SIM800_Status.GPRS = 0;
+ 1174              		.loc 1 283 9 is_stmt 1 view .LVU268
+ 283:Core/Src/MQTTSim800.c ****         SIM800_Status.GPRS = 0;
+ 1175              		.loc 1 283 27 is_stmt 0 view .LVU269
+ 1176 00e8 0C4B     		ldr	r3, .L71+24
+ 1177 00ea 0022     		movs	r2, #0
+ 1178 00ec 1A70     		strb	r2, [r3]
+ 284:Core/Src/MQTTSim800.c ****         SIM800_Status.MQTT = 0;
+ 1179              		.loc 1 284 9 is_stmt 1 view .LVU270
+ 284:Core/Src/MQTTSim800.c ****         SIM800_Status.MQTT = 0;
+ 1180              		.loc 1 284 28 is_stmt 0 view .LVU271
+ 1181 00ee 5A70     		strb	r2, [r3, #1]
+ 285:Core/Src/MQTTSim800.c ****     }
+ 1182              		.loc 1 285 9 is_stmt 1 view .LVU272
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 31
+
+
+ 285:Core/Src/MQTTSim800.c ****     }
+ 1183              		.loc 1 285 28 is_stmt 0 view .LVU273
+ 1184 00f0 9A70     		strb	r2, [r3, #2]
+ 1185 00f2 B1E7     		b	.L67
+ 1186              	.L68:
+ 305:Core/Src/MQTTSim800.c ****         MQTT_Connect();
+ 1187              		.loc 1 305 9 is_stmt 1 view .LVU274
+ 305:Core/Src/MQTTSim800.c ****         MQTT_Connect();
+ 1188              		.loc 1 305 28 is_stmt 0 view .LVU275
+ 1189 00f4 094B     		ldr	r3, .L71+24
+ 1190 00f6 0122     		movs	r2, #1
+ 1191 00f8 5A70     		strb	r2, [r3, #1]
+ 306:Core/Src/MQTTSim800.c ****         return error;
+ 1192              		.loc 1 306 9 is_stmt 1 view .LVU276
+ 1193 00fa FFF7FEFF 		bl	MQTT_Connect
+ 1194              	.LVL94:
+ 307:Core/Src/MQTTSim800.c ****     }
+ 1195              		.loc 1 307 9 view .LVU277
+ 307:Core/Src/MQTTSim800.c ****     }
+ 1196              		.loc 1 307 16 is_stmt 0 view .LVU278
+ 1197 00fe 0B98     		ldr	r0, [sp, #44]
+ 1198 0100 F0E7     		b	.L65
+ 1199              	.L72:
+ 1200 0102 00BF     		.align	2
+ 1201              	.L71:
+ 1202 0104 00000000 		.word	SIM800
+ 1203 0108 00000000 		.word	.LANCHOR5
+ 1204 010c 00000000 		.word	huart1
+ 1205 0110 20000000 		.word	.LC8
+ 1206 0114 00000000 		.word	.LC11
+ 1207 0118 08000000 		.word	.LC12
+ 1208 011c 00000000 		.word	.LANCHOR6
+ 1209 0120 10000000 		.word	.LC13
+ 1210 0124 20000000 		.word	.LC14
+ 1211 0128 30000000 		.word	.LC15
+ 1212 012c 40000000 		.word	.LC16
+ 1213 0130 5C000000 		.word	.LC17
+ 1214 0134 68000000 		.word	.LC18
+ 1215 0138 6C000000 		.word	.LC19
+ 1216              		.cfi_endproc
+ 1217              	.LFE80:
+ 1219              		.section	.text.MQTT_Pub,"ax",%progbits
+ 1220              		.align	1
+ 1221              		.global	MQTT_Pub
+ 1222              		.syntax unified
+ 1223              		.thumb
+ 1224              		.thumb_func
+ 1225              		.fpu softvfp
+ 1227              	MQTT_Pub:
+ 1228              	.LVL95:
+ 1229              	.LFB82:
+ 365:Core/Src/MQTTSim800.c **** 
+ 366:Core/Src/MQTTSim800.c **** /**
+ 367:Core/Src/MQTTSim800.c ****  * Public on the MQTT broker of the message in a topic
+ 368:Core/Src/MQTTSim800.c ****  * @param topic to be used to the set topic
+ 369:Core/Src/MQTTSim800.c ****  * @param payload to be used to the set message for topic
+ 370:Core/Src/MQTTSim800.c ****  * @return NONE
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 32
+
+
+ 371:Core/Src/MQTTSim800.c ****  */
+ 372:Core/Src/MQTTSim800.c **** void MQTT_Pub(char *topic, char *payload)
+ 373:Core/Src/MQTTSim800.c **** {
+ 1230              		.loc 1 373 1 is_stmt 1 view -0
+ 1231              		.cfi_startproc
+ 1232              		@ args = 0, pretend = 0, frame = 272
+ 1233              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1234              		.loc 1 373 1 is_stmt 0 view .LVU280
+ 1235 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 1236              	.LCFI15:
+ 1237              		.cfi_def_cfa_offset 20
+ 1238              		.cfi_offset 4, -20
+ 1239              		.cfi_offset 5, -16
+ 1240              		.cfi_offset 6, -12
+ 1241              		.cfi_offset 7, -8
+ 1242              		.cfi_offset 14, -4
+ 1243 0002 CDB0     		sub	sp, sp, #308
+ 1244              	.LCFI16:
+ 1245              		.cfi_def_cfa_offset 328
+ 1246 0004 0746     		mov	r7, r0
+ 1247 0006 0E46     		mov	r6, r1
+ 374:Core/Src/MQTTSim800.c ****     unsigned char buf[256] = {0};
+ 1248              		.loc 1 374 5 is_stmt 1 view .LVU281
+ 1249              		.loc 1 374 19 is_stmt 0 view .LVU282
+ 1250 0008 0024     		movs	r4, #0
+ 1251 000a 0C94     		str	r4, [sp, #48]
+ 1252 000c FC22     		movs	r2, #252
+ 1253 000e 2146     		mov	r1, r4
+ 1254              	.LVL96:
+ 1255              		.loc 1 374 19 view .LVU283
+ 1256 0010 0DA8     		add	r0, sp, #52
+ 1257              	.LVL97:
+ 1258              		.loc 1 374 19 view .LVU284
+ 1259 0012 FFF7FEFF 		bl	memset
+ 1260              	.LVL98:
+ 375:Core/Src/MQTTSim800.c **** 
+ 376:Core/Src/MQTTSim800.c ****     MQTTString topicString = MQTTString_initializer;
+ 1261              		.loc 1 376 5 is_stmt 1 view .LVU285
+ 1262              		.loc 1 376 16 is_stmt 0 view .LVU286
+ 1263 0016 09AD     		add	r5, sp, #36
+ 1264 0018 0994     		str	r4, [sp, #36]
+ 1265 001a 0A94     		str	r4, [sp, #40]
+ 1266 001c 0B94     		str	r4, [sp, #44]
+ 377:Core/Src/MQTTSim800.c ****     topicString.cstring = topic;
+ 1267              		.loc 1 377 5 is_stmt 1 view .LVU287
+ 1268              		.loc 1 377 25 is_stmt 0 view .LVU288
+ 1269 001e 0997     		str	r7, [sp, #36]
+ 378:Core/Src/MQTTSim800.c **** 
+ 379:Core/Src/MQTTSim800.c ****     int mqtt_len = MQTTSerialize_publish(buf, sizeof(buf), 0, 0, 1, 0,
+ 1270              		.loc 1 379 5 is_stmt 1 view .LVU289
+ 380:Core/Src/MQTTSim800.c ****                                          topicString, (unsigned char *)payload, (int)strlen(payload
+ 1271              		.loc 1 380 86 is_stmt 0 view .LVU290
+ 1272 0020 3046     		mov	r0, r6
+ 1273 0022 FFF7FEFF 		bl	strlen
+ 1274              	.LVL99:
+ 379:Core/Src/MQTTSim800.c ****                                          topicString, (unsigned char *)payload, (int)strlen(payload
+ 1275              		.loc 1 379 20 view .LVU291
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 33
+
+
+ 1276 0026 0690     		str	r0, [sp, #24]
+ 1277 0028 0596     		str	r6, [sp, #20]
+ 1278 002a 02AB     		add	r3, sp, #8
+ 1279 002c 95E80700 		ldm	r5, {r0, r1, r2}
+ 1280 0030 83E80700 		stm	r3, {r0, r1, r2}
+ 1281 0034 0194     		str	r4, [sp, #4]
+ 1282 0036 0123     		movs	r3, #1
+ 1283 0038 0093     		str	r3, [sp]
+ 1284 003a 2346     		mov	r3, r4
+ 1285 003c 4FF48071 		mov	r1, #256
+ 1286 0040 0CA8     		add	r0, sp, #48
+ 1287 0042 FFF7FEFF 		bl	MQTTSerialize_publish
+ 1288              	.LVL100:
+ 1289 0046 0446     		mov	r4, r0
+ 1290              	.LVL101:
+ 381:Core/Src/MQTTSim800.c ****     SIM800_SendCommand("AT+CIPSEND\r\n", ">", CMD_DELAY);
+ 1291              		.loc 1 381 5 is_stmt 1 view .LVU292
+ 1292 0048 4FF4FA62 		mov	r2, #2000
+ 1293 004c 0F49     		ldr	r1, .L77
+ 1294 004e 1048     		ldr	r0, .L77+4
+ 1295              	.LVL102:
+ 1296              		.loc 1 381 5 is_stmt 0 view .LVU293
+ 1297 0050 FFF7FEFF 		bl	SIM800_SendCommand
+ 1298              	.LVL103:
+ 382:Core/Src/MQTTSim800.c ****     if(!SIM800_SendMQTT((char*)buf, mqtt_len, "OK\r\n", CMD_DELAY))
+ 1299              		.loc 1 382 5 is_stmt 1 view .LVU294
+ 1300              		.loc 1 382 9 is_stmt 0 view .LVU295
+ 1301 0054 4FF4FA63 		mov	r3, #2000
+ 1302 0058 0E4A     		ldr	r2, .L77+8
+ 1303 005a E1B2     		uxtb	r1, r4
+ 1304 005c 0CA8     		add	r0, sp, #48
+ 1305 005e FFF7FEFF 		bl	SIM800_SendMQTT
+ 1306              	.LVL104:
+ 1307              		.loc 1 382 7 view .LVU296
+ 1308 0062 58B9     		cbnz	r0, .L74
+ 383:Core/Src/MQTTSim800.c ****     {
+ 384:Core/Src/MQTTSim800.c ****         osDelay(100);
+ 1309              		.loc 1 384 9 is_stmt 1 view .LVU297
+ 1310 0064 6420     		movs	r0, #100
+ 1311 0066 FFF7FEFF 		bl	osDelay
+ 1312              	.LVL105:
+ 385:Core/Src/MQTTSim800.c ****         huart1.Instance->DR = 0b00011010;       //0x1A - OK
+ 1313              		.loc 1 385 9 view .LVU298
+ 1314              		.loc 1 385 15 is_stmt 0 view .LVU299
+ 1315 006a 0B4B     		ldr	r3, .L77+12
+ 1316 006c 1B68     		ldr	r3, [r3]
+ 1317              		.loc 1 385 29 view .LVU300
+ 1318 006e 1A22     		movs	r2, #26
+ 1319 0070 5A60     		str	r2, [r3, #4]
+ 1320              	.L75:
+ 386:Core/Src/MQTTSim800.c ****     }
+ 387:Core/Src/MQTTSim800.c ****     else
+ 388:Core/Src/MQTTSim800.c ****     {   
+ 389:Core/Src/MQTTSim800.c ****         osDelay(100);
+ 390:Core/Src/MQTTSim800.c ****         huart1.Instance->DR = 0b00011011;       //0x1B - CANCEL
+ 391:Core/Src/MQTTSim800.c ****     }
+ 392:Core/Src/MQTTSim800.c **** 
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 34
+
+
+ 393:Core/Src/MQTTSim800.c **** #if FREERTOS == 1
+ 394:Core/Src/MQTTSim800.c ****     osDelay(100);
+ 1321              		.loc 1 394 5 is_stmt 1 view .LVU301
+ 1322 0072 6420     		movs	r0, #100
+ 1323 0074 FFF7FEFF 		bl	osDelay
+ 1324              	.LVL106:
+ 395:Core/Src/MQTTSim800.c **** #else
+ 396:Core/Src/MQTTSim800.c ****     HAL_Delay(100);
+ 397:Core/Src/MQTTSim800.c **** #endif
+ 398:Core/Src/MQTTSim800.c **** }
+ 1325              		.loc 1 398 1 is_stmt 0 view .LVU302
+ 1326 0078 4DB0     		add	sp, sp, #308
+ 1327              	.LCFI17:
+ 1328              		.cfi_remember_state
+ 1329              		.cfi_def_cfa_offset 20
+ 1330              		@ sp needed
+ 1331 007a F0BD     		pop	{r4, r5, r6, r7, pc}
+ 1332              	.LVL107:
+ 1333              	.L74:
+ 1334              	.LCFI18:
+ 1335              		.cfi_restore_state
+ 389:Core/Src/MQTTSim800.c ****         huart1.Instance->DR = 0b00011011;       //0x1B - CANCEL
+ 1336              		.loc 1 389 9 is_stmt 1 view .LVU303
+ 1337 007c 6420     		movs	r0, #100
+ 1338 007e FFF7FEFF 		bl	osDelay
+ 1339              	.LVL108:
+ 390:Core/Src/MQTTSim800.c ****     }
+ 1340              		.loc 1 390 9 view .LVU304
+ 390:Core/Src/MQTTSim800.c ****     }
+ 1341              		.loc 1 390 15 is_stmt 0 view .LVU305
+ 1342 0082 054B     		ldr	r3, .L77+12
+ 1343 0084 1B68     		ldr	r3, [r3]
+ 390:Core/Src/MQTTSim800.c ****     }
+ 1344              		.loc 1 390 29 view .LVU306
+ 1345 0086 1B22     		movs	r2, #27
+ 1346 0088 5A60     		str	r2, [r3, #4]
+ 1347 008a F2E7     		b	.L75
+ 1348              	.L78:
+ 1349              		.align	2
+ 1350              	.L77:
+ 1351 008c 28000000 		.word	.LC9
+ 1352 0090 2C000000 		.word	.LC10
+ 1353 0094 20000000 		.word	.LC8
+ 1354 0098 00000000 		.word	huart1
+ 1355              		.cfi_endproc
+ 1356              	.LFE82:
+ 1358              		.section	.rodata.MQTT_PubUint8.str1.4,"aMS",%progbits,1
+ 1359              		.align	2
+ 1360              	.LC20:
+ 1361 0000 257500   		.ascii	"%u\000"
+ 1362              		.section	.text.MQTT_PubUint8,"ax",%progbits
+ 1363              		.align	1
+ 1364              		.global	MQTT_PubUint8
+ 1365              		.syntax unified
+ 1366              		.thumb
+ 1367              		.thumb_func
+ 1368              		.fpu softvfp
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 35
+
+
+ 1370              	MQTT_PubUint8:
+ 1371              	.LVL109:
+ 1372              	.LFB83:
+ 399:Core/Src/MQTTSim800.c **** 
+ 400:Core/Src/MQTTSim800.c **** /**
+ 401:Core/Src/MQTTSim800.c ****  * Public on the MQTT broker of the message in a topic
+ 402:Core/Src/MQTTSim800.c ****  * @param topic (uint8_t)  to be used to the set topic
+ 403:Core/Src/MQTTSim800.c ****  * @param payload to be used to the set message for topic
+ 404:Core/Src/MQTTSim800.c ****  * @return NONE
+ 405:Core/Src/MQTTSim800.c ****  */
+ 406:Core/Src/MQTTSim800.c **** void MQTT_PubUint8(char *topic, uint8_t payload)
+ 407:Core/Src/MQTTSim800.c **** {
+ 1373              		.loc 1 407 1 is_stmt 1 view -0
+ 1374              		.cfi_startproc
+ 1375              		@ args = 0, pretend = 0, frame = 32
+ 1376              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1377              		.loc 1 407 1 is_stmt 0 view .LVU308
+ 1378 0000 10B5     		push	{r4, lr}
+ 1379              	.LCFI19:
+ 1380              		.cfi_def_cfa_offset 8
+ 1381              		.cfi_offset 4, -8
+ 1382              		.cfi_offset 14, -4
+ 1383 0002 88B0     		sub	sp, sp, #32
+ 1384              	.LCFI20:
+ 1385              		.cfi_def_cfa_offset 40
+ 1386 0004 0446     		mov	r4, r0
+ 1387 0006 0A46     		mov	r2, r1
+ 408:Core/Src/MQTTSim800.c ****     char str[32] = {0};
+ 1388              		.loc 1 408 5 is_stmt 1 view .LVU309
+ 1389              		.loc 1 408 10 is_stmt 0 view .LVU310
+ 1390 0008 0023     		movs	r3, #0
+ 1391 000a 0093     		str	r3, [sp]
+ 1392 000c 0193     		str	r3, [sp, #4]
+ 1393 000e 0293     		str	r3, [sp, #8]
+ 1394 0010 0393     		str	r3, [sp, #12]
+ 1395 0012 0493     		str	r3, [sp, #16]
+ 1396 0014 0593     		str	r3, [sp, #20]
+ 1397 0016 0693     		str	r3, [sp, #24]
+ 1398 0018 0793     		str	r3, [sp, #28]
+ 409:Core/Src/MQTTSim800.c ****     sprintf(str, "%u", payload);
+ 1399              		.loc 1 409 5 is_stmt 1 view .LVU311
+ 1400 001a 0549     		ldr	r1, .L81
+ 1401              	.LVL110:
+ 1402              		.loc 1 409 5 is_stmt 0 view .LVU312
+ 1403 001c 6846     		mov	r0, sp
+ 1404              	.LVL111:
+ 1405              		.loc 1 409 5 view .LVU313
+ 1406 001e FFF7FEFF 		bl	sprintf
+ 1407              	.LVL112:
+ 410:Core/Src/MQTTSim800.c ****     MQTT_Pub(topic, str);
+ 1408              		.loc 1 410 5 is_stmt 1 view .LVU314
+ 1409 0022 6946     		mov	r1, sp
+ 1410 0024 2046     		mov	r0, r4
+ 1411 0026 FFF7FEFF 		bl	MQTT_Pub
+ 1412              	.LVL113:
+ 411:Core/Src/MQTTSim800.c **** }
+ 1413              		.loc 1 411 1 is_stmt 0 view .LVU315
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 36
+
+
+ 1414 002a 08B0     		add	sp, sp, #32
+ 1415              	.LCFI21:
+ 1416              		.cfi_def_cfa_offset 8
+ 1417              		@ sp needed
+ 1418 002c 10BD     		pop	{r4, pc}
+ 1419              	.LVL114:
+ 1420              	.L82:
+ 1421              		.loc 1 411 1 view .LVU316
+ 1422 002e 00BF     		.align	2
+ 1423              	.L81:
+ 1424 0030 00000000 		.word	.LC20
+ 1425              		.cfi_endproc
+ 1426              	.LFE83:
+ 1428              		.section	.text.MQTT_PubUint16,"ax",%progbits
+ 1429              		.align	1
+ 1430              		.global	MQTT_PubUint16
+ 1431              		.syntax unified
+ 1432              		.thumb
+ 1433              		.thumb_func
+ 1434              		.fpu softvfp
+ 1436              	MQTT_PubUint16:
+ 1437              	.LVL115:
+ 1438              	.LFB84:
+ 412:Core/Src/MQTTSim800.c **** 
+ 413:Core/Src/MQTTSim800.c **** /**
+ 414:Core/Src/MQTTSim800.c ****  * Public on the MQTT broker of the message in a topic
+ 415:Core/Src/MQTTSim800.c ****  * @param topic (uint16_t)  to be used to the set topic
+ 416:Core/Src/MQTTSim800.c ****  * @param payload to be used to the set message for topic
+ 417:Core/Src/MQTTSim800.c ****  * @return NONE
+ 418:Core/Src/MQTTSim800.c ****  */
+ 419:Core/Src/MQTTSim800.c **** void MQTT_PubUint16(char *topic, uint16_t payload)
+ 420:Core/Src/MQTTSim800.c **** {
+ 1439              		.loc 1 420 1 is_stmt 1 view -0
+ 1440              		.cfi_startproc
+ 1441              		@ args = 0, pretend = 0, frame = 32
+ 1442              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1443              		.loc 1 420 1 is_stmt 0 view .LVU318
+ 1444 0000 10B5     		push	{r4, lr}
+ 1445              	.LCFI22:
+ 1446              		.cfi_def_cfa_offset 8
+ 1447              		.cfi_offset 4, -8
+ 1448              		.cfi_offset 14, -4
+ 1449 0002 88B0     		sub	sp, sp, #32
+ 1450              	.LCFI23:
+ 1451              		.cfi_def_cfa_offset 40
+ 1452 0004 0446     		mov	r4, r0
+ 1453 0006 0A46     		mov	r2, r1
+ 421:Core/Src/MQTTSim800.c ****     char str[32] = {0};
+ 1454              		.loc 1 421 5 is_stmt 1 view .LVU319
+ 1455              		.loc 1 421 10 is_stmt 0 view .LVU320
+ 1456 0008 0023     		movs	r3, #0
+ 1457 000a 0093     		str	r3, [sp]
+ 1458 000c 0193     		str	r3, [sp, #4]
+ 1459 000e 0293     		str	r3, [sp, #8]
+ 1460 0010 0393     		str	r3, [sp, #12]
+ 1461 0012 0493     		str	r3, [sp, #16]
+ 1462 0014 0593     		str	r3, [sp, #20]
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 37
+
+
+ 1463 0016 0693     		str	r3, [sp, #24]
+ 1464 0018 0793     		str	r3, [sp, #28]
+ 422:Core/Src/MQTTSim800.c ****     sprintf(str, "%u", payload);
+ 1465              		.loc 1 422 5 is_stmt 1 view .LVU321
+ 1466 001a 0549     		ldr	r1, .L85
+ 1467              	.LVL116:
+ 1468              		.loc 1 422 5 is_stmt 0 view .LVU322
+ 1469 001c 6846     		mov	r0, sp
+ 1470              	.LVL117:
+ 1471              		.loc 1 422 5 view .LVU323
+ 1472 001e FFF7FEFF 		bl	sprintf
+ 1473              	.LVL118:
+ 423:Core/Src/MQTTSim800.c ****     MQTT_Pub(topic, str);
+ 1474              		.loc 1 423 5 is_stmt 1 view .LVU324
+ 1475 0022 6946     		mov	r1, sp
+ 1476 0024 2046     		mov	r0, r4
+ 1477 0026 FFF7FEFF 		bl	MQTT_Pub
+ 1478              	.LVL119:
+ 424:Core/Src/MQTTSim800.c **** }
+ 1479              		.loc 1 424 1 is_stmt 0 view .LVU325
+ 1480 002a 08B0     		add	sp, sp, #32
+ 1481              	.LCFI24:
+ 1482              		.cfi_def_cfa_offset 8
+ 1483              		@ sp needed
+ 1484 002c 10BD     		pop	{r4, pc}
+ 1485              	.LVL120:
+ 1486              	.L86:
+ 1487              		.loc 1 424 1 view .LVU326
+ 1488 002e 00BF     		.align	2
+ 1489              	.L85:
+ 1490 0030 00000000 		.word	.LC20
+ 1491              		.cfi_endproc
+ 1492              	.LFE84:
+ 1494              		.section	.rodata.MQTT_PubUint32.str1.4,"aMS",%progbits,1
+ 1495              		.align	2
+ 1496              	.LC21:
+ 1497 0000 256C7500 		.ascii	"%lu\000"
+ 1498              		.section	.text.MQTT_PubUint32,"ax",%progbits
+ 1499              		.align	1
+ 1500              		.global	MQTT_PubUint32
+ 1501              		.syntax unified
+ 1502              		.thumb
+ 1503              		.thumb_func
+ 1504              		.fpu softvfp
+ 1506              	MQTT_PubUint32:
+ 1507              	.LVL121:
+ 1508              	.LFB85:
+ 425:Core/Src/MQTTSim800.c **** 
+ 426:Core/Src/MQTTSim800.c **** /**
+ 427:Core/Src/MQTTSim800.c ****  * Public on the MQTT broker of the message in a topic
+ 428:Core/Src/MQTTSim800.c ****  * @param topic (uint32_t)  to be used to the set topic
+ 429:Core/Src/MQTTSim800.c ****  * @param payload to be used to the set message for topic
+ 430:Core/Src/MQTTSim800.c ****  * @return NONE
+ 431:Core/Src/MQTTSim800.c ****  */
+ 432:Core/Src/MQTTSim800.c **** void MQTT_PubUint32(char *topic, uint32_t payload)
+ 433:Core/Src/MQTTSim800.c **** {
+ 1509              		.loc 1 433 1 is_stmt 1 view -0
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 38
+
+
+ 1510              		.cfi_startproc
+ 1511              		@ args = 0, pretend = 0, frame = 32
+ 1512              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1513              		.loc 1 433 1 is_stmt 0 view .LVU328
+ 1514 0000 10B5     		push	{r4, lr}
+ 1515              	.LCFI25:
+ 1516              		.cfi_def_cfa_offset 8
+ 1517              		.cfi_offset 4, -8
+ 1518              		.cfi_offset 14, -4
+ 1519 0002 88B0     		sub	sp, sp, #32
+ 1520              	.LCFI26:
+ 1521              		.cfi_def_cfa_offset 40
+ 1522 0004 0446     		mov	r4, r0
+ 1523 0006 0A46     		mov	r2, r1
+ 434:Core/Src/MQTTSim800.c ****     char str[32] = {0};
+ 1524              		.loc 1 434 5 is_stmt 1 view .LVU329
+ 1525              		.loc 1 434 10 is_stmt 0 view .LVU330
+ 1526 0008 0023     		movs	r3, #0
+ 1527 000a 0093     		str	r3, [sp]
+ 1528 000c 0193     		str	r3, [sp, #4]
+ 1529 000e 0293     		str	r3, [sp, #8]
+ 1530 0010 0393     		str	r3, [sp, #12]
+ 1531 0012 0493     		str	r3, [sp, #16]
+ 1532 0014 0593     		str	r3, [sp, #20]
+ 1533 0016 0693     		str	r3, [sp, #24]
+ 1534 0018 0793     		str	r3, [sp, #28]
+ 435:Core/Src/MQTTSim800.c ****     sprintf(str, "%lu", payload);
+ 1535              		.loc 1 435 5 is_stmt 1 view .LVU331
+ 1536 001a 0549     		ldr	r1, .L89
+ 1537              	.LVL122:
+ 1538              		.loc 1 435 5 is_stmt 0 view .LVU332
+ 1539 001c 6846     		mov	r0, sp
+ 1540              	.LVL123:
+ 1541              		.loc 1 435 5 view .LVU333
+ 1542 001e FFF7FEFF 		bl	sprintf
+ 1543              	.LVL124:
+ 436:Core/Src/MQTTSim800.c ****     MQTT_Pub(topic, str);
+ 1544              		.loc 1 436 5 is_stmt 1 view .LVU334
+ 1545 0022 6946     		mov	r1, sp
+ 1546 0024 2046     		mov	r0, r4
+ 1547 0026 FFF7FEFF 		bl	MQTT_Pub
+ 1548              	.LVL125:
+ 437:Core/Src/MQTTSim800.c **** }
+ 1549              		.loc 1 437 1 is_stmt 0 view .LVU335
+ 1550 002a 08B0     		add	sp, sp, #32
+ 1551              	.LCFI27:
+ 1552              		.cfi_def_cfa_offset 8
+ 1553              		@ sp needed
+ 1554 002c 10BD     		pop	{r4, pc}
+ 1555              	.LVL126:
+ 1556              	.L90:
+ 1557              		.loc 1 437 1 view .LVU336
+ 1558 002e 00BF     		.align	2
+ 1559              	.L89:
+ 1560 0030 00000000 		.word	.LC21
+ 1561              		.cfi_endproc
+ 1562              	.LFE85:
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 39
+
+
+ 1564              		.section	.text.MQTT_PubFloat,"ax",%progbits
+ 1565              		.align	1
+ 1566              		.global	MQTT_PubFloat
+ 1567              		.syntax unified
+ 1568              		.thumb
+ 1569              		.thumb_func
+ 1570              		.fpu softvfp
+ 1572              	MQTT_PubFloat:
+ 1573              	.LVL127:
+ 1574              	.LFB86:
+ 438:Core/Src/MQTTSim800.c **** 
+ 439:Core/Src/MQTTSim800.c **** /**
+ 440:Core/Src/MQTTSim800.c ****  * Public on the MQTT broker of the message in a topic
+ 441:Core/Src/MQTTSim800.c ****  * @param topic (float)  to be used to the set topic
+ 442:Core/Src/MQTTSim800.c ****  * @param payload to be used to the set message for topic
+ 443:Core/Src/MQTTSim800.c ****  * @return NONE
+ 444:Core/Src/MQTTSim800.c ****  */
+ 445:Core/Src/MQTTSim800.c **** void MQTT_PubFloat(char *topic, float payload, uint8_t digit)
+ 446:Core/Src/MQTTSim800.c **** {
+ 1575              		.loc 1 446 1 is_stmt 1 view -0
+ 1576              		.cfi_startproc
+ 1577              		@ args = 0, pretend = 0, frame = 32
+ 1578              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1579              		.loc 1 446 1 is_stmt 0 view .LVU338
+ 1580 0000 10B5     		push	{r4, lr}
+ 1581              	.LCFI28:
+ 1582              		.cfi_def_cfa_offset 8
+ 1583              		.cfi_offset 4, -8
+ 1584              		.cfi_offset 14, -4
+ 1585 0002 88B0     		sub	sp, sp, #32
+ 1586              	.LCFI29:
+ 1587              		.cfi_def_cfa_offset 40
+ 1588 0004 0446     		mov	r4, r0
+ 1589 0006 0846     		mov	r0, r1
+ 1590              	.LVL128:
+ 447:Core/Src/MQTTSim800.c ****     char str[32] = {0};
+ 1591              		.loc 1 447 5 is_stmt 1 view .LVU339
+ 1592              		.loc 1 447 10 is_stmt 0 view .LVU340
+ 1593 0008 0023     		movs	r3, #0
+ 1594 000a 0093     		str	r3, [sp]
+ 1595 000c 0193     		str	r3, [sp, #4]
+ 1596 000e 0293     		str	r3, [sp, #8]
+ 1597 0010 0393     		str	r3, [sp, #12]
+ 1598 0012 0493     		str	r3, [sp, #16]
+ 1599 0014 0593     		str	r3, [sp, #20]
+ 1600 0016 0693     		str	r3, [sp, #24]
+ 1601 0018 0793     		str	r3, [sp, #28]
+ 448:Core/Src/MQTTSim800.c ****     ftoa(payload, str, digit);
+ 1602              		.loc 1 448 5 is_stmt 1 view .LVU341
+ 1603 001a 6946     		mov	r1, sp
+ 1604              	.LVL129:
+ 1605              		.loc 1 448 5 is_stmt 0 view .LVU342
+ 1606 001c FFF7FEFF 		bl	ftoa
+ 1607              	.LVL130:
+ 449:Core/Src/MQTTSim800.c ****     MQTT_Pub(topic, str);
+ 1608              		.loc 1 449 5 is_stmt 1 view .LVU343
+ 1609 0020 6946     		mov	r1, sp
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 40
+
+
+ 1610 0022 2046     		mov	r0, r4
+ 1611 0024 FFF7FEFF 		bl	MQTT_Pub
+ 1612              	.LVL131:
+ 450:Core/Src/MQTTSim800.c **** }
+ 1613              		.loc 1 450 1 is_stmt 0 view .LVU344
+ 1614 0028 08B0     		add	sp, sp, #32
+ 1615              	.LCFI30:
+ 1616              		.cfi_def_cfa_offset 8
+ 1617              		@ sp needed
+ 1618 002a 10BD     		pop	{r4, pc}
+ 1619              		.loc 1 450 1 view .LVU345
+ 1620              		.cfi_endproc
+ 1621              	.LFE86:
+ 1623              		.section	.text.MQTT_PubDouble,"ax",%progbits
+ 1624              		.align	1
+ 1625              		.global	MQTT_PubDouble
+ 1626              		.syntax unified
+ 1627              		.thumb
+ 1628              		.thumb_func
+ 1629              		.fpu softvfp
+ 1631              	MQTT_PubDouble:
+ 1632              	.LVL132:
+ 1633              	.LFB87:
+ 451:Core/Src/MQTTSim800.c **** 
+ 452:Core/Src/MQTTSim800.c **** /**
+ 453:Core/Src/MQTTSim800.c ****  * Public on the MQTT broker of the message in a topic
+ 454:Core/Src/MQTTSim800.c ****  * @param topic (double)  to be used to the set topic
+ 455:Core/Src/MQTTSim800.c ****  * @param payload to be used to the set message for topic
+ 456:Core/Src/MQTTSim800.c ****  * @return NONE
+ 457:Core/Src/MQTTSim800.c ****  */
+ 458:Core/Src/MQTTSim800.c **** void MQTT_PubDouble(char *topic, double payload, uint8_t digit)
+ 459:Core/Src/MQTTSim800.c **** {
+ 1634              		.loc 1 459 1 is_stmt 1 view -0
+ 1635              		.cfi_startproc
+ 1636              		@ args = 4, pretend = 0, frame = 32
+ 1637              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1638              		.loc 1 459 1 is_stmt 0 view .LVU347
+ 1639 0000 10B5     		push	{r4, lr}
+ 1640              	.LCFI31:
+ 1641              		.cfi_def_cfa_offset 8
+ 1642              		.cfi_offset 4, -8
+ 1643              		.cfi_offset 14, -4
+ 1644 0002 88B0     		sub	sp, sp, #32
+ 1645              	.LCFI32:
+ 1646              		.cfi_def_cfa_offset 40
+ 1647 0004 0446     		mov	r4, r0
+ 1648 0006 1046     		mov	r0, r2
+ 1649              	.LVL133:
+ 1650              		.loc 1 459 1 view .LVU348
+ 1651 0008 1946     		mov	r1, r3
+ 460:Core/Src/MQTTSim800.c ****     char str[32] = {0};
+ 1652              		.loc 1 460 5 is_stmt 1 view .LVU349
+ 1653              		.loc 1 460 10 is_stmt 0 view .LVU350
+ 1654 000a 0023     		movs	r3, #0
+ 1655 000c 0093     		str	r3, [sp]
+ 1656 000e 0193     		str	r3, [sp, #4]
+ 1657 0010 0293     		str	r3, [sp, #8]
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 41
+
+
+ 1658 0012 0393     		str	r3, [sp, #12]
+ 1659 0014 0493     		str	r3, [sp, #16]
+ 1660 0016 0593     		str	r3, [sp, #20]
+ 1661 0018 0693     		str	r3, [sp, #24]
+ 1662 001a 0793     		str	r3, [sp, #28]
+ 461:Core/Src/MQTTSim800.c ****     ftoa(payload, str, digit);
+ 1663              		.loc 1 461 5 is_stmt 1 view .LVU351
+ 1664 001c FFF7FEFF 		bl	__aeabi_d2f
+ 1665              	.LVL134:
+ 1666              		.loc 1 461 5 is_stmt 0 view .LVU352
+ 1667 0020 9DF82820 		ldrb	r2, [sp, #40]	@ zero_extendqisi2
+ 1668 0024 6946     		mov	r1, sp
+ 1669 0026 FFF7FEFF 		bl	ftoa
+ 1670              	.LVL135:
+ 462:Core/Src/MQTTSim800.c ****     MQTT_Pub(topic, str);
+ 1671              		.loc 1 462 5 is_stmt 1 view .LVU353
+ 1672 002a 6946     		mov	r1, sp
+ 1673 002c 2046     		mov	r0, r4
+ 1674 002e FFF7FEFF 		bl	MQTT_Pub
+ 1675              	.LVL136:
+ 463:Core/Src/MQTTSim800.c **** }
+ 1676              		.loc 1 463 1 is_stmt 0 view .LVU354
+ 1677 0032 08B0     		add	sp, sp, #32
+ 1678              	.LCFI33:
+ 1679              		.cfi_def_cfa_offset 8
+ 1680              		@ sp needed
+ 1681 0034 10BD     		pop	{r4, pc}
+ 1682              		.loc 1 463 1 view .LVU355
+ 1683              		.cfi_endproc
+ 1684              	.LFE87:
+ 1686              		.section	.text.MQTT_PingReq,"ax",%progbits
+ 1687              		.align	1
+ 1688              		.global	MQTT_PingReq
+ 1689              		.syntax unified
+ 1690              		.thumb
+ 1691              		.thumb_func
+ 1692              		.fpu softvfp
+ 1694              	MQTT_PingReq:
+ 1695              	.LFB88:
+ 464:Core/Src/MQTTSim800.c **** 
+ 465:Core/Src/MQTTSim800.c **** /**
+ 466:Core/Src/MQTTSim800.c ****  * Send a PINGREQ to the MQTT broker (active session)
+ 467:Core/Src/MQTTSim800.c ****  * @param NONE
+ 468:Core/Src/MQTTSim800.c ****  * @return NONE
+ 469:Core/Src/MQTTSim800.c ****  */
+ 470:Core/Src/MQTTSim800.c **** void MQTT_PingReq(void)
+ 471:Core/Src/MQTTSim800.c **** {
+ 1696              		.loc 1 471 1 is_stmt 1 view -0
+ 1697              		.cfi_startproc
+ 1698              		@ args = 0, pretend = 0, frame = 16
+ 1699              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1700 0000 10B5     		push	{r4, lr}
+ 1701              	.LCFI34:
+ 1702              		.cfi_def_cfa_offset 8
+ 1703              		.cfi_offset 4, -8
+ 1704              		.cfi_offset 14, -4
+ 1705 0002 84B0     		sub	sp, sp, #16
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 42
+
+
+ 1706              	.LCFI35:
+ 1707              		.cfi_def_cfa_offset 24
+ 472:Core/Src/MQTTSim800.c ****     unsigned char buf[16] = {0};
+ 1708              		.loc 1 472 5 view .LVU357
+ 1709              		.loc 1 472 19 is_stmt 0 view .LVU358
+ 1710 0004 0023     		movs	r3, #0
+ 1711 0006 0093     		str	r3, [sp]
+ 1712 0008 0193     		str	r3, [sp, #4]
+ 1713 000a 0293     		str	r3, [sp, #8]
+ 1714 000c 0393     		str	r3, [sp, #12]
+ 473:Core/Src/MQTTSim800.c **** 
+ 474:Core/Src/MQTTSim800.c ****     int mqtt_len = MQTTSerialize_pingreq(buf, sizeof(buf));
+ 1715              		.loc 1 474 5 is_stmt 1 view .LVU359
+ 1716              		.loc 1 474 20 is_stmt 0 view .LVU360
+ 1717 000e 1021     		movs	r1, #16
+ 1718 0010 6846     		mov	r0, sp
+ 1719 0012 FFF7FEFF 		bl	MQTTSerialize_pingreq
+ 1720              	.LVL137:
+ 1721 0016 0446     		mov	r4, r0
+ 1722              	.LVL138:
+ 475:Core/Src/MQTTSim800.c ****     SIM800_SendCommand("AT+CIPSEND\r\n", ">", CMD_DELAY);
+ 1723              		.loc 1 475 5 is_stmt 1 view .LVU361
+ 1724 0018 4FF4FA62 		mov	r2, #2000
+ 1725 001c 0F49     		ldr	r1, .L99
+ 1726 001e 1048     		ldr	r0, .L99+4
+ 1727              	.LVL139:
+ 1728              		.loc 1 475 5 is_stmt 0 view .LVU362
+ 1729 0020 FFF7FEFF 		bl	SIM800_SendCommand
+ 1730              	.LVL140:
+ 476:Core/Src/MQTTSim800.c ****     if(!SIM800_SendMQTT((char*)buf, mqtt_len, "OK\r\n", CMD_DELAY))
+ 1731              		.loc 1 476 5 is_stmt 1 view .LVU363
+ 1732              		.loc 1 476 9 is_stmt 0 view .LVU364
+ 1733 0024 4FF4FA63 		mov	r3, #2000
+ 1734 0028 0E4A     		ldr	r2, .L99+8
+ 1735 002a E1B2     		uxtb	r1, r4
+ 1736 002c 6846     		mov	r0, sp
+ 1737 002e FFF7FEFF 		bl	SIM800_SendMQTT
+ 1738              	.LVL141:
+ 1739              		.loc 1 476 7 view .LVU365
+ 1740 0032 58B9     		cbnz	r0, .L96
+ 477:Core/Src/MQTTSim800.c ****     {
+ 478:Core/Src/MQTTSim800.c ****         osDelay(100);
+ 1741              		.loc 1 478 9 is_stmt 1 view .LVU366
+ 1742 0034 6420     		movs	r0, #100
+ 1743 0036 FFF7FEFF 		bl	osDelay
+ 1744              	.LVL142:
+ 479:Core/Src/MQTTSim800.c ****         huart1.Instance->DR = 0b00011010;       //0x1A - OK
+ 1745              		.loc 1 479 9 view .LVU367
+ 1746              		.loc 1 479 15 is_stmt 0 view .LVU368
+ 1747 003a 0B4B     		ldr	r3, .L99+12
+ 1748 003c 1B68     		ldr	r3, [r3]
+ 1749              		.loc 1 479 29 view .LVU369
+ 1750 003e 1A22     		movs	r2, #26
+ 1751 0040 5A60     		str	r2, [r3, #4]
+ 1752              	.L97:
+ 480:Core/Src/MQTTSim800.c ****     }
+ 481:Core/Src/MQTTSim800.c ****     else
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 43
+
+
+ 482:Core/Src/MQTTSim800.c ****     {   
+ 483:Core/Src/MQTTSim800.c ****         osDelay(100);
+ 484:Core/Src/MQTTSim800.c ****         huart1.Instance->DR = 0b00011011;       //0x1B - CANCEL
+ 485:Core/Src/MQTTSim800.c ****     }
+ 486:Core/Src/MQTTSim800.c **** 
+ 487:Core/Src/MQTTSim800.c **** #if FREERTOS == 1
+ 488:Core/Src/MQTTSim800.c ****     osDelay(100);
+ 1753              		.loc 1 488 5 is_stmt 1 view .LVU370
+ 1754 0042 6420     		movs	r0, #100
+ 1755 0044 FFF7FEFF 		bl	osDelay
+ 1756              	.LVL143:
+ 489:Core/Src/MQTTSim800.c **** #else
+ 490:Core/Src/MQTTSim800.c ****     HAL_Delay(100);
+ 491:Core/Src/MQTTSim800.c **** #endif
+ 492:Core/Src/MQTTSim800.c **** }
+ 1757              		.loc 1 492 1 is_stmt 0 view .LVU371
+ 1758 0048 04B0     		add	sp, sp, #16
+ 1759              	.LCFI36:
+ 1760              		.cfi_remember_state
+ 1761              		.cfi_def_cfa_offset 8
+ 1762              		@ sp needed
+ 1763 004a 10BD     		pop	{r4, pc}
+ 1764              	.LVL144:
+ 1765              	.L96:
+ 1766              	.LCFI37:
+ 1767              		.cfi_restore_state
+ 483:Core/Src/MQTTSim800.c ****         huart1.Instance->DR = 0b00011011;       //0x1B - CANCEL
+ 1768              		.loc 1 483 9 is_stmt 1 view .LVU372
+ 1769 004c 6420     		movs	r0, #100
+ 1770 004e FFF7FEFF 		bl	osDelay
+ 1771              	.LVL145:
+ 484:Core/Src/MQTTSim800.c ****     }
+ 1772              		.loc 1 484 9 view .LVU373
+ 484:Core/Src/MQTTSim800.c ****     }
+ 1773              		.loc 1 484 15 is_stmt 0 view .LVU374
+ 1774 0052 054B     		ldr	r3, .L99+12
+ 1775 0054 1B68     		ldr	r3, [r3]
+ 484:Core/Src/MQTTSim800.c ****     }
+ 1776              		.loc 1 484 29 view .LVU375
+ 1777 0056 1B22     		movs	r2, #27
+ 1778 0058 5A60     		str	r2, [r3, #4]
+ 1779 005a F2E7     		b	.L97
+ 1780              	.L100:
+ 1781              		.align	2
+ 1782              	.L99:
+ 1783 005c 28000000 		.word	.LC9
+ 1784 0060 2C000000 		.word	.LC10
+ 1785 0064 20000000 		.word	.LC8
+ 1786 0068 00000000 		.word	huart1
+ 1787              		.cfi_endproc
+ 1788              	.LFE88:
+ 1790              		.global	mqtt_index
+ 1791              		.global	mqtt_buffer
+ 1792              		.global	mqtt_receive
+ 1793              		.global	rx_index
+ 1794              		.global	rx_buffer
+ 1795              		.global	rx_data
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 44
+
+
+ 1796              		.global	SIM800_Status
+ 1797              		.section	.rodata
+ 1798              		.align	2
+ 1799              		.set	.LANCHOR7,. + 0
+ 1800              	.LC0:
+ 1801 0000 4D515443 		.ascii	"MQTC"
+ 1802 0004 00000000 		.word	0
+ 1803 0008 04       		.byte	4
+ 1804 0009 000000   		.space	3
+ 1805 000c 00000000 		.word	0
+ 1806 0010 00000000 		.word	0
+ 1807 0014 00000000 		.word	0
+ 1808 0018 3C00     		.short	60
+ 1809 001a 01       		.byte	1
+ 1810 001b 00       		.byte	0
+ 1811 001c 4D515457 		.ascii	"MQTW"
+ 1812 0020 00000000 		.word	0
+ 1813 0024 00000000 		.word	0
+ 1814 0028 00000000 		.word	0
+ 1815 002c 00000000 		.word	0
+ 1816 0030 00000000 		.word	0
+ 1817 0034 00000000 		.word	0
+ 1818 0038 00000000 		.word	0
+ 1819 003c 00       		.byte	0
+ 1820 003d 00       		.byte	0
+ 1821 003e 0000     		.space	2
+ 1822 0040 00000000 		.word	0
+ 1823 0044 00000000 		.word	0
+ 1824 0048 00000000 		.word	0
+ 1825 004c 00000000 		.word	0
+ 1826 0050 00000000 		.word	0
+ 1827 0054 00000000 		.word	0
+ 1828              		.section	.bss.SIM800_Status,"aw",%nobits
+ 1829              		.align	2
+ 1830              		.set	.LANCHOR6,. + 0
+ 1833              	SIM800_Status:
+ 1834 0000 000000   		.space	3
+ 1835              		.section	.bss.mqtt_buffer,"aw",%nobits
+ 1836              		.align	2
+ 1837              		.set	.LANCHOR4,. + 0
+ 1840              	mqtt_buffer:
+ 1841 0000 00000000 		.space	200
+ 1841      00000000 
+ 1841      00000000 
+ 1841      00000000 
+ 1841      00000000 
+ 1842              		.section	.bss.mqtt_index,"aw",%nobits
+ 1843              		.align	1
+ 1844              		.set	.LANCHOR3,. + 0
+ 1847              	mqtt_index:
+ 1848 0000 0000     		.space	2
+ 1849              		.section	.bss.mqtt_receive,"aw",%nobits
+ 1850              		.set	.LANCHOR2,. + 0
+ 1853              	mqtt_receive:
+ 1854 0000 00       		.space	1
+ 1855              		.section	.bss.rx_buffer,"aw",%nobits
+ 1856              		.align	2
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 45
+
+
+ 1857              		.set	.LANCHOR1,. + 0
+ 1860              	rx_buffer:
+ 1861 0000 00000000 		.space	200
+ 1861      00000000 
+ 1861      00000000 
+ 1861      00000000 
+ 1861      00000000 
+ 1862              		.section	.bss.rx_data,"aw",%nobits
+ 1863              		.set	.LANCHOR5,. + 0
+ 1866              	rx_data:
+ 1867 0000 00       		.space	1
+ 1868              		.section	.bss.rx_index,"aw",%nobits
+ 1869              		.align	1
+ 1870              		.set	.LANCHOR0,. + 0
+ 1873              	rx_index:
+ 1874 0000 0000     		.space	2
+ 1875              		.text
+ 1876              	.Letext0:
+ 1877              		.file 2 "d:\\tools\\gcc-arm-none-eabi-10.3-2021.07\\arm-none-eabi\\include\\machine\\_default_type
+ 1878              		.file 3 "d:\\tools\\gcc-arm-none-eabi-10.3-2021.07\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 1879              		.file 4 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h"
+ 1880              		.file 5 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 1881              		.file 6 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h"
+ 1882              		.file 7 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h"
+ 1883              		.file 8 "Core/Inc/MQTTSim800.h"
+ 1884              		.file 9 "Core/Inc/MQTTPacket.h"
+ 1885              		.file 10 "Core/Inc/MQTTConnect.h"
+ 1886              		.file 11 "Core/Inc/usart.h"
+ 1887              		.file 12 "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h"
+ 1888              		.file 13 "d:\\tools\\gcc-arm-none-eabi-10.3-2021.07\\arm-none-eabi\\include\\stdio.h"
+ 1889              		.file 14 "d:\\tools\\gcc-arm-none-eabi-10.3-2021.07\\arm-none-eabi\\include\\string.h"
+ 1890              		.file 15 "Core/Inc/MQTTPublish.h"
+ 1891              		.file 16 "<built-in>"
+ 1892              		.file 17 "d:\\tools\\gcc-arm-none-eabi-10.3-2021.07\\arm-none-eabi\\include\\math.h"
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 46
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 MQTTSim800.c
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:16     .text.reverse:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:24     .text.reverse:00000000 reverse
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:74     .text.intToStr:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:81     .text.intToStr:00000000 intToStr
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:174    .text.intToStr:00000050 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:186    .text.ftoa:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:193    .text.ftoa:00000000 ftoa
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:304    .text.ftoa:00000070 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:309    .text.clearRxBuffer:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:316    .text.clearRxBuffer:00000000 clearRxBuffer
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:342    .text.clearRxBuffer:00000014 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:348    .text.clearMqttBuffer:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:355    .text.clearMqttBuffer:00000000 clearMqttBuffer
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:385    .text.clearMqttBuffer:00000018 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:392    .rodata.Sim800_RxCallBack.str1.4:00000000 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:411    .text.Sim800_RxCallBack:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:418    .text.Sim800_RxCallBack:00000000 Sim800_RxCallBack
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:570    .text.Sim800_RxCallBack:000000b0 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:586    .text.SIM800_SendCommand:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:593    .text.SIM800_SendCommand:00000000 SIM800_SendCommand
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:654    .text.SIM800_SendCommand:00000038 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:660    .text.SIM800_SendMQTT:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:667    .text.SIM800_SendMQTT:00000000 SIM800_SendMQTT
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:729    .text.SIM800_SendMQTT:00000030 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:735    .rodata.MQTT_Connect.str1.4:00000000 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:748    .text.MQTT_Connect:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:755    .text.MQTT_Connect:00000000 MQTT_Connect
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:956    .text.MQTT_Connect:000000e4 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:969    .rodata.MQTT_Init.str1.4:00000000 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:997    .text.MQTT_Init:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1004   .text.MQTT_Init:00000000 MQTT_Init
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1202   .text.MQTT_Init:00000104 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1220   .text.MQTT_Pub:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1227   .text.MQTT_Pub:00000000 MQTT_Pub
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1351   .text.MQTT_Pub:0000008c $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1359   .rodata.MQTT_PubUint8.str1.4:00000000 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1363   .text.MQTT_PubUint8:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1370   .text.MQTT_PubUint8:00000000 MQTT_PubUint8
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1424   .text.MQTT_PubUint8:00000030 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1429   .text.MQTT_PubUint16:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1436   .text.MQTT_PubUint16:00000000 MQTT_PubUint16
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1490   .text.MQTT_PubUint16:00000030 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1495   .rodata.MQTT_PubUint32.str1.4:00000000 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1499   .text.MQTT_PubUint32:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1506   .text.MQTT_PubUint32:00000000 MQTT_PubUint32
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1560   .text.MQTT_PubUint32:00000030 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1565   .text.MQTT_PubFloat:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1572   .text.MQTT_PubFloat:00000000 MQTT_PubFloat
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1624   .text.MQTT_PubDouble:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1631   .text.MQTT_PubDouble:00000000 MQTT_PubDouble
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1687   .text.MQTT_PingReq:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1694   .text.MQTT_PingReq:00000000 MQTT_PingReq
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1783   .text.MQTT_PingReq:0000005c $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1847   .bss.mqtt_index:00000000 mqtt_index
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1840   .bss.mqtt_buffer:00000000 mqtt_buffer
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s 			page 47
+
+
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1853   .bss.mqtt_receive:00000000 mqtt_receive
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1873   .bss.rx_index:00000000 rx_index
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1860   .bss.rx_buffer:00000000 rx_buffer
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1866   .bss.rx_data:00000000 rx_data
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1833   .bss.SIM800_Status:00000000 SIM800_Status
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1798   .rodata:00000000 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1829   .bss.SIM800_Status:00000000 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1836   .bss.mqtt_buffer:00000000 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1843   .bss.mqtt_index:00000000 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1854   .bss.mqtt_receive:00000000 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1856   .bss.rx_buffer:00000000 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1867   .bss.rx_data:00000000 $d
+C:\Users\Vento\AppData\Local\Temp\ccK7uI4z.s:1869   .bss.rx_index:00000000 $d
+
+UNDEFINED SYMBOLS
+__aeabi_f2iz
+__aeabi_i2f
+__aeabi_fsub
+__aeabi_i2d
+__aeabi_f2d
+__aeabi_dmul
+__aeabi_d2f
+pow
+memset
+strstr
+memcpy
+HAL_UART_Receive_IT
+SIM800
+huart1
+strlen
+HAL_UART_Transmit_IT
+osDelay
+snprintf
+MQTTSerialize_connect
+MQTTSerialize_publish
+sprintf
+MQTTSerialize_pingreq

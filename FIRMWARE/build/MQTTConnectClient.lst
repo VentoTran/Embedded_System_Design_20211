@@ -1,0 +1,1062 @@
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"MQTTConnectClient.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.MQTTSerialize_connectLength,"ax",%progbits
+  16              		.align	1
+  17              		.global	MQTTSerialize_connectLength
+  18              		.arch armv7-m
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	MQTTSerialize_connectLength:
+  25              	.LVL0:
+  26              	.LFB3:
+  27              		.file 1 "Core/Src/MQTTConnectClient.c"
+   1:Core/Src/MQTTConnectClient.c **** /*******************************************************************************
+   2:Core/Src/MQTTConnectClient.c ****  * Copyright (c) 2014 IBM Corp.
+   3:Core/Src/MQTTConnectClient.c ****  *
+   4:Core/Src/MQTTConnectClient.c ****  * All rights reserved. This program and the accompanying materials
+   5:Core/Src/MQTTConnectClient.c ****  * are made available under the terms of the Eclipse Public License v1.0
+   6:Core/Src/MQTTConnectClient.c ****  * and Eclipse Distribution License v1.0 which accompany this distribution.
+   7:Core/Src/MQTTConnectClient.c ****  *
+   8:Core/Src/MQTTConnectClient.c ****  * The Eclipse Public License is available at
+   9:Core/Src/MQTTConnectClient.c ****  *    http://www.eclipse.org/legal/epl-v10.html
+  10:Core/Src/MQTTConnectClient.c ****  * and the Eclipse Distribution License is available at
+  11:Core/Src/MQTTConnectClient.c ****  *   http://www.eclipse.org/org/documents/edl-v10.php.
+  12:Core/Src/MQTTConnectClient.c ****  *
+  13:Core/Src/MQTTConnectClient.c ****  * Contributors:
+  14:Core/Src/MQTTConnectClient.c ****  *    Ian Craggs - initial API and implementation and/or initial documentation
+  15:Core/Src/MQTTConnectClient.c ****  *******************************************************************************/
+  16:Core/Src/MQTTConnectClient.c **** 
+  17:Core/Src/MQTTConnectClient.c **** #include "MQTTPacket.h"
+  18:Core/Src/MQTTConnectClient.c **** #include "StackTrace.h"
+  19:Core/Src/MQTTConnectClient.c **** 
+  20:Core/Src/MQTTConnectClient.c **** #include <string.h>
+  21:Core/Src/MQTTConnectClient.c **** 
+  22:Core/Src/MQTTConnectClient.c **** /**
+  23:Core/Src/MQTTConnectClient.c ****   * Determines the length of the MQTT connect packet that would be produced using the supplied conn
+  24:Core/Src/MQTTConnectClient.c ****   * @param options the options to be used to build the connect packet
+  25:Core/Src/MQTTConnectClient.c ****   * @return the length of buffer needed to contain the serialized version of the packet
+  26:Core/Src/MQTTConnectClient.c ****   */
+  27:Core/Src/MQTTConnectClient.c **** int MQTTSerialize_connectLength(MQTTPacket_connectData* options)
+  28:Core/Src/MQTTConnectClient.c **** {
+  28              		.loc 1 28 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s 			page 2
+
+
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		.loc 1 28 1 is_stmt 0 view .LVU1
+  33 0000 70B5     		push	{r4, r5, r6, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 16
+  36              		.cfi_offset 4, -16
+  37              		.cfi_offset 5, -12
+  38              		.cfi_offset 6, -8
+  39              		.cfi_offset 14, -4
+  40 0002 0446     		mov	r4, r0
+  29:Core/Src/MQTTConnectClient.c **** 	int len = 0;
+  41              		.loc 1 29 2 is_stmt 1 view .LVU2
+  42              	.LVL1:
+  30:Core/Src/MQTTConnectClient.c **** 
+  31:Core/Src/MQTTConnectClient.c **** 	FUNC_ENTRY;
+  43              		.loc 1 31 12 view .LVU3
+  32:Core/Src/MQTTConnectClient.c **** 
+  33:Core/Src/MQTTConnectClient.c **** 	if (options->MQTTVersion == 3)
+  44              		.loc 1 33 2 view .LVU4
+  45              		.loc 1 33 13 is_stmt 0 view .LVU5
+  46 0004 037A     		ldrb	r3, [r0, #8]	@ zero_extendqisi2
+  47              		.loc 1 33 5 view .LVU6
+  48 0006 032B     		cmp	r3, #3
+  49 0008 21D0     		beq	.L8
+  34:Core/Src/MQTTConnectClient.c **** 		len = 12; /* variable depending on MQTT or MQIsdp */
+  35:Core/Src/MQTTConnectClient.c **** 	else if (options->MQTTVersion == 4)
+  50              		.loc 1 35 7 is_stmt 1 view .LVU7
+  51              		.loc 1 35 10 is_stmt 0 view .LVU8
+  52 000a 042B     		cmp	r3, #4
+  53 000c 21D0     		beq	.L9
+  29:Core/Src/MQTTConnectClient.c **** 
+  54              		.loc 1 29 6 view .LVU9
+  55 000e 0025     		movs	r5, #0
+  56              	.L2:
+  57              	.LVL2:
+  36:Core/Src/MQTTConnectClient.c **** 		len = 10;
+  37:Core/Src/MQTTConnectClient.c **** 
+  38:Core/Src/MQTTConnectClient.c **** 	len += MQTTstrlen(options->clientID)+2;
+  58              		.loc 1 38 2 is_stmt 1 view .LVU10
+  59              		.loc 1 38 9 is_stmt 0 view .LVU11
+  60 0010 04F10C03 		add	r3, r4, #12
+  61 0014 93E80700 		ldm	r3, {r0, r1, r2}
+  62              	.LVL3:
+  63              		.loc 1 38 9 view .LVU12
+  64 0018 FFF7FEFF 		bl	MQTTstrlen
+  65              	.LVL4:
+  66              		.loc 1 38 38 view .LVU13
+  67 001c 0230     		adds	r0, r0, #2
+  68              		.loc 1 38 6 view .LVU14
+  69 001e 0544     		add	r5, r5, r0
+  70              	.LVL5:
+  39:Core/Src/MQTTConnectClient.c **** 	if (options->willFlag)
+  71              		.loc 1 39 2 is_stmt 1 view .LVU15
+  72              		.loc 1 39 13 is_stmt 0 view .LVU16
+  73 0020 E37E     		ldrb	r3, [r4, #27]	@ zero_extendqisi2
+  74              		.loc 1 39 5 view .LVU17
+  75 0022 C3B9     		cbnz	r3, .L11
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s 			page 3
+
+
+  76              	.L3:
+  40:Core/Src/MQTTConnectClient.c **** 		len += MQTTstrlen(options->will.topicName)+2 + MQTTstrlen(options->will.message)+2;
+  41:Core/Src/MQTTConnectClient.c **** 	if (options->username.cstring || options->username.lenstring.data)
+  77              		.loc 1 41 2 is_stmt 1 view .LVU18
+  78              		.loc 1 41 23 is_stmt 0 view .LVU19
+  79 0024 236C     		ldr	r3, [r4, #64]
+  80              		.loc 1 41 5 view .LVU20
+  81 0026 3BB3     		cbz	r3, .L12
+  82              	.L4:
+  42:Core/Src/MQTTConnectClient.c **** 		len += MQTTstrlen(options->username)+2;
+  83              		.loc 1 42 3 is_stmt 1 view .LVU21
+  84              		.loc 1 42 10 is_stmt 0 view .LVU22
+  85 0028 04F14003 		add	r3, r4, #64
+  86 002c 93E80700 		ldm	r3, {r0, r1, r2}
+  87 0030 FFF7FEFF 		bl	MQTTstrlen
+  88              	.LVL6:
+  89              		.loc 1 42 39 view .LVU23
+  90 0034 0230     		adds	r0, r0, #2
+  91              		.loc 1 42 7 view .LVU24
+  92 0036 0544     		add	r5, r5, r0
+  93              	.LVL7:
+  94              	.L5:
+  43:Core/Src/MQTTConnectClient.c **** 	if (options->password.cstring || options->password.lenstring.data)
+  95              		.loc 1 43 2 is_stmt 1 view .LVU25
+  96              		.loc 1 43 23 is_stmt 0 view .LVU26
+  97 0038 E36C     		ldr	r3, [r4, #76]
+  98              		.loc 1 43 5 view .LVU27
+  99 003a 0BB3     		cbz	r3, .L13
+ 100              	.L6:
+  44:Core/Src/MQTTConnectClient.c **** 		len += MQTTstrlen(options->password)+2;
+ 101              		.loc 1 44 3 is_stmt 1 view .LVU28
+ 102              		.loc 1 44 10 is_stmt 0 view .LVU29
+ 103 003c 4C34     		adds	r4, r4, #76
+ 104              	.LVL8:
+ 105              		.loc 1 44 10 view .LVU30
+ 106 003e 94E80700 		ldm	r4, {r0, r1, r2}
+ 107 0042 FFF7FEFF 		bl	MQTTstrlen
+ 108              	.LVL9:
+ 109              		.loc 1 44 39 view .LVU31
+ 110 0046 0230     		adds	r0, r0, #2
+ 111              		.loc 1 44 7 view .LVU32
+ 112 0048 0544     		add	r5, r5, r0
+ 113              	.LVL10:
+  45:Core/Src/MQTTConnectClient.c **** 
+  46:Core/Src/MQTTConnectClient.c **** 	FUNC_EXIT_RC(len);
+ 114              		.loc 1 46 19 is_stmt 1 view .LVU33
+  47:Core/Src/MQTTConnectClient.c **** 	return len;
+ 115              		.loc 1 47 2 view .LVU34
+ 116              	.L1:
+  48:Core/Src/MQTTConnectClient.c **** }
+ 117              		.loc 1 48 1 is_stmt 0 view .LVU35
+ 118 004a 2846     		mov	r0, r5
+ 119 004c 70BD     		pop	{r4, r5, r6, pc}
+ 120              	.LVL11:
+ 121              	.L8:
+  34:Core/Src/MQTTConnectClient.c **** 	else if (options->MQTTVersion == 4)
+ 122              		.loc 1 34 7 view .LVU36
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s 			page 4
+
+
+ 123 004e 0C25     		movs	r5, #12
+ 124 0050 DEE7     		b	.L2
+ 125              	.L9:
+  36:Core/Src/MQTTConnectClient.c **** 
+ 126              		.loc 1 36 7 view .LVU37
+ 127 0052 0A25     		movs	r5, #10
+ 128 0054 DCE7     		b	.L2
+ 129              	.LVL12:
+ 130              	.L11:
+  40:Core/Src/MQTTConnectClient.c **** 	if (options->username.cstring || options->username.lenstring.data)
+ 131              		.loc 1 40 3 is_stmt 1 view .LVU38
+  40:Core/Src/MQTTConnectClient.c **** 	if (options->username.cstring || options->username.lenstring.data)
+ 132              		.loc 1 40 10 is_stmt 0 view .LVU39
+ 133 0056 04F12403 		add	r3, r4, #36
+ 134 005a 93E80700 		ldm	r3, {r0, r1, r2}
+ 135 005e FFF7FEFF 		bl	MQTTstrlen
+ 136              	.LVL13:
+  40:Core/Src/MQTTConnectClient.c **** 	if (options->username.cstring || options->username.lenstring.data)
+ 137              		.loc 1 40 45 view .LVU40
+ 138 0062 861C     		adds	r6, r0, #2
+  40:Core/Src/MQTTConnectClient.c **** 	if (options->username.cstring || options->username.lenstring.data)
+ 139              		.loc 1 40 50 view .LVU41
+ 140 0064 04F13003 		add	r3, r4, #48
+ 141 0068 93E80700 		ldm	r3, {r0, r1, r2}
+ 142 006c FFF7FEFF 		bl	MQTTstrlen
+ 143              	.LVL14:
+  40:Core/Src/MQTTConnectClient.c **** 	if (options->username.cstring || options->username.lenstring.data)
+ 144              		.loc 1 40 48 view .LVU42
+ 145 0070 0644     		add	r6, r6, r0
+  40:Core/Src/MQTTConnectClient.c **** 	if (options->username.cstring || options->username.lenstring.data)
+ 146              		.loc 1 40 83 view .LVU43
+ 147 0072 0236     		adds	r6, r6, #2
+  40:Core/Src/MQTTConnectClient.c **** 	if (options->username.cstring || options->username.lenstring.data)
+ 148              		.loc 1 40 7 view .LVU44
+ 149 0074 3544     		add	r5, r5, r6
+ 150              	.LVL15:
+  40:Core/Src/MQTTConnectClient.c **** 	if (options->username.cstring || options->username.lenstring.data)
+ 151              		.loc 1 40 7 view .LVU45
+ 152 0076 D5E7     		b	.L3
+ 153              	.L12:
+  41:Core/Src/MQTTConnectClient.c **** 		len += MQTTstrlen(options->username)+2;
+ 154              		.loc 1 41 62 discriminator 1 view .LVU46
+ 155 0078 A36C     		ldr	r3, [r4, #72]
+  41:Core/Src/MQTTConnectClient.c **** 		len += MQTTstrlen(options->username)+2;
+ 156              		.loc 1 41 32 discriminator 1 view .LVU47
+ 157 007a 002B     		cmp	r3, #0
+ 158 007c D4D1     		bne	.L4
+ 159 007e DBE7     		b	.L5
+ 160              	.L13:
+  43:Core/Src/MQTTConnectClient.c **** 		len += MQTTstrlen(options->password)+2;
+ 161              		.loc 1 43 62 discriminator 1 view .LVU48
+ 162 0080 636D     		ldr	r3, [r4, #84]
+  43:Core/Src/MQTTConnectClient.c **** 		len += MQTTstrlen(options->password)+2;
+ 163              		.loc 1 43 32 discriminator 1 view .LVU49
+ 164 0082 002B     		cmp	r3, #0
+ 165 0084 DAD1     		bne	.L6
+ 166 0086 E0E7     		b	.L1
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s 			page 5
+
+
+ 167              		.cfi_endproc
+ 168              	.LFE3:
+ 170              		.section	.rodata.MQTTSerialize_connect.str1.4,"aMS",%progbits,1
+ 171              		.align	2
+ 172              	.LC0:
+ 173 0000 4D515454 		.ascii	"MQTT\000"
+ 173      00
+ 174 0005 000000   		.align	2
+ 175              	.LC1:
+ 176 0008 4D514973 		.ascii	"MQIsdp\000"
+ 176      647000
+ 177              		.section	.text.MQTTSerialize_connect,"ax",%progbits
+ 178              		.align	1
+ 179              		.global	MQTTSerialize_connect
+ 180              		.syntax unified
+ 181              		.thumb
+ 182              		.thumb_func
+ 183              		.fpu softvfp
+ 185              	MQTTSerialize_connect:
+ 186              	.LVL16:
+ 187              	.LFB4:
+  49:Core/Src/MQTTConnectClient.c **** 
+  50:Core/Src/MQTTConnectClient.c **** 
+  51:Core/Src/MQTTConnectClient.c **** /**
+  52:Core/Src/MQTTConnectClient.c ****   * Serializes the connect options into the buffer.
+  53:Core/Src/MQTTConnectClient.c ****   * @param buf the buffer into which the packet will be serialized
+  54:Core/Src/MQTTConnectClient.c ****   * @param len the length in bytes of the supplied buffer
+  55:Core/Src/MQTTConnectClient.c ****   * @param options the options to be used to build the connect packet
+  56:Core/Src/MQTTConnectClient.c ****   * @return serialized length, or error if 0
+  57:Core/Src/MQTTConnectClient.c ****   */
+  58:Core/Src/MQTTConnectClient.c **** int MQTTSerialize_connect(unsigned char* buf, int buflen, MQTTPacket_connectData* options)
+  59:Core/Src/MQTTConnectClient.c **** {
+ 188              		.loc 1 59 1 is_stmt 1 view -0
+ 189              		.cfi_startproc
+ 190              		@ args = 0, pretend = 0, frame = 8
+ 191              		@ frame_needed = 0, uses_anonymous_args = 0
+ 192              		.loc 1 59 1 is_stmt 0 view .LVU51
+ 193 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 194              	.LCFI1:
+ 195              		.cfi_def_cfa_offset 24
+ 196              		.cfi_offset 4, -24
+ 197              		.cfi_offset 5, -20
+ 198              		.cfi_offset 6, -16
+ 199              		.cfi_offset 7, -12
+ 200              		.cfi_offset 8, -8
+ 201              		.cfi_offset 14, -4
+ 202 0004 82B0     		sub	sp, sp, #8
+ 203              	.LCFI2:
+ 204              		.cfi_def_cfa_offset 32
+ 205 0006 0646     		mov	r6, r0
+ 206 0008 0F46     		mov	r7, r1
+ 207 000a 1446     		mov	r4, r2
+  60:Core/Src/MQTTConnectClient.c **** 	unsigned char *ptr = buf;
+ 208              		.loc 1 60 2 is_stmt 1 view .LVU52
+ 209              		.loc 1 60 17 is_stmt 0 view .LVU53
+ 210 000c 0190     		str	r0, [sp, #4]
+  61:Core/Src/MQTTConnectClient.c **** 	MQTTHeader header = {0};
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s 			page 6
+
+
+ 211              		.loc 1 61 2 is_stmt 1 view .LVU54
+  62:Core/Src/MQTTConnectClient.c **** 	MQTTConnectFlags flags = {0};
+ 212              		.loc 1 62 2 view .LVU55
+  63:Core/Src/MQTTConnectClient.c **** 	int len = 0;
+ 213              		.loc 1 63 2 view .LVU56
+ 214              	.LVL17:
+  64:Core/Src/MQTTConnectClient.c **** 	int rc = -1;
+ 215              		.loc 1 64 2 view .LVU57
+  65:Core/Src/MQTTConnectClient.c **** 
+  66:Core/Src/MQTTConnectClient.c **** 	FUNC_ENTRY;
+ 216              		.loc 1 66 12 view .LVU58
+  67:Core/Src/MQTTConnectClient.c **** 	if (MQTTPacket_len(len = MQTTSerialize_connectLength(options)) > buflen)
+ 217              		.loc 1 67 2 view .LVU59
+ 218              		.loc 1 67 27 is_stmt 0 view .LVU60
+ 219 000e 1046     		mov	r0, r2
+ 220              	.LVL18:
+ 221              		.loc 1 67 27 view .LVU61
+ 222 0010 FFF7FEFF 		bl	MQTTSerialize_connectLength
+ 223              	.LVL19:
+ 224              		.loc 1 67 27 view .LVU62
+ 225 0014 8046     		mov	r8, r0
+ 226              	.LVL20:
+ 227              		.loc 1 67 6 view .LVU63
+ 228 0016 FFF7FEFF 		bl	MQTTPacket_len
+ 229              	.LVL21:
+ 230              		.loc 1 67 5 view .LVU64
+ 231 001a B842     		cmp	r0, r7
+ 232 001c 7BDC     		bgt	.L26
+ 233 001e 0025     		movs	r5, #0
+ 234              	.LVL22:
+  68:Core/Src/MQTTConnectClient.c **** 	{
+  69:Core/Src/MQTTConnectClient.c **** 		rc = MQTTPACKET_BUFFER_TOO_SHORT;
+  70:Core/Src/MQTTConnectClient.c **** 		goto exit;
+  71:Core/Src/MQTTConnectClient.c **** 	}
+  72:Core/Src/MQTTConnectClient.c **** 
+  73:Core/Src/MQTTConnectClient.c **** 	header.byte = 0;
+ 235              		.loc 1 73 2 is_stmt 1 view .LVU65
+  74:Core/Src/MQTTConnectClient.c **** 	header.bits.type = CONNECT;
+ 236              		.loc 1 74 2 view .LVU66
+  75:Core/Src/MQTTConnectClient.c **** 	writeChar(&ptr, header.byte); /* write header */
+ 237              		.loc 1 75 2 view .LVU67
+ 238 0020 1021     		movs	r1, #16
+ 239 0022 01A8     		add	r0, sp, #4
+ 240 0024 FFF7FEFF 		bl	writeChar
+ 241              	.LVL23:
+  76:Core/Src/MQTTConnectClient.c **** 
+  77:Core/Src/MQTTConnectClient.c **** 	ptr += MQTTPacket_encode(ptr, len); /* write remaining length */
+ 242              		.loc 1 77 2 view .LVU68
+ 243              		.loc 1 77 9 is_stmt 0 view .LVU69
+ 244 0028 4146     		mov	r1, r8
+ 245 002a 0198     		ldr	r0, [sp, #4]
+ 246 002c FFF7FEFF 		bl	MQTTPacket_encode
+ 247              	.LVL24:
+ 248              		.loc 1 77 6 view .LVU70
+ 249 0030 019B     		ldr	r3, [sp, #4]
+ 250 0032 0344     		add	r3, r3, r0
+ 251 0034 0193     		str	r3, [sp, #4]
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s 			page 7
+
+
+  78:Core/Src/MQTTConnectClient.c **** 
+  79:Core/Src/MQTTConnectClient.c **** 	if (options->MQTTVersion == 4)
+ 252              		.loc 1 79 2 is_stmt 1 view .LVU71
+ 253              		.loc 1 79 13 is_stmt 0 view .LVU72
+ 254 0036 237A     		ldrb	r3, [r4, #8]	@ zero_extendqisi2
+ 255              		.loc 1 79 5 view .LVU73
+ 256 0038 042B     		cmp	r3, #4
+ 257 003a 3FD0     		beq	.L28
+  80:Core/Src/MQTTConnectClient.c **** 	{
+  81:Core/Src/MQTTConnectClient.c **** 		writeCString(&ptr, "MQTT");
+  82:Core/Src/MQTTConnectClient.c **** 		writeChar(&ptr, (char) 4);
+  83:Core/Src/MQTTConnectClient.c **** 	}
+  84:Core/Src/MQTTConnectClient.c **** 	else
+  85:Core/Src/MQTTConnectClient.c **** 	{
+  86:Core/Src/MQTTConnectClient.c **** 		writeCString(&ptr, "MQIsdp");
+ 258              		.loc 1 86 3 is_stmt 1 view .LVU74
+ 259 003c 3749     		ldr	r1, .L34
+ 260 003e 01A8     		add	r0, sp, #4
+ 261 0040 FFF7FEFF 		bl	writeCString
+ 262              	.LVL25:
+  87:Core/Src/MQTTConnectClient.c **** 		writeChar(&ptr, (char) 3);
+ 263              		.loc 1 87 3 view .LVU75
+ 264 0044 0321     		movs	r1, #3
+ 265 0046 01A8     		add	r0, sp, #4
+ 266 0048 FFF7FEFF 		bl	writeChar
+ 267              	.LVL26:
+ 268              	.L17:
+  88:Core/Src/MQTTConnectClient.c **** 	}
+  89:Core/Src/MQTTConnectClient.c **** 
+  90:Core/Src/MQTTConnectClient.c **** 	flags.all = 0;
+ 269              		.loc 1 90 2 view .LVU76
+  91:Core/Src/MQTTConnectClient.c **** 	flags.bits.cleansession = options->cleansession;
+ 270              		.loc 1 91 2 view .LVU77
+ 271              		.loc 1 91 35 is_stmt 0 view .LVU78
+ 272 004c A37E     		ldrb	r3, [r4, #26]	@ zero_extendqisi2
+ 273              		.loc 1 91 26 view .LVU79
+ 274 004e 63F34105 		bfi	r5, r3, #1, #1
+ 275              	.LVL27:
+  92:Core/Src/MQTTConnectClient.c **** 	flags.bits.will = (options->willFlag) ? 1 : 0;
+ 276              		.loc 1 92 2 is_stmt 1 view .LVU80
+ 277              		.loc 1 92 28 is_stmt 0 view .LVU81
+ 278 0052 E37E     		ldrb	r3, [r4, #27]	@ zero_extendqisi2
+ 279              		.loc 1 92 44 view .LVU82
+ 280 0054 003B     		subs	r3, r3, #0
+ 281 0056 18BF     		it	ne
+ 282 0058 0123     		movne	r3, #1
+ 283              		.loc 1 92 18 view .LVU83
+ 284 005a 63F38205 		bfi	r5, r3, #2, #1
+  93:Core/Src/MQTTConnectClient.c **** 	if (flags.bits.will)
+ 285              		.loc 1 93 2 is_stmt 1 view .LVU84
+ 286              		.loc 1 93 5 is_stmt 0 view .LVU85
+ 287 005e 15F0040F 		tst	r5, #4
+ 288 0062 07D0     		beq	.L18
+  94:Core/Src/MQTTConnectClient.c **** 	{
+  95:Core/Src/MQTTConnectClient.c **** 		flags.bits.willQoS = options->will.qos;
+ 289              		.loc 1 95 3 is_stmt 1 view .LVU86
+ 290              		.loc 1 95 37 is_stmt 0 view .LVU87
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s 			page 8
+
+
+ 291 0064 94F83D30 		ldrb	r3, [r4, #61]	@ zero_extendqisi2
+ 292              		.loc 1 95 22 view .LVU88
+ 293 0068 63F3C405 		bfi	r5, r3, #3, #2
+  96:Core/Src/MQTTConnectClient.c **** 		flags.bits.willRetain = options->will.retained;
+ 294              		.loc 1 96 3 is_stmt 1 view .LVU89
+ 295              		.loc 1 96 40 is_stmt 0 view .LVU90
+ 296 006c 94F83C30 		ldrb	r3, [r4, #60]	@ zero_extendqisi2
+ 297              		.loc 1 96 25 view .LVU91
+ 298 0070 63F34515 		bfi	r5, r3, #5, #1
+ 299              	.L18:
+  97:Core/Src/MQTTConnectClient.c **** 	}
+  98:Core/Src/MQTTConnectClient.c **** 
+  99:Core/Src/MQTTConnectClient.c **** 	if (options->username.cstring || options->username.lenstring.data)
+ 300              		.loc 1 99 2 is_stmt 1 view .LVU92
+ 301              		.loc 1 99 23 is_stmt 0 view .LVU93
+ 302 0074 236C     		ldr	r3, [r4, #64]
+ 303              		.loc 1 99 5 view .LVU94
+ 304 0076 5BB3     		cbz	r3, .L29
+ 305              	.L19:
+ 100:Core/Src/MQTTConnectClient.c **** 		flags.bits.username = 1;
+ 306              		.loc 1 100 3 is_stmt 1 view .LVU95
+ 307              		.loc 1 100 23 is_stmt 0 view .LVU96
+ 308 0078 45F08005 		orr	r5, r5, #128
+ 309              	.LVL28:
+ 310              	.L20:
+ 101:Core/Src/MQTTConnectClient.c **** 	if (options->password.cstring || options->password.lenstring.data)
+ 311              		.loc 1 101 2 is_stmt 1 view .LVU97
+ 312              		.loc 1 101 23 is_stmt 0 view .LVU98
+ 313 007c E36C     		ldr	r3, [r4, #76]
+ 314              		.loc 1 101 5 view .LVU99
+ 315 007e 5BB3     		cbz	r3, .L30
+ 316              	.L21:
+ 102:Core/Src/MQTTConnectClient.c **** 		flags.bits.password = 1;
+ 317              		.loc 1 102 3 is_stmt 1 view .LVU100
+ 318              		.loc 1 102 23 is_stmt 0 view .LVU101
+ 319 0080 45F04005 		orr	r5, r5, #64
+ 320              	.LVL29:
+ 321              	.L22:
+ 103:Core/Src/MQTTConnectClient.c **** 
+ 104:Core/Src/MQTTConnectClient.c **** 	writeChar(&ptr, flags.all);
+ 322              		.loc 1 104 2 is_stmt 1 view .LVU102
+ 323              		.loc 1 104 23 is_stmt 0 view .LVU103
+ 324 0084 EDB2     		uxtb	r5, r5
+ 325              	.LVL30:
+ 326              		.loc 1 104 2 view .LVU104
+ 327 0086 2946     		mov	r1, r5
+ 328 0088 01A8     		add	r0, sp, #4
+ 329 008a FFF7FEFF 		bl	writeChar
+ 330              	.LVL31:
+ 105:Core/Src/MQTTConnectClient.c **** 	writeInt(&ptr, options->keepAliveInterval);
+ 331              		.loc 1 105 2 is_stmt 1 view .LVU105
+ 332 008e 218B     		ldrh	r1, [r4, #24]
+ 333 0090 01A8     		add	r0, sp, #4
+ 334 0092 FFF7FEFF 		bl	writeInt
+ 335              	.LVL32:
+ 106:Core/Src/MQTTConnectClient.c **** 	writeMQTTString(&ptr, options->clientID);
+ 336              		.loc 1 106 2 view .LVU106
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s 			page 9
+
+
+ 337 0096 04F10C03 		add	r3, r4, #12
+ 338 009a 0ECB     		ldm	r3, {r1, r2, r3}
+ 339 009c 01A8     		add	r0, sp, #4
+ 340 009e FFF7FEFF 		bl	writeMQTTString
+ 341              	.LVL33:
+ 107:Core/Src/MQTTConnectClient.c **** 	if (options->willFlag)
+ 342              		.loc 1 107 2 view .LVU107
+ 343              		.loc 1 107 13 is_stmt 0 view .LVU108
+ 344 00a2 E37E     		ldrb	r3, [r4, #27]	@ zero_extendqisi2
+ 345              		.loc 1 107 5 view .LVU109
+ 346 00a4 E3B9     		cbnz	r3, .L31
+ 347              	.L23:
+ 108:Core/Src/MQTTConnectClient.c **** 	{
+ 109:Core/Src/MQTTConnectClient.c **** 		writeMQTTString(&ptr, options->will.topicName);
+ 110:Core/Src/MQTTConnectClient.c **** 		writeMQTTString(&ptr, options->will.message);
+ 111:Core/Src/MQTTConnectClient.c **** 	}
+ 112:Core/Src/MQTTConnectClient.c **** 	if (flags.bits.username)
+ 348              		.loc 1 112 2 is_stmt 1 view .LVU110
+ 349              		.loc 1 112 5 is_stmt 0 view .LVU111
+ 350 00a6 15F0800F 		tst	r5, #128
+ 351 00aa 26D1     		bne	.L32
+ 352              	.L24:
+ 113:Core/Src/MQTTConnectClient.c **** 		writeMQTTString(&ptr, options->username);
+ 114:Core/Src/MQTTConnectClient.c **** 	if (flags.bits.password)
+ 353              		.loc 1 114 2 is_stmt 1 view .LVU112
+ 354              		.loc 1 114 5 is_stmt 0 view .LVU113
+ 355 00ac 15F0400F 		tst	r5, #64
+ 356 00b0 2AD1     		bne	.L33
+ 357              	.LVL34:
+ 358              	.L25:
+ 115:Core/Src/MQTTConnectClient.c **** 		writeMQTTString(&ptr, options->password);
+ 116:Core/Src/MQTTConnectClient.c **** 
+ 117:Core/Src/MQTTConnectClient.c **** 	rc = ptr - buf;
+ 359              		.loc 1 117 2 is_stmt 1 view .LVU114
+ 360              		.loc 1 117 11 is_stmt 0 view .LVU115
+ 361 00b2 0198     		ldr	r0, [sp, #4]
+ 362              		.loc 1 117 5 view .LVU116
+ 363 00b4 801B     		subs	r0, r0, r6
+ 364              	.LVL35:
+ 365              	.L14:
+ 118:Core/Src/MQTTConnectClient.c **** 
+ 119:Core/Src/MQTTConnectClient.c **** 	exit: FUNC_EXIT_RC(rc);
+ 120:Core/Src/MQTTConnectClient.c **** 	return rc;
+ 121:Core/Src/MQTTConnectClient.c **** }
+ 366              		.loc 1 121 1 view .LVU117
+ 367 00b6 02B0     		add	sp, sp, #8
+ 368              	.LCFI3:
+ 369              		.cfi_remember_state
+ 370              		.cfi_def_cfa_offset 24
+ 371              		@ sp needed
+ 372 00b8 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 373              	.LVL36:
+ 374              	.L28:
+ 375              	.LCFI4:
+ 376              		.cfi_restore_state
+  81:Core/Src/MQTTConnectClient.c **** 		writeChar(&ptr, (char) 4);
+ 377              		.loc 1 81 3 is_stmt 1 view .LVU118
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s 			page 10
+
+
+ 378 00bc 1849     		ldr	r1, .L34+4
+ 379 00be 01A8     		add	r0, sp, #4
+ 380 00c0 FFF7FEFF 		bl	writeCString
+ 381              	.LVL37:
+  82:Core/Src/MQTTConnectClient.c **** 	}
+ 382              		.loc 1 82 3 view .LVU119
+ 383 00c4 0421     		movs	r1, #4
+ 384 00c6 0DEB0100 		add	r0, sp, r1
+ 385 00ca FFF7FEFF 		bl	writeChar
+ 386              	.LVL38:
+ 387 00ce BDE7     		b	.L17
+ 388              	.LVL39:
+ 389              	.L29:
+  99:Core/Src/MQTTConnectClient.c **** 		flags.bits.username = 1;
+ 390              		.loc 1 99 62 is_stmt 0 discriminator 1 view .LVU120
+ 391 00d0 A36C     		ldr	r3, [r4, #72]
+  99:Core/Src/MQTTConnectClient.c **** 		flags.bits.username = 1;
+ 392              		.loc 1 99 32 discriminator 1 view .LVU121
+ 393 00d2 002B     		cmp	r3, #0
+ 394 00d4 D0D1     		bne	.L19
+ 395 00d6 D1E7     		b	.L20
+ 396              	.L30:
+ 101:Core/Src/MQTTConnectClient.c **** 		flags.bits.password = 1;
+ 397              		.loc 1 101 62 discriminator 1 view .LVU122
+ 398 00d8 636D     		ldr	r3, [r4, #84]
+ 101:Core/Src/MQTTConnectClient.c **** 		flags.bits.password = 1;
+ 399              		.loc 1 101 32 discriminator 1 view .LVU123
+ 400 00da 002B     		cmp	r3, #0
+ 401 00dc D0D1     		bne	.L21
+ 402 00de D1E7     		b	.L22
+ 403              	.LVL40:
+ 404              	.L31:
+ 109:Core/Src/MQTTConnectClient.c **** 		writeMQTTString(&ptr, options->will.message);
+ 405              		.loc 1 109 3 is_stmt 1 view .LVU124
+ 406 00e0 04F12403 		add	r3, r4, #36
+ 407 00e4 0ECB     		ldm	r3, {r1, r2, r3}
+ 408 00e6 01A8     		add	r0, sp, #4
+ 409 00e8 FFF7FEFF 		bl	writeMQTTString
+ 410              	.LVL41:
+ 110:Core/Src/MQTTConnectClient.c **** 	}
+ 411              		.loc 1 110 3 view .LVU125
+ 412 00ec 04F13003 		add	r3, r4, #48
+ 413 00f0 0ECB     		ldm	r3, {r1, r2, r3}
+ 414 00f2 01A8     		add	r0, sp, #4
+ 415 00f4 FFF7FEFF 		bl	writeMQTTString
+ 416              	.LVL42:
+ 417 00f8 D5E7     		b	.L23
+ 418              	.L32:
+ 113:Core/Src/MQTTConnectClient.c **** 	if (flags.bits.password)
+ 419              		.loc 1 113 3 view .LVU126
+ 420 00fa 04F14003 		add	r3, r4, #64
+ 421 00fe 0ECB     		ldm	r3, {r1, r2, r3}
+ 422 0100 01A8     		add	r0, sp, #4
+ 423 0102 FFF7FEFF 		bl	writeMQTTString
+ 424              	.LVL43:
+ 425 0106 D1E7     		b	.L24
+ 426              	.L33:
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s 			page 11
+
+
+ 115:Core/Src/MQTTConnectClient.c **** 
+ 427              		.loc 1 115 3 view .LVU127
+ 428 0108 4C34     		adds	r4, r4, #76
+ 429              	.LVL44:
+ 115:Core/Src/MQTTConnectClient.c **** 
+ 430              		.loc 1 115 3 is_stmt 0 view .LVU128
+ 431 010a 94E80E00 		ldm	r4, {r1, r2, r3}
+ 432 010e 01A8     		add	r0, sp, #4
+ 433 0110 FFF7FEFF 		bl	writeMQTTString
+ 434              	.LVL45:
+ 435 0114 CDE7     		b	.L25
+ 436              	.LVL46:
+ 437              	.L26:
+  69:Core/Src/MQTTConnectClient.c **** 		goto exit;
+ 438              		.loc 1 69 6 view .LVU129
+ 439 0116 6FF00100 		mvn	r0, #1
+ 440              	.L15:
+ 441              	.LVL47:
+ 119:Core/Src/MQTTConnectClient.c **** 	return rc;
+ 442              		.loc 1 119 24 is_stmt 1 view .LVU130
+ 120:Core/Src/MQTTConnectClient.c **** }
+ 443              		.loc 1 120 2 view .LVU131
+ 120:Core/Src/MQTTConnectClient.c **** }
+ 444              		.loc 1 120 9 is_stmt 0 view .LVU132
+ 445 011a CCE7     		b	.L14
+ 446              	.L35:
+ 447              		.align	2
+ 448              	.L34:
+ 449 011c 08000000 		.word	.LC1
+ 450 0120 00000000 		.word	.LC0
+ 451              		.cfi_endproc
+ 452              	.LFE4:
+ 454              		.section	.text.MQTTDeserialize_connack,"ax",%progbits
+ 455              		.align	1
+ 456              		.global	MQTTDeserialize_connack
+ 457              		.syntax unified
+ 458              		.thumb
+ 459              		.thumb_func
+ 460              		.fpu softvfp
+ 462              	MQTTDeserialize_connack:
+ 463              	.LVL48:
+ 464              	.LFB5:
+ 122:Core/Src/MQTTConnectClient.c **** 
+ 123:Core/Src/MQTTConnectClient.c **** 
+ 124:Core/Src/MQTTConnectClient.c **** /**
+ 125:Core/Src/MQTTConnectClient.c ****   * Deserializes the supplied (wire) buffer into connack data - return code
+ 126:Core/Src/MQTTConnectClient.c ****   * @param sessionPresent the session present flag returned (only for MQTT 3.1.1)
+ 127:Core/Src/MQTTConnectClient.c ****   * @param connack_rc returned integer value of the connack return code
+ 128:Core/Src/MQTTConnectClient.c ****   * @param buf the raw buffer data, of the correct length determined by the remaining length field
+ 129:Core/Src/MQTTConnectClient.c ****   * @param len the length in bytes of the data in the supplied buffer
+ 130:Core/Src/MQTTConnectClient.c ****   * @return error code.  1 is success, 0 is failure
+ 131:Core/Src/MQTTConnectClient.c ****   */
+ 132:Core/Src/MQTTConnectClient.c **** int MQTTDeserialize_connack(unsigned char* sessionPresent, unsigned char* connack_rc, unsigned char
+ 133:Core/Src/MQTTConnectClient.c **** {
+ 465              		.loc 1 133 1 is_stmt 1 view -0
+ 466              		.cfi_startproc
+ 467              		@ args = 0, pretend = 0, frame = 8
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s 			page 12
+
+
+ 468              		@ frame_needed = 0, uses_anonymous_args = 0
+ 469              		.loc 1 133 1 is_stmt 0 view .LVU134
+ 470 0000 30B5     		push	{r4, r5, lr}
+ 471              	.LCFI5:
+ 472              		.cfi_def_cfa_offset 12
+ 473              		.cfi_offset 4, -12
+ 474              		.cfi_offset 5, -8
+ 475              		.cfi_offset 14, -4
+ 476 0002 83B0     		sub	sp, sp, #12
+ 477              	.LCFI6:
+ 478              		.cfi_def_cfa_offset 24
+ 479 0004 0546     		mov	r5, r0
+ 480 0006 0C46     		mov	r4, r1
+ 134:Core/Src/MQTTConnectClient.c **** 	MQTTHeader header = {0};
+ 481              		.loc 1 134 2 is_stmt 1 view .LVU135
+ 135:Core/Src/MQTTConnectClient.c **** 	unsigned char* curdata = buf;
+ 482              		.loc 1 135 2 view .LVU136
+ 483              		.loc 1 135 17 is_stmt 0 view .LVU137
+ 484 0008 0192     		str	r2, [sp, #4]
+ 136:Core/Src/MQTTConnectClient.c **** 	unsigned char* enddata = NULL;
+ 485              		.loc 1 136 2 is_stmt 1 view .LVU138
+ 486              	.LVL49:
+ 137:Core/Src/MQTTConnectClient.c **** 	int rc = 0;
+ 487              		.loc 1 137 2 view .LVU139
+ 138:Core/Src/MQTTConnectClient.c **** 	int mylen;
+ 488              		.loc 1 138 2 view .LVU140
+ 139:Core/Src/MQTTConnectClient.c **** 	MQTTConnackFlags flags = {0};
+ 489              		.loc 1 139 2 view .LVU141
+ 140:Core/Src/MQTTConnectClient.c **** 
+ 141:Core/Src/MQTTConnectClient.c **** 	FUNC_ENTRY;
+ 490              		.loc 1 141 12 view .LVU142
+ 142:Core/Src/MQTTConnectClient.c **** 	header.byte = readChar(&curdata);
+ 491              		.loc 1 142 2 view .LVU143
+ 492              		.loc 1 142 16 is_stmt 0 view .LVU144
+ 493 000a 01A8     		add	r0, sp, #4
+ 494              	.LVL50:
+ 495              		.loc 1 142 16 view .LVU145
+ 496 000c FFF7FEFF 		bl	readChar
+ 497              	.LVL51:
+ 143:Core/Src/MQTTConnectClient.c **** 	if (header.bits.type != CONNACK)
+ 498              		.loc 1 143 2 is_stmt 1 view .LVU146
+ 499              		.loc 1 143 23 is_stmt 0 view .LVU147
+ 500 0010 00F0F003 		and	r3, r0, #240
+ 501              		.loc 1 143 5 view .LVU148
+ 502 0014 202B     		cmp	r3, #32
+ 503 0016 02D0     		beq	.L40
+ 137:Core/Src/MQTTConnectClient.c **** 	int mylen;
+ 504              		.loc 1 137 6 view .LVU149
+ 505 0018 0020     		movs	r0, #0
+ 506              	.L37:
+ 144:Core/Src/MQTTConnectClient.c **** 		goto exit;
+ 145:Core/Src/MQTTConnectClient.c **** 
+ 146:Core/Src/MQTTConnectClient.c **** 	curdata += (rc = MQTTPacket_decodeBuf(curdata, &mylen)); /* read remaining length */
+ 147:Core/Src/MQTTConnectClient.c **** 	enddata = curdata + mylen;
+ 148:Core/Src/MQTTConnectClient.c **** 	if (enddata - curdata < 2)
+ 149:Core/Src/MQTTConnectClient.c **** 		goto exit;
+ 150:Core/Src/MQTTConnectClient.c **** 
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s 			page 13
+
+
+ 151:Core/Src/MQTTConnectClient.c **** 	flags.all = readChar(&curdata);
+ 152:Core/Src/MQTTConnectClient.c **** 	*sessionPresent = flags.bits.sessionpresent;
+ 153:Core/Src/MQTTConnectClient.c **** 	*connack_rc = readChar(&curdata);
+ 154:Core/Src/MQTTConnectClient.c **** 
+ 155:Core/Src/MQTTConnectClient.c **** 	rc = 1;
+ 156:Core/Src/MQTTConnectClient.c **** exit:
+ 157:Core/Src/MQTTConnectClient.c **** 	FUNC_EXIT_RC(rc);
+ 507              		.loc 1 157 18 is_stmt 1 view .LVU150
+ 158:Core/Src/MQTTConnectClient.c **** 	return rc;
+ 508              		.loc 1 158 2 view .LVU151
+ 509              	.LVL52:
+ 510              	.L36:
+ 159:Core/Src/MQTTConnectClient.c **** }
+ 511              		.loc 1 159 1 is_stmt 0 view .LVU152
+ 512 001a 03B0     		add	sp, sp, #12
+ 513              	.LCFI7:
+ 514              		.cfi_remember_state
+ 515              		.cfi_def_cfa_offset 12
+ 516              		@ sp needed
+ 517 001c 30BD     		pop	{r4, r5, pc}
+ 518              	.LVL53:
+ 519              	.L40:
+ 520              	.LCFI8:
+ 521              		.cfi_restore_state
+ 146:Core/Src/MQTTConnectClient.c **** 	enddata = curdata + mylen;
+ 522              		.loc 1 146 2 is_stmt 1 view .LVU153
+ 146:Core/Src/MQTTConnectClient.c **** 	enddata = curdata + mylen;
+ 523              		.loc 1 146 19 is_stmt 0 view .LVU154
+ 524 001e 6946     		mov	r1, sp
+ 525 0020 0198     		ldr	r0, [sp, #4]
+ 526 0022 FFF7FEFF 		bl	MQTTPacket_decodeBuf
+ 527              	.LVL54:
+ 146:Core/Src/MQTTConnectClient.c **** 	enddata = curdata + mylen;
+ 528              		.loc 1 146 10 view .LVU155
+ 529 0026 019B     		ldr	r3, [sp, #4]
+ 530 0028 0344     		add	r3, r3, r0
+ 531 002a 0193     		str	r3, [sp, #4]
+ 147:Core/Src/MQTTConnectClient.c **** 	if (enddata - curdata < 2)
+ 532              		.loc 1 147 2 is_stmt 1 view .LVU156
+ 147:Core/Src/MQTTConnectClient.c **** 	if (enddata - curdata < 2)
+ 533              		.loc 1 147 20 is_stmt 0 view .LVU157
+ 534 002c 009B     		ldr	r3, [sp]
+ 535              	.LVL55:
+ 148:Core/Src/MQTTConnectClient.c **** 		goto exit;
+ 536              		.loc 1 148 2 is_stmt 1 view .LVU158
+ 148:Core/Src/MQTTConnectClient.c **** 		goto exit;
+ 537              		.loc 1 148 5 is_stmt 0 view .LVU159
+ 538 002e 012B     		cmp	r3, #1
+ 539 0030 F3DD     		ble	.L36
+ 151:Core/Src/MQTTConnectClient.c **** 	*sessionPresent = flags.bits.sessionpresent;
+ 540              		.loc 1 151 2 is_stmt 1 view .LVU160
+ 151:Core/Src/MQTTConnectClient.c **** 	*sessionPresent = flags.bits.sessionpresent;
+ 541              		.loc 1 151 14 is_stmt 0 view .LVU161
+ 542 0032 01A8     		add	r0, sp, #4
+ 543              	.LVL56:
+ 151:Core/Src/MQTTConnectClient.c **** 	*sessionPresent = flags.bits.sessionpresent;
+ 544              		.loc 1 151 14 view .LVU162
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s 			page 14
+
+
+ 545 0034 FFF7FEFF 		bl	readChar
+ 546              	.LVL57:
+ 152:Core/Src/MQTTConnectClient.c **** 	*connack_rc = readChar(&curdata);
+ 547              		.loc 1 152 2 is_stmt 1 view .LVU163
+ 152:Core/Src/MQTTConnectClient.c **** 	*connack_rc = readChar(&curdata);
+ 548              		.loc 1 152 30 is_stmt 0 view .LVU164
+ 549 0038 00F00100 		and	r0, r0, #1
+ 152:Core/Src/MQTTConnectClient.c **** 	*connack_rc = readChar(&curdata);
+ 550              		.loc 1 152 18 view .LVU165
+ 551 003c 2870     		strb	r0, [r5]
+ 153:Core/Src/MQTTConnectClient.c **** 
+ 552              		.loc 1 153 2 is_stmt 1 view .LVU166
+ 153:Core/Src/MQTTConnectClient.c **** 
+ 553              		.loc 1 153 16 is_stmt 0 view .LVU167
+ 554 003e 01A8     		add	r0, sp, #4
+ 555 0040 FFF7FEFF 		bl	readChar
+ 556              	.LVL58:
+ 153:Core/Src/MQTTConnectClient.c **** 
+ 557              		.loc 1 153 14 view .LVU168
+ 558 0044 2070     		strb	r0, [r4]
+ 155:Core/Src/MQTTConnectClient.c **** exit:
+ 559              		.loc 1 155 2 is_stmt 1 view .LVU169
+ 560              	.LVL59:
+ 155:Core/Src/MQTTConnectClient.c **** exit:
+ 561              		.loc 1 155 5 is_stmt 0 view .LVU170
+ 562 0046 0120     		movs	r0, #1
+ 563 0048 E7E7     		b	.L36
+ 564              		.cfi_endproc
+ 565              	.LFE5:
+ 567              		.section	.text.MQTTSerialize_zero,"ax",%progbits
+ 568              		.align	1
+ 569              		.global	MQTTSerialize_zero
+ 570              		.syntax unified
+ 571              		.thumb
+ 572              		.thumb_func
+ 573              		.fpu softvfp
+ 575              	MQTTSerialize_zero:
+ 576              	.LVL60:
+ 577              	.LFB6:
+ 160:Core/Src/MQTTConnectClient.c **** 
+ 161:Core/Src/MQTTConnectClient.c **** 
+ 162:Core/Src/MQTTConnectClient.c **** /**
+ 163:Core/Src/MQTTConnectClient.c ****   * Serializes a 0-length packet into the supplied buffer, ready for writing to a socket
+ 164:Core/Src/MQTTConnectClient.c ****   * @param buf the buffer into which the packet will be serialized
+ 165:Core/Src/MQTTConnectClient.c ****   * @param buflen the length in bytes of the supplied buffer, to avoid overruns
+ 166:Core/Src/MQTTConnectClient.c ****   * @param packettype the message type
+ 167:Core/Src/MQTTConnectClient.c ****   * @return serialized length, or error if 0
+ 168:Core/Src/MQTTConnectClient.c ****   */
+ 169:Core/Src/MQTTConnectClient.c **** int MQTTSerialize_zero(unsigned char* buf, int buflen, unsigned char packettype)
+ 170:Core/Src/MQTTConnectClient.c **** {
+ 578              		.loc 1 170 1 is_stmt 1 view -0
+ 579              		.cfi_startproc
+ 580              		@ args = 0, pretend = 0, frame = 8
+ 581              		@ frame_needed = 0, uses_anonymous_args = 0
+ 582              		.loc 1 170 1 is_stmt 0 view .LVU172
+ 583 0000 10B5     		push	{r4, lr}
+ 584              	.LCFI9:
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s 			page 15
+
+
+ 585              		.cfi_def_cfa_offset 8
+ 586              		.cfi_offset 4, -8
+ 587              		.cfi_offset 14, -4
+ 588 0002 82B0     		sub	sp, sp, #8
+ 589              	.LCFI10:
+ 590              		.cfi_def_cfa_offset 16
+ 171:Core/Src/MQTTConnectClient.c **** 	MQTTHeader header = {0};
+ 591              		.loc 1 171 2 is_stmt 1 view .LVU173
+ 172:Core/Src/MQTTConnectClient.c **** 	int rc = -1;
+ 592              		.loc 1 172 2 view .LVU174
+ 593              	.LVL61:
+ 173:Core/Src/MQTTConnectClient.c **** 	unsigned char *ptr = buf;
+ 594              		.loc 1 173 2 view .LVU175
+ 595              		.loc 1 173 17 is_stmt 0 view .LVU176
+ 596 0004 0190     		str	r0, [sp, #4]
+ 174:Core/Src/MQTTConnectClient.c **** 
+ 175:Core/Src/MQTTConnectClient.c **** 	FUNC_ENTRY;
+ 597              		.loc 1 175 12 is_stmt 1 view .LVU177
+ 176:Core/Src/MQTTConnectClient.c **** 	if (buflen < 2)
+ 598              		.loc 1 176 2 view .LVU178
+ 599              		.loc 1 176 5 is_stmt 0 view .LVU179
+ 600 0006 0129     		cmp	r1, #1
+ 601 0008 11DD     		ble	.L43
+ 602 000a 0446     		mov	r4, r0
+ 603 000c 0023     		movs	r3, #0
+ 604              	.LVL62:
+ 177:Core/Src/MQTTConnectClient.c **** 	{
+ 178:Core/Src/MQTTConnectClient.c **** 		rc = MQTTPACKET_BUFFER_TOO_SHORT;
+ 179:Core/Src/MQTTConnectClient.c **** 		goto exit;
+ 180:Core/Src/MQTTConnectClient.c **** 	}
+ 181:Core/Src/MQTTConnectClient.c **** 	header.byte = 0;
+ 605              		.loc 1 181 2 is_stmt 1 view .LVU180
+ 182:Core/Src/MQTTConnectClient.c **** 	header.bits.type = packettype;
+ 606              		.loc 1 182 2 view .LVU181
+ 607              		.loc 1 182 19 is_stmt 0 view .LVU182
+ 608 000e 62F30713 		bfi	r3, r2, #4, #4
+ 609              	.LVL63:
+ 183:Core/Src/MQTTConnectClient.c **** 	writeChar(&ptr, header.byte); /* write header */
+ 610              		.loc 1 183 2 is_stmt 1 view .LVU183
+ 611 0012 1946     		mov	r1, r3
+ 612              	.LVL64:
+ 613              		.loc 1 183 2 is_stmt 0 view .LVU184
+ 614 0014 01A8     		add	r0, sp, #4
+ 615              	.LVL65:
+ 616              		.loc 1 183 2 view .LVU185
+ 617 0016 FFF7FEFF 		bl	writeChar
+ 618              	.LVL66:
+ 184:Core/Src/MQTTConnectClient.c **** 
+ 185:Core/Src/MQTTConnectClient.c **** 	ptr += MQTTPacket_encode(ptr, 0); /* write remaining length */
+ 619              		.loc 1 185 2 is_stmt 1 view .LVU186
+ 620              		.loc 1 185 9 is_stmt 0 view .LVU187
+ 621 001a 0021     		movs	r1, #0
+ 622 001c 0198     		ldr	r0, [sp, #4]
+ 623 001e FFF7FEFF 		bl	MQTTPacket_encode
+ 624              	.LVL67:
+ 625              		.loc 1 185 6 view .LVU188
+ 626 0022 019B     		ldr	r3, [sp, #4]
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s 			page 16
+
+
+ 627 0024 1844     		add	r0, r0, r3
+ 628 0026 0190     		str	r0, [sp, #4]
+ 186:Core/Src/MQTTConnectClient.c **** 	rc = ptr - buf;
+ 629              		.loc 1 186 2 is_stmt 1 view .LVU189
+ 630              		.loc 1 186 5 is_stmt 0 view .LVU190
+ 631 0028 001B     		subs	r0, r0, r4
+ 632              	.LVL68:
+ 633              	.L41:
+ 187:Core/Src/MQTTConnectClient.c **** exit:
+ 188:Core/Src/MQTTConnectClient.c **** 	FUNC_EXIT_RC(rc);
+ 189:Core/Src/MQTTConnectClient.c **** 	return rc;
+ 190:Core/Src/MQTTConnectClient.c **** }
+ 634              		.loc 1 190 1 view .LVU191
+ 635 002a 02B0     		add	sp, sp, #8
+ 636              	.LCFI11:
+ 637              		.cfi_remember_state
+ 638              		.cfi_def_cfa_offset 8
+ 639              		@ sp needed
+ 640 002c 10BD     		pop	{r4, pc}
+ 641              	.LVL69:
+ 642              	.L43:
+ 643              	.LCFI12:
+ 644              		.cfi_restore_state
+ 178:Core/Src/MQTTConnectClient.c **** 		goto exit;
+ 645              		.loc 1 178 6 view .LVU192
+ 646 002e 6FF00100 		mvn	r0, #1
+ 647              	.LVL70:
+ 648              	.L42:
+ 188:Core/Src/MQTTConnectClient.c **** 	return rc;
+ 649              		.loc 1 188 18 is_stmt 1 view .LVU193
+ 189:Core/Src/MQTTConnectClient.c **** }
+ 650              		.loc 1 189 2 view .LVU194
+ 189:Core/Src/MQTTConnectClient.c **** }
+ 651              		.loc 1 189 9 is_stmt 0 view .LVU195
+ 652 0032 FAE7     		b	.L41
+ 653              		.cfi_endproc
+ 654              	.LFE6:
+ 656              		.section	.text.MQTTSerialize_disconnect,"ax",%progbits
+ 657              		.align	1
+ 658              		.global	MQTTSerialize_disconnect
+ 659              		.syntax unified
+ 660              		.thumb
+ 661              		.thumb_func
+ 662              		.fpu softvfp
+ 664              	MQTTSerialize_disconnect:
+ 665              	.LVL71:
+ 666              	.LFB7:
+ 191:Core/Src/MQTTConnectClient.c **** 
+ 192:Core/Src/MQTTConnectClient.c **** 
+ 193:Core/Src/MQTTConnectClient.c **** /**
+ 194:Core/Src/MQTTConnectClient.c ****   * Serializes a disconnect packet into the supplied buffer, ready for writing to a socket
+ 195:Core/Src/MQTTConnectClient.c ****   * @param buf the buffer into which the packet will be serialized
+ 196:Core/Src/MQTTConnectClient.c ****   * @param buflen the length in bytes of the supplied buffer, to avoid overruns
+ 197:Core/Src/MQTTConnectClient.c ****   * @return serialized length, or error if 0
+ 198:Core/Src/MQTTConnectClient.c ****   */
+ 199:Core/Src/MQTTConnectClient.c **** int MQTTSerialize_disconnect(unsigned char* buf, int buflen)
+ 200:Core/Src/MQTTConnectClient.c **** {
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s 			page 17
+
+
+ 667              		.loc 1 200 1 is_stmt 1 view -0
+ 668              		.cfi_startproc
+ 669              		@ args = 0, pretend = 0, frame = 0
+ 670              		@ frame_needed = 0, uses_anonymous_args = 0
+ 671              		.loc 1 200 1 is_stmt 0 view .LVU197
+ 672 0000 08B5     		push	{r3, lr}
+ 673              	.LCFI13:
+ 674              		.cfi_def_cfa_offset 8
+ 675              		.cfi_offset 3, -8
+ 676              		.cfi_offset 14, -4
+ 201:Core/Src/MQTTConnectClient.c **** 	return MQTTSerialize_zero(buf, buflen, DISCONNECT);
+ 677              		.loc 1 201 2 is_stmt 1 view .LVU198
+ 678              		.loc 1 201 9 is_stmt 0 view .LVU199
+ 679 0002 0E22     		movs	r2, #14
+ 680 0004 FFF7FEFF 		bl	MQTTSerialize_zero
+ 681              	.LVL72:
+ 202:Core/Src/MQTTConnectClient.c **** }
+ 682              		.loc 1 202 1 view .LVU200
+ 683 0008 08BD     		pop	{r3, pc}
+ 684              		.cfi_endproc
+ 685              	.LFE7:
+ 687              		.section	.text.MQTTSerialize_pingreq,"ax",%progbits
+ 688              		.align	1
+ 689              		.global	MQTTSerialize_pingreq
+ 690              		.syntax unified
+ 691              		.thumb
+ 692              		.thumb_func
+ 693              		.fpu softvfp
+ 695              	MQTTSerialize_pingreq:
+ 696              	.LVL73:
+ 697              	.LFB8:
+ 203:Core/Src/MQTTConnectClient.c **** 
+ 204:Core/Src/MQTTConnectClient.c **** 
+ 205:Core/Src/MQTTConnectClient.c **** /**
+ 206:Core/Src/MQTTConnectClient.c ****   * Serializes a disconnect packet into the supplied buffer, ready for writing to a socket
+ 207:Core/Src/MQTTConnectClient.c ****   * @param buf the buffer into which the packet will be serialized
+ 208:Core/Src/MQTTConnectClient.c ****   * @param buflen the length in bytes of the supplied buffer, to avoid overruns
+ 209:Core/Src/MQTTConnectClient.c ****   * @return serialized length, or error if 0
+ 210:Core/Src/MQTTConnectClient.c ****   */
+ 211:Core/Src/MQTTConnectClient.c **** int MQTTSerialize_pingreq(unsigned char* buf, int buflen)
+ 212:Core/Src/MQTTConnectClient.c **** {
+ 698              		.loc 1 212 1 is_stmt 1 view -0
+ 699              		.cfi_startproc
+ 700              		@ args = 0, pretend = 0, frame = 0
+ 701              		@ frame_needed = 0, uses_anonymous_args = 0
+ 702              		.loc 1 212 1 is_stmt 0 view .LVU202
+ 703 0000 08B5     		push	{r3, lr}
+ 704              	.LCFI14:
+ 705              		.cfi_def_cfa_offset 8
+ 706              		.cfi_offset 3, -8
+ 707              		.cfi_offset 14, -4
+ 213:Core/Src/MQTTConnectClient.c **** 	return MQTTSerialize_zero(buf, buflen, PINGREQ);
+ 708              		.loc 1 213 2 is_stmt 1 view .LVU203
+ 709              		.loc 1 213 9 is_stmt 0 view .LVU204
+ 710 0002 0C22     		movs	r2, #12
+ 711 0004 FFF7FEFF 		bl	MQTTSerialize_zero
+ 712              	.LVL74:
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s 			page 18
+
+
+ 214:Core/Src/MQTTConnectClient.c **** }
+ 713              		.loc 1 214 1 view .LVU205
+ 714 0008 08BD     		pop	{r3, pc}
+ 715              		.cfi_endproc
+ 716              	.LFE8:
+ 718              		.text
+ 719              	.Letext0:
+ 720              		.file 2 "Core/Inc/MQTTPacket.h"
+ 721              		.file 3 "Core/Inc/MQTTConnect.h"
+ARM GAS  C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s 			page 19
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 MQTTConnectClient.c
+C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s:16     .text.MQTTSerialize_connectLength:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s:24     .text.MQTTSerialize_connectLength:00000000 MQTTSerialize_connectLength
+C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s:171    .rodata.MQTTSerialize_connect.str1.4:00000000 $d
+C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s:178    .text.MQTTSerialize_connect:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s:185    .text.MQTTSerialize_connect:00000000 MQTTSerialize_connect
+C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s:449    .text.MQTTSerialize_connect:0000011c $d
+C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s:455    .text.MQTTDeserialize_connack:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s:462    .text.MQTTDeserialize_connack:00000000 MQTTDeserialize_connack
+C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s:568    .text.MQTTSerialize_zero:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s:575    .text.MQTTSerialize_zero:00000000 MQTTSerialize_zero
+C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s:657    .text.MQTTSerialize_disconnect:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s:664    .text.MQTTSerialize_disconnect:00000000 MQTTSerialize_disconnect
+C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s:688    .text.MQTTSerialize_pingreq:00000000 $t
+C:\Users\Vento\AppData\Local\Temp\ccXJ0wSu.s:695    .text.MQTTSerialize_pingreq:00000000 MQTTSerialize_pingreq
+
+UNDEFINED SYMBOLS
+MQTTstrlen
+MQTTPacket_len
+writeChar
+MQTTPacket_encode
+writeCString
+writeInt
+writeMQTTString
+readChar
+MQTTPacket_decodeBuf
